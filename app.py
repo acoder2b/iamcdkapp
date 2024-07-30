@@ -1,28 +1,21 @@
-#!/usr/bin/env python3
 import os
+import logging
+from dotenv import load_dotenv
+from aws_cdk import App
+# from iam_role_config_stack import IamRoleConfigStack
+from iam_cdk_app.iam_cdk_app_stack import IamRoleConfigStack
 
-import aws_cdk as cdk
+# Load environment variables from .env file
+load_dotenv()
 
-from iam_cdk_app.iam_cdk_app_stack import IamCdkAppStack
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+# Fetch environment variables
+file_path = os.getenv('IAM_ROLE_CONFIG_FILE', 'iamConfigs/iamrole1.yaml')
 
-app = cdk.App()
-IamCdkAppStack(app, "IamCdkAppStack",
-    # If you don't specify 'env', this stack will be environment-agnostic.
-    # Account/Region-dependent features and context lookups will not work,
-    # but a single synthesized template can be deployed anywhere.
-
-    # Uncomment the next line to specialize this stack for the AWS Account
-    # and Region that are implied by the current CLI configuration.
-
-    #env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
-
-    # Uncomment the next line if you know exactly what Account and Region you
-    # want to deploy the stack to. */
-
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
-
-    # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-    )
-
+# Create CDK App
+app = App()
+IamRoleConfigStack(app, "IamRoleConfigStack", file_path=file_path)
 app.synth()

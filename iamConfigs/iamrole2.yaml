@@ -1,0 +1,21 @@
+roles:
+  - roleName: telus-sh-security-iamrole-breakglass
+    description: "TELUS IAM Role for BreakGlass Access"
+    sessionDuration: 28800
+    iamPath: /breakglass/
+    # permissionsBoundary:
+    trustPolicy:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            AWS:
+              - "arn:aws:iam::410225460941:user/breakglass/telus-sh-security-iamuser-breakglass-user1"
+              - "arn:aws:iam::410225460941:user/breakglass/telus-sh-security-iamuser-breakglass-user2"
+          Action: sts:AssumeRole
+          Condition:
+            Bool:
+              aws:MultiFactorAuthPresent: "true"
+    managedPolicies:
+      - arn:aws:iam::aws:policy/AdministratorAccess
+    # inlinePolicies:
