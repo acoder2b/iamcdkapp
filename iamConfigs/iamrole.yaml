@@ -1,142 +1,30 @@
+account_id: "96905249077"
+region: "us-east-1"
+
 roles:
-  - roleName: TELUS-TESTROLEAPP-DEMO-1
-    assumedBy: sns.amazonaws.com
-    description: TestRole
-    externalIds: 
-      - 123456789
-    inlinePolicies:
-      - name: InlinePolicy1
-        policy: 
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action: 
-                - 's3:ListBucket'
-              Resource: '*'
+  - roleName: test-sh-security-iamrole-breakglass
+    description: "TELUS IAM Role for BreakGlass Access"
+    sessionDuration: 28800
+    iamPath: /breakglass/
+    trustPolicy:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              - sns.amazonaws.com
+            AWS:
+              - "arn:aws:iam::443253904861:role/service-role/AmazonSageMakerServiceCatalogProductsLaunchRole"
+          Action: sts:AssumeRole
+          Condition:
+            Bool:
+              aws:MultiFactorAuthPresent: "true"
+    externalIds:
+      - "1234567890"
     managedPolicies:
-      -  arn:aws:iam::aws:policy/AdministratorAccess
-      -  arn:aws:iam::aws:policy/PowerUserAccess
-    maxSessionDuration: 5500
-    iamPath: /testpath/
-    permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
-    tags:
-      - key: testkey
-        value: testtag1
-
-
-  - roleName: TELUS-TESTROLEAPP-DEMO-2
-    assumedBy: lambda.amazonaws.com
-    description: This role validates the Permission boundary, tag, externalID
-    externalIds: 
-      - 123456789
-    inlinePolicies:
-    managedPolicies:
-      -  arn:aws:iam::aws:policy/AdministratorAccess
-      -  arn:aws:iam::aws:policy/PowerUserAccess
-    maxSessionDuration: 5000
-    iamPath: /testpath/
-    permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
-    tags:
-      - key: testkey
-        value: testtag
-      - key: testkey12
-        value: testtag12
-
-  - roleName: TELUS-TESTROLEAPP-DEMO-3
-    assumedBy: sns.amazonaws.com
-    description: TestRole
-    # externalIds: 
-    #   - 123456789
+      - arn:aws:iam::aws:policy/AdministratorAccess
     # inlinePolicies:
-    #   - name: InlinePolicy1
-    #     policy: 
-    #       Version: '2012-10-17'
-    #       Statement:
-    #         - Effect: Allow
-    #           Action: 
-    #             - 's3:ListBucket'
-    #           Resource: '*'
-    managedPolicies:
-      -  arn:aws:iam::aws:policy/AdministratorAccess
-      -  arn:aws:iam::aws:policy/PowerUserAccess
-    maxSessionDuration: 5500
-    iamPath: /testpath/
-    permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
-    tags:
-      - key: testkey122
-        value: testtag122
-
-
-  - roleName: TELUS-TESTROLEAPP-DEMO-4
-    assumedBy: lambda.amazonaws.com
-    description: This role validates the Permission boundary, tag, externalID
-    externalIds: 
-      - 123456789
-    inlinePolicies:
-    managedPolicies:
-      -  arn:aws:iam::aws:policy/AdministratorAccess
-      -  arn:aws:iam::aws:policy/PowerUserAccess
-    maxSessionDuration: 5000
-    iamPath: /testpath/
     permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
     tags:
       - key: testkey
-        value: testtag
-      - key: testkey1
         value: testtag1
-  - roleName: TELUS-TESTROLEAPP-DEMO-5
-    assumedBy: sns.amazonaws.com
-    description: TestRole
-    externalIds: 
-      - 123456789
-    inlinePolicies:
-      - name: InlinePolicy1
-        policy: 
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action: 
-                - 's3:ListBucket'
-              Resource: '*'
-    managedPolicies:
-      -  arn:aws:iam::443253904861:policy/3-Tef-Environment-Admin
-    maxSessionDuration: 5500
-    iamPath: /testpath/
-    permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
-
-
-  # - roleName: TELUS-TESTROLEAPP-DEMO-6
-  #   assumedBy: lambda.amazonaws.com
-  #   description: This role validates the Permission boundary, tag, externalID
-  #   externalIds: 
-  #     - 123456789
-  #   inlinePolicies:
-  #   managedPolicies:
-  #     -  arn:aws:iam::aws:policy/AdministratorAccess
-  #     -  arn:aws:iam::aws:policy/PowerUserAccess
-  #   maxSessionDuration: 5000
-  #   iamPath: /testpath/
-  #   permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
-  #   tags:
-  #     - key: testkey
-  #       value: testtag
-  #     - key: testkey1
-  #       value: testtag1                
-
-
-  # - roleName: TELUS-TESTROLEAPP-DEMO-7
-  #   assumedBy: lambda.amazonaws.com
-  #   description: This role validates the Permission boundary, tag, externalID
-  #   externalIds: 
-  #     - 123456789
-  #   inlinePolicies:
-  #   managedPolicies:
-  #     -  TELUS-APP-Test-Service2
-  #   maxSessionDuration: 5000
-  #   iamPath: /testpath/
-  #   permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
-  #   tags:
-  #     - key: testkey
-  #       value: testtag
-  #     - key: testkey1
-  #       value: testtag1   

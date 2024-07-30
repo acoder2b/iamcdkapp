@@ -28,14 +28,39 @@ jobs:
       - name: Install AWS CDK
         run: npm install -g aws-cdk@latest
 
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v2
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-east-1
+
+      # - name: Deploy CDK app
+      #   run: |
+      #     source .venv/bin/activate
+      #     cdk deploy --require-approval never
+
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Deploy CDK app
+      - name: Deploy to Multiple Accounts
         run: |
           source .venv/bin/activate
-          cdk deploy --require-approval never
+          for file in iamConfigs/*.yaml; do
+            account_id=$(yq eval '.account_id' "$file")
+            role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
+            echo "Deploying to account $account_id using role $role_arn"
+            credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name github-actions)
+            export AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
+            export AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
+            export AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
+            cdk deploy --require-approval never --context file=$file
+          done
+
+    env:
+      IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
