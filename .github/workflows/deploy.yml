@@ -37,7 +37,9 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
       - name: CDK Synthesise 
-        run: cdk synth  
+        run: |
+          source .venv/bin/activate
+          cdk synth  
         
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
