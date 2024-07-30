@@ -17,7 +17,11 @@ class IamRoleConfigStack(Stack):
         super().__init__(scope, id, **kwargs)
 
         config = self.load_yaml_config(file_path)
-        for role in config.get('roles', []):
+        roles = config.get('roles', [])
+        if not isinstance(roles, list):
+            roles = []
+
+        for role in roles:
             self.create_iam_role(role)
 
     def load_yaml_config(self, file_path: str) -> Dict[str, Any]:
