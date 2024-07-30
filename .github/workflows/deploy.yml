@@ -41,12 +41,19 @@ jobs:
           source .venv/bin/activate
           cdk synth  
         
-      - name: Configure AWS credentials
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v2
+      #   with:
+      #     aws-access-key-id: ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
+      #     aws-secret-access-key: ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
+      #     aws-region: us-east-1
+
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
-          aws-region: us-east-1
+           role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActions-AssumeRole
+           role-session-name: OIDC-GitHubActions-AssumeRole
+           aws-region: us-east-1    
           
       - name: Set Environment Variables
         id: vars
