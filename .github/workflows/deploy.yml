@@ -227,6 +227,7 @@ jobs:
 
             # Refresh OIDC credentials after each iteration
             echo "Refreshing OIDC credentials..."
+            unset GH_TOKEN  # Clear the GH_TOKEN environment variable
             gh auth refresh --hostname github.com
           done
 
