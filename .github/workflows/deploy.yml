@@ -54,6 +54,8 @@ jobs:
            role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
            role-session-name: OIDC-GitHubActionsRole
            aws-region: us-east-1    
+           audience: sts.amazonaws.com
+           role-duration-seconds: 3600
           
       - name: Set Environment Variables
         id: vars
