@@ -205,8 +205,16 @@ jobs:
             echo "Deploying stack $stack_name..."
             cdk deploy $stack_name --require-approval never --context file=$file || { echo "Failed to deploy stack: $stack_name"; exit 1; }
 
-            # No need to unset credentials, move on to the next account
-            echo "Finished deploying stack $stack_name for account $account_id"
+            # Unset AWS credentials to clear them for the next iteration
+            unset AWS_ACCESS_KEY_ID
+            unset AWS_SECRET_ACCESS_KEY
+            unset AWS_SESSION_TOKEN
+
+            echo "Unset AWS credentials"
+
+            # Reconfigure AWS Credentials using OIDC Identity before the next deployment
+            echo "Refreshing OIDC credentials..."
+            aws-actions/configure-aws-credentials@v4 --role-to-assume arn:aws:iam::909180469036:role/OIDCRole-GitHubActionsRole --role-session-name OIDCRole-GitHubActionsRole --aws-region us-east-1 --audience sts.amazonaws.com --role-duration-seconds 3600
           done
 
     env:
