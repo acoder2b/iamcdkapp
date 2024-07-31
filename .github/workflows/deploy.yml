@@ -226,8 +226,10 @@ jobs:
             echo "Unset AWS credentials"
 
             # Refresh OIDC credentials after each iteration
-            gh auth refresh
+            echo "Refreshing OIDC credentials..."
+            gh auth refresh --hostname github.com
           done
 
     env:
         IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
