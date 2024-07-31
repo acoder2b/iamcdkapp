@@ -226,10 +226,8 @@ jobs:
             echo "Unset AWS credentials"
 
             # Refresh OIDC credentials after each iteration
-            echo "Refreshing OIDC credentials..."
-            aws-actions/configure-aws-credentials@v4 --role-to-assume arn:aws:iam::909180469036:role/OIDCRole-GitHubActionsRole --role-session-name OIDCRole-GitHubActionsRole --aws-region us-east-1 --audience sts.amazonaws.com --role-duration-seconds 3600
+            gh auth refresh
           done
-
 
     env:
         IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
