@@ -123,12 +123,21 @@ jobs:
           set -e
           source .venv/bin/activate
 
-          # Function to assume role and set credentials
-          assume_role() {
+          # Function to assume OIDC role in master account
+          assume_oidc_role() {
+            # Assume the OIDC role in the master account
+            credentials=$(aws sts assume-role --role-arn arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole --role-session-name OIDC-GitHubActionsRole || { echo "Failed to assume OIDC role"; exit 1; })
+            export AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
+            export AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
+            export AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
+          }
+
+          # Function to assume target account role
+          assume_target_role() {
             local role_arn=$1
             local session_name=$2
 
-            # Assume the role
+            # Assume the target account role
             credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name $session_name || { echo "Failed to assume role: $role_arn"; exit 1; })
             export AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
             export AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
@@ -151,8 +160,11 @@ jobs:
             echo "Role ARN: $role_arn"
             echo "Account ID: $account_id"
 
-            # Assume the role for the current account
-            assume_role $role_arn github-actions
+            # Re-assume the OIDC role in master account before each target account assumption
+            assume_oidc_role
+
+            # Assume the role for the current target account
+            assume_target_role $role_arn github-actions
 
             # Deploy the stack
             cdk deploy $stack_name --require-approval never --context file=$file || { echo "Failed to deploy stack: $stack_name"; exit 1; }
@@ -165,7 +177,6 @@ jobs:
             # Debug: Confirm credentials are unset
             echo "Unset AWS credentials"
           done
-
 
         # env:
         #   IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
