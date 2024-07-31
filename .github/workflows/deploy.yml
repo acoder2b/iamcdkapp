@@ -175,16 +175,14 @@ jobs:
           set -e
           source .venv/bin/activate
 
-          # Function to reconfigure AWS credentials using OIDC role
-          reconfigure_oidc_credentials() {
-            echo "Reconfiguring OIDC credentials..."
-            aws configure set role_arn arn:aws:iam::909180469036:role/OIDCRole-GitHubActionsRole
-            aws configure set role_session_name OIDCRole-GitHubActionsRole
-            credentials=$(aws sts assume-role --role-arn arn:aws:iam::909180469036:role/OIDCRole-GitHubActionsRole --role-session-name OIDCRole-GitHubActionsRole)
+          # Function to reconfigure AWS credentials using the intermediate role
+          reconfigure_intermediate_role() {
+            echo "Assuming intermediate role: arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole"
+            credentials=$(aws sts assume-role --role-arn arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole --role-session-name IntermediateRole)
             export AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
             export AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
             export AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
-            echo "OIDC Role assumed. Access Key: $AWS_ACCESS_KEY_ID"
+            echo "Intermediate Role assumed. Access Key: $AWS_ACCESS_KEY_ID"
           }
 
           # Function to assume target account role
@@ -210,8 +208,8 @@ jobs:
             echo "Role ARN: $role_arn"
             echo "Account ID: $account_id"
 
-            # Reconfigure AWS credentials using OIDC role before each deployment
-            reconfigure_oidc_credentials
+            # Reconfigure AWS credentials using the intermediate role before each deployment
+            reconfigure_intermediate_role
 
             # Assume the role for the current target account
             assume_target_role $role_arn github-actions
