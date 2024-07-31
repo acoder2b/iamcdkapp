@@ -55,8 +55,8 @@ jobs:
       - name: Configure AWS Credentials using OIDC Identity
         uses: aws-actions/configure-aws-credentials@v4
         with:
-           role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
-           role-session-name: OIDC-GitHubActionsRole
+           role-to-assume: arn:aws:iam::909180469036:role/OIDCRole-GitHubActionsRole
+           role-session-name: OIDCRole-GitHubActionsRole
            aws-region: us-east-1    
            audience: sts.amazonaws.com
            role-duration-seconds: 3600
@@ -175,10 +175,12 @@ jobs:
           set -e
           source .venv/bin/activate
 
-          # Function to reconfigure AWS credentials using OIDC role
-          reconfigure_oidc_credentials() {
-            aws configure set role_arn arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
-            aws configure set role_session_name OIDC-GitHubActionsRole
+          # Function to assume intermediate role in master account
+          assume_intermediate_role() {
+            credentials=$(aws sts assume-role --role-arn arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole --role-session-name IntermediateRole)
+            export AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
+            export AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
+            export AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
           }
 
           # Function to assume target account role
@@ -186,13 +188,11 @@ jobs:
             local role_arn=$1
             local session_name=$2
 
-            # Assume the target account role
-            credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name $session_name || { echo "Failed to assume role: $role_arn"; exit 1; })
+            credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name $session_name)
             export AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
             export AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
             export AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
 
-            # Debug: Print the assumed role credentials
             echo "Assumed Role Credentials:"
             echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
             echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
@@ -205,12 +205,11 @@ jobs:
             stack_name="IamRoleConfigStack-$account_id"
             echo "Deploying stack $stack_name to account $account_id using role $role_arn"
 
-            # Debug: Print the role ARN and account ID
             echo "Role ARN: $role_arn"
             echo "Account ID: $account_id"
 
-            # Reconfigure AWS credentials using OIDC role
-            reconfigure_oidc_credentials
+            # Assume intermediate role in master account
+            assume_intermediate_role
 
             # Assume the role for the current target account
             assume_target_role $role_arn github-actions
@@ -223,10 +222,8 @@ jobs:
             unset AWS_SECRET_ACCESS_KEY
             unset AWS_SESSION_TOKEN
 
-            # Debug: Confirm credentials are unset
             echo "Unset AWS credentials"
           done
 
-
     env:
-      IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
+        IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
