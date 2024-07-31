@@ -123,15 +123,6 @@ jobs:
           set -e
           source .venv/bin/activate
 
-          # Function to assume OIDC role in master account
-          assume_oidc_role() {
-            # Assume the OIDC role in the master account
-            credentials=$(aws sts assume-role --role-arn arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole --role-session-name OIDC-GitHubActionsRole || { echo "Failed to assume OIDC role"; exit 1; })
-            export AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
-            export AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
-            export AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
-          }
-
           # Function to assume target account role
           assume_target_role() {
             local role_arn=$1
@@ -159,9 +150,6 @@ jobs:
             # Debug: Print the role ARN and account ID
             echo "Role ARN: $role_arn"
             echo "Account ID: $account_id"
-
-            # Re-assume the OIDC role in master account before each target account assumption
-            assume_oidc_role
 
             # Assume the role for the current target account
             assume_target_role $role_arn github-actions
