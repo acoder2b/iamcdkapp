@@ -227,6 +227,7 @@ jobs:
 
             # Refresh OIDC credentials after each iteration
             echo "Refreshing OIDC credentials..."
+            unset GH_TOKEN
             gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
           done
 
