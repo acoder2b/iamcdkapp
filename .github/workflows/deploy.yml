@@ -227,7 +227,7 @@ jobs:
 
             # Refresh OIDC credentials after each iteration
             echo "Refreshing OIDC credentials..."
-            gh api -X POST repos/{owner}/{repo}/actions/runs/${{ github.run_id }}/rerun-failed-jobs --silent || true
+            aws-actions/configure-aws-credentials@v4 --role-to-assume arn:aws:iam::909180469036:role/OIDCRole-GitHubActionsRole --role-session-name OIDCRole-GitHubActionsRole --aws-region us-east-1 --audience sts.amazonaws.com --role-duration-seconds 3600
           done
 
 
