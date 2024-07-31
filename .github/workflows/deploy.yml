@@ -164,17 +164,11 @@ jobs:
       
             # Debug: Confirm credentials are unset
             echo "Unset AWS credentials"
-      
-            # Reset the OIDC credentials
-            echo "Reconfiguring OIDC credentials"
-            aws configure set aws_access_key_id ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
-            aws configure set aws_secret_access_key ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
-            aws configure set aws_session_token ${{ secrets.GITHUBACTIONS_SESSION_TOKEN }}
           done
-      # env:
-      #   IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
-      #   AWS_DEFAULT_REGION: us-east-1  # Set your default region if necessary
-    
+        # env:
+        #   IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
+        #   AWS_DEFAULT_REGION: us-east-1  # Set your default region if necessary
+          
 
 
     env:
