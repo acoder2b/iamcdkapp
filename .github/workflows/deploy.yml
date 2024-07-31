@@ -143,10 +143,9 @@ jobs:
       
           # Reconfigure OIDC credentials
           configure_oidc_credentials() {
-            aws configure set role_to_assume arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
-            aws configure set role_session_name OIDC-GitHubActionsRole
-            aws configure set aws_region us-east-1
-            aws configure set audience sts.amazonaws.com
+            export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
+            export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
+            export AWS_SESSION_TOKEN=$(aws configure get aws_session_token)
           }
       
           for file in iamConfigs/*.yaml; do
@@ -176,9 +175,9 @@ jobs:
             # Debug: Confirm credentials are unset
             echo "Unset AWS credentials"
           done
-      # env:
-      #   IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
-      #   AWS_DEFAULT_REGION: us-east-1  # Set your default region if necessary
+        # env:
+        #   IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
+        #   AWS_DEFAULT_REGION: us-east-1  # Set your default region if necessary
     
 
     env:
