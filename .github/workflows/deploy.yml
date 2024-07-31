@@ -51,8 +51,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-           role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActions-AssumeRole
-           role-session-name: OIDC-GitHubActions-AssumeRole
+           role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
+           role-session-name: OIDC-GitHubActionsRole
            aws-region: us-east-1    
           
       - name: Set Environment Variables
