@@ -211,10 +211,6 @@ jobs:
             unset AWS_SESSION_TOKEN
 
             echo "Unset AWS credentials"
-
-            # Reconfigure AWS Credentials using OIDC Identity before the next deployment
-            echo "Refreshing OIDC credentials..."
-            gh workflow run
           done
 
     env:
