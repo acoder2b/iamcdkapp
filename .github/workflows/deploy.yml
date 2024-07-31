@@ -170,7 +170,7 @@ jobs:
         #   IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
         #   AWS_DEFAULT_REGION: us-east-1  # Set your default region if necessary
     
-       - name: Deploy to Multiple Accounts
+      - name: Deploy to Multiple Accounts
         run: |
           set -e
           source .venv/bin/activate
