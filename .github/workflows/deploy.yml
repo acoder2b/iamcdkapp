@@ -117,59 +117,60 @@ jobs:
       #       echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
       #       echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
       #     done
+
       - name: Deploy to Multiple Accounts
-      run: |
-        set -e
-        source .venv/bin/activate
-    
-        # Function to assume role and set credentials
-        assume_role() {
-          local role_arn=$1
-          local session_name=$2
-    
-          # Assume the role
-          credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name $session_name || { echo "Failed to assume role: $role_arn"; exit 1; })
-          export AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
-          export AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
-          export AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
-    
-          # Debug: Print the assumed role credentials
-          echo "Assumed Role Credentials:"
-          echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
-          echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
-          echo "AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN"
-        }
-    
-        for file in iamConfigs/*.yaml; do
-          account_id=$(yq eval '.account_id' "$file")
-          role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
-          stack_name="IamRoleConfigStack-$account_id"
-          echo "Deploying stack $stack_name to account $account_id using role $role_arn"
-    
-          # Debug: Print the role ARN and account ID
-          echo "Role ARN: $role_arn"
-          echo "Account ID: $account_id"
-    
-          # Assume the role for the current account
-          assume_role $role_arn github-actions
-    
-          # Deploy the stack
-          cdk deploy $stack_name --require-approval never --context file=$file || { echo "Failed to deploy stack: $stack_name"; exit 1; }
-    
-          # Unset AWS credentials to clear them for the next iteration
-          unset AWS_ACCESS_KEY_ID
-          unset AWS_SECRET_ACCESS_KEY
-          unset AWS_SESSION_TOKEN
-    
-          # Debug: Confirm credentials are unset
-          echo "Unset AWS credentials"
-    
-          # Reset the OIDC credentials
-          echo "Reconfiguring OIDC credentials"
-          aws configure set aws_access_key_id ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
-          aws configure set aws_secret_access_key ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
-          aws configure set aws_session_token ${{ secrets.GITHUBACTIONS_SESSION_TOKEN }}
-        done
+        run: |
+          set -e
+          source .venv/bin/activate
+      
+          # Function to assume role and set credentials
+          assume_role() {
+            local role_arn=$1
+            local session_name=$2
+      
+            # Assume the role
+            credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name $session_name || { echo "Failed to assume role: $role_arn"; exit 1; })
+            export AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
+            export AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
+            export AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
+      
+            # Debug: Print the assumed role credentials
+            echo "Assumed Role Credentials:"
+            echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
+            echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
+            echo "AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN"
+          }
+      
+          for file in iamConfigs/*.yaml; do
+            account_id=$(yq eval '.account_id' "$file")
+            role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
+            stack_name="IamRoleConfigStack-$account_id"
+            echo "Deploying stack $stack_name to account $account_id using role $role_arn"
+      
+            # Debug: Print the role ARN and account ID
+            echo "Role ARN: $role_arn"
+            echo "Account ID: $account_id"
+      
+            # Assume the role for the current account
+            assume_role $role_arn github-actions
+      
+            # Deploy the stack
+            cdk deploy $stack_name --require-approval never --context file=$file || { echo "Failed to deploy stack: $stack_name"; exit 1; }
+      
+            # Unset AWS credentials to clear them for the next iteration
+            unset AWS_ACCESS_KEY_ID
+            unset AWS_SECRET_ACCESS_KEY
+            unset AWS_SESSION_TOKEN
+      
+            # Debug: Confirm credentials are unset
+            echo "Unset AWS credentials"
+      
+            # Reset the OIDC credentials
+            echo "Reconfiguring OIDC credentials"
+            aws configure set aws_access_key_id ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
+            aws configure set aws_secret_access_key ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
+            aws configure set aws_session_token ${{ secrets.GITHUBACTIONS_SESSION_TOKEN }}
+          done
       # env:
       #   IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
       #   AWS_DEFAULT_REGION: us-east-1  # Set your default region if necessary
