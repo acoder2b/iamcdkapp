@@ -45,14 +45,14 @@ jobs:
           source .venv/bin/activate
           cdk synth  
         
-      # - name: Configure AWS credentials
+      # - name: Configure AWS credentials with long term IAM user credentials
       #   uses: aws-actions/configure-aws-credentials@v2
       #   with:
       #     aws-access-key-id: ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
       #     aws-secret-access-key: ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
       #     aws-region: us-east-1
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials using OIDC Identity
         uses: aws-actions/configure-aws-credentials@v4
         with:
            role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
@@ -75,10 +75,50 @@ jobs:
 
 
 
+      # - name: Deploy to Multiple Accounts using long term credentials
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
+      #   run: |
+      #     set -e
+      #     source .venv/bin/activate
+      #     for file in iamConfigs/*.yaml; do
+      #       account_id=$(yq eval '.account_id' "$file")
+      #       role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
+      #       stack_name="IamRoleConfigStack-$account_id"
+      #       echo "Deploying stack $stack_name to account $account_id using role $role_arn"
+
+      #       # Debug: Print the role ARN and account ID
+      #       echo "Role ARN: $role_arn"
+      #       echo "Account ID: $account_id"
+
+      #       # Assume the role for the current account
+      #       credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name github-actions || { echo "Failed to assume role: $role_arn"; exit 1; })
+      #       export AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
+      #       export AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
+      #       export AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
+
+      #       # Debug: Print the assumed role credentials
+      #       echo "Assumed Role Credentials:"
+      #       echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
+      #       echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
+      #       echo "AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN"
+
+      #       # Deploy the stack
+      #       cdk deploy $stack_name --require-approval never --context file=$file || { echo "Failed to deploy stack: $stack_name"; exit 1; }
+
+      #       # Reset AWS credentials to the original GitHub Actions IAM user
+      #       export AWS_ACCESS_KEY_ID=${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
+      #       export AWS_SECRET_ACCESS_KEY=${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
+      #       unset AWS_SESSION_TOKEN
+
+      #       # Debug: Print reset credentials
+      #       echo "Reset to Original Credentials:"
+      #       echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
+      #       echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
+      #     done
+
       - name: Deploy to Multiple Accounts
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
         run: |
           set -e
           source .venv/bin/activate
@@ -107,16 +147,19 @@ jobs:
             # Deploy the stack
             cdk deploy $stack_name --require-approval never --context file=$file || { echo "Failed to deploy stack: $stack_name"; exit 1; }
 
-            # Reset AWS credentials to the original GitHub Actions IAM user
-            export AWS_ACCESS_KEY_ID=${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
-            export AWS_SECRET_ACCESS_KEY=${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
+            # Unset AWS credentials to clear them for the next iteration
+            unset AWS_ACCESS_KEY_ID
+            unset AWS_SECRET_ACCESS_KEY
             unset AWS_SESSION_TOKEN
 
-            # Debug: Print reset credentials
-            echo "Reset to Original Credentials:"
-            echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
-            echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY"
+            # Debug: Confirm credentials are unset
+            echo "Unset AWS credentials"
           done
+  # env:
+  #   IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
+  #   AWS_DEFAULT_REGION: us-east-1  # Set your default region if necessary
+
+
 
     env:
       IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
