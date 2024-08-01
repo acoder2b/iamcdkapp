@@ -84,7 +84,7 @@ jobs:
           source .venv/bin/activate
           for file in iamConfigs/*.yaml; do
             account_id=$(yq eval '.account_id' "$file")
-            role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
+            role_arn="arn:aws:iam::$account_id:role/GitHubActionsRoleforIAMUser"
             stack_name="IamRoleConfigStack-$account_id"
             echo "Deploying stack $stack_name to account $account_id using role $role_arn"
 
