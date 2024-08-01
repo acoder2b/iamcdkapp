@@ -45,21 +45,21 @@ jobs:
           source .venv/bin/activate
           cdk synth  
         
-      # - name: Configure AWS credentials with long term IAM user credentials
-      #   uses: aws-actions/configure-aws-credentials@v2
-      #   with:
-      #     aws-access-key-id: ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
-      #     aws-secret-access-key: ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
-      #     aws-region: us-east-1
-
-      - name: Configure AWS Credentials using OIDC Identity
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Configure AWS credentials with long term IAM user credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-           role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
-           role-session-name: OIDC-GitHubActionsRole
-           aws-region: us-east-1    
-           audience: sts.amazonaws.com
-           role-duration-seconds: 3600
+          aws-access-key-id: ${{ secrets.GITHUBACTIONS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.GITHUBACTIONS_SECRETS_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # - name: Configure AWS Credentials using OIDC Identity
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #      role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
+      #      role-session-name: OIDC-GitHubActionsRole
+      #      aws-region: us-east-1    
+      #      audience: sts.amazonaws.com
+      #      role-duration-seconds: 3600
           
       - name: Set Environment Variables
         id: vars
