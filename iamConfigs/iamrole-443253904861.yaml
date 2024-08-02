@@ -47,7 +47,7 @@ roles:
     - arn:aws:iam::aws:policy/AdministratorAccess
     permissionBoundary: ''
     tags: []
-    deletionPolicy: RETAIN
+    # deletionPolicy: RETAIN
 
 
 
