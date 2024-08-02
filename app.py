@@ -34,6 +34,9 @@ def load_account_info(file_path):
 
 # Create CDK App
 app = App()
+ # Disable CDK Metadata
+app.node.set_context("cdk.metadata", False)
+
 # IamRoleConfigStack(app, "IamRoleConfigStack", file_path=file_path)
 
 # Iterate over each YAML file in the directory
