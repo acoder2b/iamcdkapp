@@ -3,7 +3,7 @@ region: "us-east-1"
 
 roles:
   - roleName: test-sh-security-iamrole-breakglass
-    description: "TELUS IAM Role for BreakGlass Access"
+    description: " IAM Role for BreakGlass Access"
     sessionDuration: 28800
     iamPath: /breakglass/
     trustPolicy:
