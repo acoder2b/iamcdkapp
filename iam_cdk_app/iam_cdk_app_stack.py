@@ -1,7 +1,9 @@
 import logging
 from typing import List, Dict, Any
+from aws_cdk import CfnDeletionPolicy
 from aws_cdk import (
     aws_iam as iam,
+    CfnResource,
     Duration,
     Tags,
     Stack
@@ -38,6 +40,9 @@ class IamRoleConfigStack(Stack):
             logger.error(f"Error parsing YAML file {file_path}: {e}")
             raise
 
+
+
+# Below code commeneted to test the import operations without CDKMetadata
     def create_iam_role(self, role: Dict[str, Any]) -> None:
         """Create an IAM role based on the provided configuration."""
         trust_policy = role.get('trustPolicy', {})
@@ -79,6 +84,9 @@ class IamRoleConfigStack(Stack):
         if 'tags' in role:
             for tag in role['tags']:
                 Tags.of(iam_role).add(tag['key'], tag['value'])
+       # Set the DeletionPolicy to RETAIN if specified in the YAML configuration
+        if role.get('deletionPolicy') == 'RETAIN':
+            iam_role.node.default_child.cfn_options.deletion_policy = CfnDeletionPolicy.RETAIN
 
         logger.info(f"Created IAM role {role['roleName']}")
 

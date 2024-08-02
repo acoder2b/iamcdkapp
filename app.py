@@ -20,6 +20,7 @@ config_directory = os.getenv('IAM_ROLE_CONFIG_DIRECTORY', 'iamConfigs')
 # # Fetch environment variables
 # file_path = os.getenv('IAM_ROLE_CONFIG_FILE', 'iamConfigs/iamrole1.yaml')
 
+app = App(analytics_reporting=False) 
 
 # Function to load account ID and region from YAML file
 def load_account_info(file_path):
