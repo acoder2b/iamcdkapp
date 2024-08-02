@@ -29,27 +29,26 @@ roles:
       - key: testkey
         value: testtag1
 
+  - roleName: modernademorole
+    description: Allows Lambda functions to call AWS services on your behalf.
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Principal:
+          Service:
+          - sns.amazonaws.com
+        Action: sts:AssumeRole
+        Condition: {}
+    externalIds: []
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AdministratorAccess
+    permissionBoundary: ''
+    tags: []
+    deletionPolicy: RETAIN
 
-  # - roleName: modernademorole
-  #   description: Allows Lambda functions to call AWS services on your behalf.
-  #   sessionDuration: 3600
-  #   iamPath: /
-  #   trustPolicy:
-  #     Version: '2012-10-17'
-  #     Statement:
-  #     - Effect: Allow
-  #       Principal:
-  #         Service:
-  #         - lambda.amazonaws.com
-  #         - sns.amazonaws.com
-  #       Action: sts:AssumeRole
-  #       Condition: {}
-  #   externalIds: []
-  #   managedPolicies:
-  #   - arn:aws:iam::aws:policy/AdministratorAccess
-  #   permissionBoundary: ''
-  #   tags: []
-  #   deletionPolicy: RETAIN
 
 
   # - roleName: test-security-audit-prowler-crossaccountrole
