@@ -8,7 +8,6 @@
     - Effect: Allow
       Principal:
         Service:
-        - sns.amazonaws.com
         - lambda.amazonaws.com
       Action: sts:AssumeRole
       Condition: {}
