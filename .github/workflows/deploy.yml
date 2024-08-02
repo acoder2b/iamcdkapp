@@ -70,7 +70,7 @@ jobs:
         
       - name: Scan cdk json output
         run: snyk iac test cdk.out/*.json --sarif-file-output=snyk_${{ env.datetime }}.sarif --report
-        continue-on-error: true
+        # continue-on-error: true
    
 
 
