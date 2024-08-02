@@ -74,6 +74,7 @@ roles:
       value: dev
 
 
+
   # - roleName: test-security-audit-prowler-crossaccountrole
   #   description: "prowler cross account role"
   #   # sessionDuration: 7200
