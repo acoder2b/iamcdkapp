@@ -68,9 +68,9 @@ roles:
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
     # permissionBoundary: ''
-    tags:
-    - key: environment
-      value: dev
+    # tags:
+    # - key: environment
+    #   value: dev
 
 
 
