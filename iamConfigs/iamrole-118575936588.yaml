@@ -51,6 +51,28 @@ roles:
       value: dev
     deletionPolicy: RETAIN   
 
+  - roleName: testcrossaccountroletestmoderna
+    description: 'testcrossaccountrole'
+    sessionDuration: 3600
+    # iamPath: /
+    trustPolicy:
+      Version: '2012-10-17'
+      Statement:
+      - Effect: Allow
+        Principal:
+          AWS:
+          - arn:aws:iam::118575936588:root
+        Action: sts:AssumeRole
+        Condition: {}
+    externalIds: []
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AdministratorAccess
+    # permissionBoundary: ''
+    tags:
+    - key: environment
+      value: dev
+
+
 
   # - roleName: testcrossaccountrole123
   #   description: 'testcrossaccountrole'
