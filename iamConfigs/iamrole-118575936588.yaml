@@ -83,6 +83,7 @@ roles:
         Principal:
           Service:
           - lambda.amazonaws.com
+          - sns.amazonaws.com
         Action: sts:AssumeRole
         Condition: {}
     externalIds: []
@@ -90,7 +91,7 @@ roles:
     - arn:aws:iam::aws:policy/AdministratorAccess
     permissionBoundary: ''
     tags: []
-    deletionPolicy: RETAIN  
+    # deletionPolicy: RETAIN  
 
   # - roleName: testcrossaccountrole123
   #   description: 'testcrossaccountrole'
