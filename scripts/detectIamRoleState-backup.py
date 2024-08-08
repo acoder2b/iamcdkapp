@@ -52,8 +52,7 @@ def create_yaml_file(role_state):
             ('externalIds', []),  # Add external IDs if applicable
             ('managedPolicies', managed_policies),
             ('permissionBoundary', permission_boundary),
-            ('tags', tags),
-            ('deletionPolicy', 'RETAIN')  # Add deletionPolicy flag
+            ('tags', tags)
         ])
     ]
 

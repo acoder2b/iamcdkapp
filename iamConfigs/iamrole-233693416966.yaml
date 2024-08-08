@@ -1,0 +1,30 @@
+account_id: "118575936588"
+region: "us-east-1"
+
+roles:
+  - roleName: test-sh-security-iamrole-breakglass
+    description: "IAM Role for BreakGlass Access"
+    sessionDuration: 28800
+    iamPath: /breakglass/
+    trustPolicy:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              - sns.amazonaws.com
+            AWS:
+              - "arn:aws:iam::443253904861:role/service-role/AmazonSageMakerServiceCatalogProductsLaunchRole"
+          Action: sts:AssumeRole
+          Condition:
+            Bool:
+              aws:MultiFactorAuthPresent: "true"
+    externalIds:
+      - "1234567890"
+    managedPolicies:
+      - arn:aws:iam::aws:policy/AdministratorAccess
+    # inlinePolicies:
+    permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
+    tags:
+      - key: testkey
+        value: testtag1
