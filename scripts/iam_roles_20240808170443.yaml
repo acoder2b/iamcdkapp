@@ -78,83 +78,6 @@
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
-- roleName: aws-controltower-AdministratorExecutionRole
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        AWS:
-        - arn:aws:iam::596905249077:role/aws-controltower-AuditAdministratorRole
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies:
-  - arn:aws:iam::aws:policy/AdministratorAccess
-  permissionBoundary: ''
-  tags: []
-  deletionPolicy: RETAIN
-- roleName: aws-controltower-ConfigRecorderRole
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        Service:
-        - config.amazonaws.com
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies:
-  - arn:aws:iam::aws:policy/ReadOnlyAccess
-  - arn:aws:iam::aws:policy/service-role/AWS_ConfigRole
-  permissionBoundary: ''
-  tags: []
-  deletionPolicy: RETAIN
-- roleName: aws-controltower-ForwardSnsNotificationRole
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        Service:
-        - lambda.amazonaws.com
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies:
-  - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-  permissionBoundary: ''
-  tags: []
-  deletionPolicy: RETAIN
-- roleName: aws-controltower-ReadOnlyExecutionRole
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        AWS:
-        - arn:aws:iam::596905249077:role/aws-controltower-AuditReadOnlyRole
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies:
-  - arn:aws:iam::aws:policy/ReadOnlyAccess
-  permissionBoundary: ''
-  tags: []
-  deletionPolicy: RETAIN
 - roleName: AWS-QuickSetup-EnableCRecording-62d8q_ap-northeast-1
   description: ''
   sessionDuration: 3600
@@ -443,30 +366,6 @@
   - key: QuickSetupID
     value: 62d8q
   deletionPolicy: RETAIN
-- roleName: AWS-QuickSetup-EnableCRecording-62d8q_us-east-1
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        Service:
-        - ssm.amazonaws.com
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies: []
-  permissionBoundary: ''
-  tags:
-  - key: QuickSetupVersion
-    value: '1.3'
-  - key: QuickSetupType
-    value: Config Recording
-  - key: QuickSetupID
-    value: 62d8q
-  deletionPolicy: RETAIN
 - roleName: AWS-QuickSetup-EnableCRecording-62d8q_us-east-2
   description: ''
   sessionDuration: 3600
@@ -624,10 +523,10 @@
     Statement:
     - Effect: Allow
       Principal:
-        AWS:
-        - arn:aws:iam::877377650033:root
         Service:
         - palisade.amazonaws.com
+        AWS:
+        - arn:aws:iam::877377650033:root
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -732,10 +631,10 @@
     Statement:
     - Effect: Allow
       Principal:
-        AWS:
-        - arn:aws:iam::054693081941:root
         Service:
         - codeguru-profiler-publisher.aws.internal
+        AWS:
+        - arn:aws:iam::054693081941:root
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -887,71 +786,6 @@
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
-- roleName: GitHubActionsRole
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        AWS:
-        - arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies:
-  - arn:aws:iam::aws:policy/AdministratorAccess
-  permissionBoundary: ''
-  tags:
-  - key: AWS_Solutions
-    value: CustomControlTowerStackSet
-  deletionPolicy: RETAIN
-- roleName: GitHubActionsRoleforIAMUser
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        AWS:
-        - arn:aws:iam::909180469036:user/GitHubActions-User
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies:
-  - arn:aws:iam::aws:policy/AdministratorAccess
-  permissionBoundary: ''
-  tags:
-  - key: AWS_Solutions
-    value: CustomControlTowerStackSet
-  deletionPolicy: RETAIN
-- roleName: IAMConfigRoleforAutomation
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        AWS:
-        - arn:aws:iam::909180469036:root
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies:
-  - arn:aws:iam::aws:policy/AdministratorAccess
-  permissionBoundary: ''
-  tags:
-  - key: AWS_Solutions
-    value: CustomControlTowerStackSet
-  - key: managedBy
-    value: Platform
-  deletionPolicy: RETAIN
 - roleName: IibsAdminAccess-DO-NOT-DELETE
   description: ''
   sessionDuration: 3600
@@ -962,8 +796,8 @@
     - Effect: Allow
       Principal:
         AWS:
-        - arn:aws:iam::621463273587:role/BrokerService-Prod
         - arn:aws:iam::048851363556:role/BrokerService-Prod
+        - arn:aws:iam::621463273587:role/BrokerService-Prod
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -971,8 +805,8 @@
     - Effect: Allow
       Principal:
         AWS:
-        - arn:aws:iam::621463273587:role/BrokerService-Prod
         - arn:aws:iam::048851363556:role/BrokerService-Prod
+        - arn:aws:iam::621463273587:role/BrokerService-Prod
       Action:
       - sts:SetSourceIdentity
       - sts:TagSession
@@ -1113,12 +947,12 @@
     Statement:
     - Effect: Allow
       Principal:
-        Service:
-        - depndency-insights-prod.aws.internal
         AWS:
         - arn:aws:iam::611447770337:root
-        - arn:aws:iam::089414261608:root
         - arn:aws:iam::796293252539:root
+        - arn:aws:iam::089414261608:root
+        Service:
+        - depndency-insights-prod.aws.internal
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -1143,24 +977,6 @@
       Condition:
         StringEquals:
           sts:ExternalId: AWSComputeOptimizerZVF3wmCzeLP1
-  externalIds: []
-  managedPolicies: []
-  permissionBoundary: ''
-  tags: []
-  deletionPolicy: RETAIN
-- roleName: Name_of_your_Role
-  description: ''
-  sessionDuration: 3600
-  iamPath: /security/
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        Service:
-        - lambda.amazonaws.com
-      Action: sts:AssumeRole
-      Condition: {}
   externalIds: []
   managedPolicies: []
   permissionBoundary: ''
@@ -1215,8 +1031,8 @@
     - Effect: Allow
       Principal:
         Service:
-        - prod.sentry.orthanc.epoxy.aws.internal
         - prod.stronghold.orthanc.epoxy.aws.internal
+        - prod.sentry.orthanc.epoxy.aws.internal
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -1237,11 +1053,11 @@
     - Effect: Allow
       Principal:
         Service:
-        - prod.rcc.aws.internal
-        - ap-east-1.prod.rcc.aws.internal
         - af-south-1.prod.rcc.aws.internal
-        - me-south-1.prod.rcc.aws.internal
         - eu-south-1.prod.rcc.aws.internal
+        - ap-east-1.prod.rcc.aws.internal
+        - prod.rcc.aws.internal
+        - me-south-1.prod.rcc.aws.internal
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -1251,26 +1067,6 @@
   - arn:aws:iam::233693416966:policy/ResourceConfigurationCollectorPolicy
   permissionBoundary: ''
   tags: []
-  deletionPolicy: RETAIN
-- roleName: sec-IAMPasswordLambdaRole
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        Service:
-        - lambda.amazonaws.com
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies: []
-  permissionBoundary: ''
-  tags:
-  - key: AWS_Solutions
-    value: CustomControlTowerStackSet
   deletionPolicy: RETAIN
 - roleName: ShadowTrooperRole
   description: ''
@@ -1331,26 +1127,6 @@
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
-- roleName: tel-sh-security-iam-role-for-lambda
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        Service:
-        - lambda.amazonaws.com
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies: []
-  permissionBoundary: ''
-  tags:
-  - key: AWS_Solutions
-    value: CustomControlTowerStackSet
-  deletionPolicy: RETAIN
 - roleName: TELUS-EventBridge-Detective-Controls-ca-central-1
   description: ''
   sessionDuration: 3600
@@ -1368,44 +1144,6 @@
   managedPolicies: []
   permissionBoundary: ''
   tags: []
-  deletionPolicy: RETAIN
-- roleName: TELUS-EventBridge-Detective-Controls-us-east-1
-  description: ''
-  sessionDuration: 3600
-  iamPath: /security/
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        Service:
-        - events.amazonaws.com
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies: []
-  permissionBoundary: ''
-  tags: []
-  deletionPolicy: RETAIN
-- roleName: TenantIamAcmRole
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        AWS:
-        - arn:aws:iam::909180469036:role/AcmProvisioningAppStack-ACMProvisonFunctionServiceR-WsKGMZaF5IO6
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies: []
-  permissionBoundary: ''
-  tags:
-  - key: AWS_Solutions
-    value: CustomControlTowerStackSet
   deletionPolicy: RETAIN
 - roleName: test-role-demo-sprint14
   description: ''

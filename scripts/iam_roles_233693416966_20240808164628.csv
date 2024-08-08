@@ -68,6 +68,7 @@ TenantIamAcmRole,arn:aws:iam::233693416966:role/TenantIamAcmRole
 test-role-demo-sprint14,arn:aws:iam::233693416966:role/iot/test-role-demo-sprint14
 test-role-demo-sprint14-1,arn:aws:iam::233693416966:role/iot/test-role-demo-sprint14-1
 test-role-demo-sprint14-3,arn:aws:iam::233693416966:role/iot/test-role-demo-sprint14-3
+test-sh-security-iamrole-breakglass,arn:aws:iam::233693416966:role/breakglass/test-sh-security-iamrole-breakglass
 testcrossaccountrole,arn:aws:iam::233693416966:role/testcrossaccountrole
 TestIAMRole1,arn:aws:iam::233693416966:role/TestIAMRole1
 testrole,arn:aws:iam::233693416966:role/testrole

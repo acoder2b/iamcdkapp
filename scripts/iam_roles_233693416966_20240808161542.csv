@@ -30,16 +30,6 @@ awslogs.prod.kelex.molecule.toppatterns,arn:aws:iam::233693416966:role/awslogs.p
 AwsSecurityAudit,arn:aws:iam::233693416966:role/AwsSecurityAudit
 AwsSecurityNacundaAudit,arn:aws:iam::233693416966:role/AwsSecurityNacundaAudit
 AWSVAPTAudit,arn:aws:iam::233693416966:role/AWSVAPTAudit
-cdk-hnb659fds-cfn-exec-role-233693416966-ca-central-1,arn:aws:iam::233693416966:role/cdk-hnb659fds-cfn-exec-role-233693416966-ca-central-1
-cdk-hnb659fds-cfn-exec-role-233693416966-us-east-1,arn:aws:iam::233693416966:role/cdk-hnb659fds-cfn-exec-role-233693416966-us-east-1
-cdk-hnb659fds-deploy-role-233693416966-ca-central-1,arn:aws:iam::233693416966:role/cdk-hnb659fds-deploy-role-233693416966-ca-central-1
-cdk-hnb659fds-deploy-role-233693416966-us-east-1,arn:aws:iam::233693416966:role/cdk-hnb659fds-deploy-role-233693416966-us-east-1
-cdk-hnb659fds-file-publishing-role-233693416966-ca-central-1,arn:aws:iam::233693416966:role/cdk-hnb659fds-file-publishing-role-233693416966-ca-central-1
-cdk-hnb659fds-file-publishing-role-233693416966-us-east-1,arn:aws:iam::233693416966:role/cdk-hnb659fds-file-publishing-role-233693416966-us-east-1
-cdk-hnb659fds-image-publishing-role-233693416966-ca-central-1,arn:aws:iam::233693416966:role/cdk-hnb659fds-image-publishing-role-233693416966-ca-central-1
-cdk-hnb659fds-image-publishing-role-233693416966-us-east-1,arn:aws:iam::233693416966:role/cdk-hnb659fds-image-publishing-role-233693416966-us-east-1
-cdk-hnb659fds-lookup-role-233693416966-ca-central-1,arn:aws:iam::233693416966:role/cdk-hnb659fds-lookup-role-233693416966-ca-central-1
-cdk-hnb659fds-lookup-role-233693416966-us-east-1,arn:aws:iam::233693416966:role/cdk-hnb659fds-lookup-role-233693416966-us-east-1
 CloudSecAuditRole,arn:aws:iam::233693416966:role/CloudSecAuditRole
 CloudSeerTrustedServiceRole,arn:aws:iam::233693416966:role/CloudSeerTrustedServiceRole
 CodeGuruProfilerForwardToAmazonProfiler,arn:aws:iam::233693416966:role/CodeGuruProfilerForwardToAmazonProfiler
@@ -78,6 +68,7 @@ TenantIamAcmRole,arn:aws:iam::233693416966:role/TenantIamAcmRole
 test-role-demo-sprint14,arn:aws:iam::233693416966:role/iot/test-role-demo-sprint14
 test-role-demo-sprint14-1,arn:aws:iam::233693416966:role/iot/test-role-demo-sprint14-1
 test-role-demo-sprint14-3,arn:aws:iam::233693416966:role/iot/test-role-demo-sprint14-3
+test-sh-security-iamrole-breakglass,arn:aws:iam::233693416966:role/breakglass/test-sh-security-iamrole-breakglass
 testcrossaccountrole,arn:aws:iam::233693416966:role/testcrossaccountrole
 TestIAMRole1,arn:aws:iam::233693416966:role/TestIAMRole1
 testrole,arn:aws:iam::233693416966:role/testrole
