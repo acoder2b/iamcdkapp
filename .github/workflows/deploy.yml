@@ -153,8 +153,8 @@ jobs:
             #assume_target_role $role_arn github-actions
 
             # Deploy the stack
-            AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=TARGET_AWS_SESSION_TOKEN aws sts get-caller-identity
-            AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=TARGET_AWS_SESSION_TOKEN cdk deploy $stack_name --require-approval never --context file=$file || { echo "Failed to deploy stack: $stack_name"; exit 1; }
+            AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN aws sts get-caller-identity
+            AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN cdk deploy $stack_name --require-approval never --context file=$file || { echo "Failed to deploy stack: $stack_name"; exit 1; }
 
 
             # Unset AWS credentials to clear them for the next iteration
