@@ -39,11 +39,12 @@ app.node.set_context("cdk.metadata", False)
 
 # IamRoleConfigStack(app, "IamRoleConfigStack", file_path=file_path)
 
-# Iterate over each YAML file in the directory
+# # Iterate over each YAML file in the directory
 for file_path in glob.glob(f"{config_directory}/*.yaml"):
     account_id, region = load_account_info(file_path)
     env = Environment(account=account_id, region=region)
     stack_name = f"IamRoleConfigStack-{account_id}"
+    print("Creating stack for : " + file_path)
     IamRoleConfigStack(app, stack_name, env=env, file_path=file_path)
 
 
