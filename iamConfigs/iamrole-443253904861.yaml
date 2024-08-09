@@ -2,8 +2,8 @@ account_id: "443253904861"
 region: "us-east-1"
 
 roles:
-  - roleName: test-sh-security-iamrole-breakglass
-    description: " IAM Role for BreakGlass Access"
+  - roleName: test-sh-security-iamrole-breakglass-DISABLED
+    description: " IAM Role for BreakGlass Access DISABLED"
     sessionDuration: 28800
     iamPath: /breakglass/
     trustPolicy:
