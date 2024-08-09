@@ -118,7 +118,7 @@ jobs:
 
       - name: Deploy to Multiple Accounts
         run: |
-          set -ex
+          set -e
           source .venv/bin/activate
 
           # Function to assume target account role
