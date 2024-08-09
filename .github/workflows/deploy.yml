@@ -150,7 +150,7 @@ jobs:
             echo "Account ID: $account_id"
 
             # Assume the role for the current target account
-            #assume_target_role $role_arn github-actions
+            assume_target_role $role_arn github-actions
 
             # Deploy the stack
             AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN aws sts get-caller-identity
