@@ -53,6 +53,7 @@ jobs:
           for file in $files; do
             echo "{ \"account_id\": \"$file\" }," >> matrix.json
           done
+          sed -i '$ s/,$//' matrix.json # Remove the last comma
           echo "]}" >> matrix.json
           cat matrix.json
         shell: bash
@@ -60,12 +61,16 @@ jobs:
       - name: Save Matrix Configuration
         id: save_matrix
         run: echo "matrix=$(cat matrix.json)" >> $GITHUB_ENV
+        shell: bash
+        continue-on-error: false
+        env:
+          matrix: ${{ steps.generate_matrix.outputs.matrix }}
 
   deploy:
     needs: synthesize
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJson(needs.save_matrix.outputs.matrix).include }}
+      matrix: ${{ fromJson(needs.generate_matrix.outputs.matrix).include }}
 
     steps:
       - name: Checkout code
