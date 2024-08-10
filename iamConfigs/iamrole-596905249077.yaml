@@ -2,7 +2,7 @@ account_id: "596905249077"
 region: "us-east-1"
 
 roles:
-  - roleName: test-sh-security-iamrole-breakglass
+  - roleName: test-sh-security-iamrole-breakglassTEST
     description: "TELUS IAM Role for BreakGlass Access"
     sessionDuration: 28800
     iamPath: /breakglass/
