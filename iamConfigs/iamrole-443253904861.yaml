@@ -47,8 +47,6 @@ roles:
           Condition:
             Bool:
               aws:MultiFactorAuthPresent: "true"
-    externalIds:
-      - "1234567890"
     managedPolicies:
       - arn:aws:iam::aws:policy/AdministratorAccess
     # inlinePolicies:
@@ -57,6 +55,30 @@ roles:
       - key: testkey
         value: testtag1
 
+
+  - roleName: test-sh-security-iamrole-breakglass123-TEST
+    description: " IAM Role for BreakGlass Access"
+    sessionDuration: 28800
+    iamPath: /breakglass/
+    trustPolicy:
+      Version: '2012-10-17'
+      Statement:
+        - Effect: Allow
+          Action: 'sts:AssumeRole'
+          Principal:
+            AWS: '443253904861'
+          Condition:
+            StringEquals:
+              'sts:ExternalId': '13214214234'
+            Bool:
+              'aws:MultiFactorAuthPresent': true
+    managedPolicies:
+      - arn:aws:iam::aws:policy/AdministratorAccess
+    # inlinePolicies:
+    permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
+    tags:
+      - key: testkey
+        value: testtag1
 
   # - roleName: test-security-audit-prowler-crossaccountrole
   #   description: "prowler cross account role"
