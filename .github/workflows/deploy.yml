@@ -49,28 +49,25 @@ jobs:
         id: generate_matrix
         run: |
           files=$(ls iamConfigs/*.yaml | xargs -n 1 basename | sed 's/iamrole-//;s/.yaml//')
-          echo "{ \"include\": [" > matrix.json
+          echo "{\"include\": [" > matrix.json
           for file in $files; do
-            echo "{ \"account_id\": \"$file\" }," >> matrix.json
+            echo "{\"account_id\": \"$file\"}," >> matrix.json
           done
           sed -i '$ s/,$//' matrix.json # Remove the last comma
           echo "]}" >> matrix.json
           cat matrix.json
         shell: bash
-        continue-on-error: false
-      - name: Save Matrix Configuration
-        id: save_matrix
-        run: echo "matrix=$(cat matrix.json)" >> $GITHUB_ENV
+
+      - name: Set Matrix Output
+        id: set_matrix
+        run: echo "::set-output name=matrix::$(cat matrix.json)"
         shell: bash
-        continue-on-error: false
-        env:
-          matrix: ${{ steps.generate_matrix.outputs.matrix }}
 
   deploy:
     needs: synthesize
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJson(needs.generate_matrix.outputs.matrix).include }}
+      matrix: ${{ fromJson(needs.synthesize.outputs.matrix).include }}
 
     steps:
       - name: Checkout code
