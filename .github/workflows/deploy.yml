@@ -45,18 +45,27 @@ jobs:
           source .venv/bin/activate
           cdk synth
 
-      - name: Save list of YAML files
-        id: yaml_files
+      - name: Generate Matrix Configuration
+        id: generate_matrix
         run: |
-          ls iamConfigs/*.yaml | xargs -n 1 basename | sed 's/iamrole-//;s/.yaml//' > yaml_files.txt
-          echo "yaml_files=$(cat yaml_files.txt)" >> $GITHUB_ENV
+          files=$(ls iamConfigs/*.yaml | xargs -n 1 basename | sed 's/iamrole-//;s/.yaml//')
+          echo "{ \"include\": [" > matrix.json
+          for file in $files; do
+            echo "{ \"account_id\": \"$file\" }," >> matrix.json
+          done
+          echo "]}" >> matrix.json
+          cat matrix.json
+        shell: bash
+        continue-on-error: false
+      - name: Save Matrix Configuration
+        id: save_matrix
+        run: echo "matrix=$(cat matrix.json)" >> $GITHUB_ENV
 
   deploy:
     needs: synthesize
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        account_id: ${{ fromJson(env.yaml_files) }}
+      matrix: ${{ fromJson(needs.save_matrix.outputs.matrix).include }}
 
     steps:
       - name: Checkout code
