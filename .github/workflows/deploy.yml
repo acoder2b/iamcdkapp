@@ -59,15 +59,18 @@ jobs:
         shell: bash
 
       - name: Set Matrix Output
-        id: set_matrix
-        run: echo "::set-output name=matrix::$(cat matrix.json)"
+        id: set_output
+        run: echo "matrix=$(cat matrix.json)" >> $GITHUB_ENV
         shell: bash
+        env:
+          matrix: ${{ steps.generate_matrix.outputs.matrix }}
+        continue-on-error: false
 
   deploy:
     needs: synthesize
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJson(needs.synthesize.outputs.matrix).include }}
+      matrix: ${{ fromJson(needs.synthesize.steps.set_output.outputs.matrix).include }}
 
     steps:
       - name: Checkout code
