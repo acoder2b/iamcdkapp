@@ -57,7 +57,7 @@ roles:
 
 
   - roleName: test-sh-security-iamrole-breakglass123-TEST
-    description: " IAM Role for BreakGlass Access"
+    description: "IAM Role for BreakGlass Access"
     sessionDuration: 28800
     iamPath: /breakglass/
     trustPolicy:
@@ -74,11 +74,20 @@ roles:
               'aws:MultiFactorAuthPresent': true
     managedPolicies:
       - arn:aws:iam::aws:policy/AdministratorAccess
-    # inlinePolicies:
+    inlinePolicies:
+      s3ReadOnlyPolicy:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: 
+              - 's3:GetObject'
+            Resource: 
+              - 'arn:aws:s3:::example-bucket/*'
     permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
     tags:
       - key: testkey
         value: testtag1
+
 
   # - roleName: test-security-audit-prowler-crossaccountrole
   #   description: "prowler cross account role"
