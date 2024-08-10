@@ -54,7 +54,7 @@ def create_yaml_file(roles_data):
                         ]) for statement in trust_policy.get('Statement', [])
                     ])
                 ])),
-                ('externalIds', []),  # Add external IDs if applicable
+                # ('externalIds', []),  # Add external IDs if applicable
                 ('managedPolicies', managed_policies),
                 ('permissionBoundary', permission_boundary),
                 ('tags', tags),

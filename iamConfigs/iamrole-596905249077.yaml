@@ -71,7 +71,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: AccessAnalyzerTrustedServicePlvZtJWhPMmF
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -91,7 +91,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: IsengardExternalIdM9xkw0RCJXnA
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
     permissionBoundary: ''
@@ -112,7 +112,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: InspectorEnablementRoleW5FzNeVqn3DG
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -130,7 +130,7 @@ roles:
           - ssm.amazonaws.com
         Action: sts:AssumeRole
         Condition: {}
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags:
@@ -154,7 +154,7 @@ roles:
           - ssm.amazonaws.com
         Action: sts:AssumeRole
         Condition: {}
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags:
@@ -178,7 +178,7 @@ roles:
           - cloudformation.amazonaws.com
         Action: sts:AssumeRole
         Condition: {}
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -196,7 +196,7 @@ roles:
           - arn:aws:iam::596905249077:role/AWS-QuickSetup-StackSet-Local-AdministrationRole
         Action: sts:AssumeRole
         Condition: {}
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
     permissionBoundary: ''
@@ -215,7 +215,7 @@ roles:
           - arn:aws:iam::909180469036:root
         Action: sts:AssumeRole
         Condition: {}
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
     permissionBoundary: ''
@@ -236,7 +236,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: KelexDataFetcherFIrdIHzOjodp
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -258,7 +258,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: AwsSecurityAuditaNm7hTAkRPhL
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/SecurityAudit
     permissionBoundary: ''
@@ -279,7 +279,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: AwsSecurityNacundaAuditS3A30D5SDB4W
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -299,7 +299,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: AWSVAPTAudit7RqogrQauvEN
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/SecurityAudit
     permissionBoundary: ''
@@ -320,7 +320,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: CloudSecAuditRoleP0Z6SAu2pgdh
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/SecurityAudit
     permissionBoundary: ''
@@ -344,7 +344,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: CloudSeerTrustedServiceRole8Ylo32SVou85
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -366,7 +366,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: CodeGuruProfilerPublisher0zqxZveGUb1k
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -386,7 +386,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: DiscoveryAnalyzerTrustedService-DO-NOT-DELETEiwQ4sSmrA4J6
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -408,7 +408,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: EC2CapacityReservationServicegqMOyScLaoUG
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::596905249077:policy/EC2CapacityReservationService
     permissionBoundary: ''
@@ -429,7 +429,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: GatedGardenAuditjaama8Inq691
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -449,7 +449,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: GatedGardenInternalAuditZ9SGAXxGJ3O1
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -479,7 +479,7 @@ roles:
         - sts:SetSourceIdentity
         - sts:TagSession
         Condition: {}
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -499,7 +499,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: IMDSv2-automigratormnotkhntUq3A
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -519,7 +519,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: InternalAuditInternal9MVWMFfQSUUP
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/SecurityAudit
     permissionBoundary: ''
@@ -540,7 +540,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: IsengardAuditorExternalIdflxOurZD3xOR
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -560,7 +560,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: IsengardCloudTrailRoleHZiAkkGxPUqP
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -580,7 +580,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: IsengardConfigRoleiRl5uMEn3ArK
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::596905249077:policy/ConfigAccessPolicy
     permissionBoundary: ''
@@ -601,7 +601,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: IsengardExternalIdYPaGPDJ7SWxB
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -625,7 +625,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: DependencyAssuranceIamAnalyzerTrustedService1Qbf3Crkoh2d
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -645,7 +645,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: AWSComputeOptimizerCbJ1ZBl6YM7I
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -665,7 +665,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: NawsApplicationMetrics-DO-NOT-DELETEDc9wEUdGzLhs
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -683,7 +683,7 @@ roles:
           - arn:aws:iam::596905249077:root
         Action: sts:AssumeRole
         Condition: {}
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/AWSOrganizationsReadOnlyAccess
     permissionBoundary: ''
@@ -705,7 +705,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: OrthancRoleL2cAXo4tbVPm
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/AmazonGuardDutyFullAccess
     permissionBoundary: ''
@@ -730,7 +730,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: ResourceConfigurationCollectorOKumpWJOhGNj
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::596905249077:policy/ResourceConfigurationCollectorPolicy
     permissionBoundary: ''
@@ -751,7 +751,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: ShadowTrooperRoleK5Zx4vc8yhN2
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -769,7 +769,7 @@ roles:
           - arn:aws:iam::909180469036:role/aws-service-role/stacksets.cloudformation.amazonaws.com/AWSServiceRoleForCloudFormationStackSetsOrgAdmin
         Action: sts:AssumeRole
         Condition: {}
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
     permissionBoundary: ''
@@ -790,7 +790,7 @@ roles:
           - glue.amazonaws.com
         Action: sts:AssumeRole
         Condition: {}
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
     - arn:aws:iam::aws:policy/PowerUserAccess
@@ -814,7 +814,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: TurtleRoleManagementlx2gWq8WENVb
-    externalIds: []
+
     managedPolicies: []
     permissionBoundary: ''
     tags: []
@@ -834,7 +834,7 @@ roles:
         Condition:
           StringEquals:
             sts:ExternalId: XenaAuditorRolemMaNh48wjc0F
-    externalIds: []
+
     managedPolicies:
     - arn:aws:iam::aws:policy/SecurityAudit
     permissionBoundary: ''

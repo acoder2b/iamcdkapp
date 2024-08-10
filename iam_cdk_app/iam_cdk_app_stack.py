@@ -3,9 +3,6 @@ from typing import List, Dict, Any
 from aws_cdk import CfnDeletionPolicy
 from aws_cdk import (
     aws_iam as iam,
-    CfnResource,
-    Duration,
-    Tags,
     Stack
 )
 from constructs import Construct
@@ -40,120 +37,45 @@ class IamRoleConfigStack(Stack):
             logger.error(f"Error parsing YAML file {file_path}: {e}")
             raise
 
-
-
-# Below code commeneted to test the import operations without CDKMetadata
     def create_iam_role(self, role: Dict[str, Any]) -> None:
         """Create an IAM role based on the provided configuration."""
         trust_policy = role.get('trustPolicy', {})
 
-        if 'Statement' not in trust_policy or not isinstance(trust_policy['Statement'], list):
-            raise ValueError(f"Statement should be a list for role {role['roleName']}")
-
-        assume_role_policy_statements = self.create_assume_role_policy_statements(trust_policy, role.get('externalIds', []))
-        assume_role_policy_doc = iam.PolicyDocument(statements=assume_role_policy_statements)
-
-        managed_policies = [
-            iam.ManagedPolicy.from_managed_policy_arn(self, f"ManagedPolicy{role['roleName']}{mp}", mp)
-            for mp in role.get('managedPolicies', [])
+        # Handle inline policies
+        inline_policies = [
+            iam.CfnRole.PolicyProperty(
+                policy_name=name,
+                policy_document=doc
+            )
+            for name, doc in self.create_inline_policies(role.get('inlinePolicies', [])).items()
         ]
 
-        inline_policies = self.create_inline_policies(role.get('inlinePolicies', []))
-
-        permissions_boundary = None
-        if 'permissionBoundary' in role:
-            permissions_boundary = iam.ManagedPolicy.from_managed_policy_arn(
-                self, f"BoundaryPolicy{role['roleName']}", role['permissionBoundary']
-            )
-
-        # Flatten the list of principals for the CompositePrincipal
-        principals = [principal for stmt in assume_role_policy_statements for principal in stmt.principals]
-
-        iam_role = iam.Role(
+        # Use CfnRole to directly inject the trust policy JSON
+        iam_role = iam.CfnRole(
             self, role['roleName'],
-            assumed_by=iam.CompositePrincipal(*principals),
-            managed_policies=managed_policies,
-            inline_policies=inline_policies if inline_policies else None,
+            assume_role_policy_document=trust_policy,
+            managed_policy_arns=role.get('managedPolicies', []),
             role_name=role['roleName'],
             description=role.get('description'),
-            max_session_duration=Duration.seconds(role.get('sessionDuration', 3600)),
+            max_session_duration=role.get('sessionDuration', 3600),
             path=role.get('iamPath'),
-            permissions_boundary=permissions_boundary
+            permissions_boundary=role.get('permissionBoundary'),
+            policies=inline_policies,
+            tags=[{"key": tag['key'], "value": tag['value']} for tag in role.get('tags', [])]
         )
 
-        if 'tags' in role:
-            for tag in role['tags']:
-                Tags.of(iam_role).add(tag['key'], tag['value'])
-       # Set the DeletionPolicy to RETAIN if specified in the YAML configuration
+        # Set the DeletionPolicy to RETAIN if specified in the YAML configuration
         if role.get('deletionPolicy') == 'RETAIN':
-            iam_role.node.default_child.cfn_options.deletion_policy = CfnDeletionPolicy.RETAIN
+            iam_role.cfn_options.deletion_policy = CfnDeletionPolicy.RETAIN
 
-        logger.info(f"Created IAM role {role['roleName']}")
+        logger.info(f"Created IAM role {role['roleName']} with direct JSON trust policy.")
 
-    def create_assume_role_policy_statements(self, trust_policy: Dict[str, Any], external_ids: List[str]) -> List[iam.PolicyStatement]:
-        """Create assume role policy statements from the trust policy configuration."""
-        assume_role_policy_statements = []
-
-        for statement in trust_policy['Statement']:
-            principals = self.get_principals_from_statement(statement)
-            conditions = statement.get('Condition', {})
-
-            if external_ids:
-                if 'StringEquals' not in conditions:
-                    conditions['StringEquals'] = {}
-                conditions['StringEquals']['sts:ExternalId'] = external_ids
-
-            assume_role_policy_statement = iam.PolicyStatement(
-                actions=["sts:AssumeRole"],
-                principals=principals,
-                conditions=conditions or None,
-                effect=iam.Effect.ALLOW
-            )
-
-            assume_role_policy_statements.append(assume_role_policy_statement)
-
-        return assume_role_policy_statements
-
-    def get_principals_from_statement(self, statement: Dict[str, Any]) -> List[iam.PrincipalBase]:
-        """Extract principals from the statement."""
-        principals = []
-        if 'Principal' in statement:
-            principal_section = statement['Principal']
-
-            if 'Service' in principal_section:
-                service_principals = principal_section['Service']
-                if isinstance(service_principals, str):
-                    service_principals = [service_principals]
-                principals.extend([iam.ServicePrincipal(sp) for sp in service_principals])
-
-            if 'AWS' in principal_section:
-                aws_principals = principal_section['AWS']
-                if isinstance(aws_principals, (str, int)):
-                    aws_principals = [str(aws_principals)]
-                else:
-                    aws_principals = [str(arn) for arn in aws_principals]
-                for arn in aws_principals:
-                    if arn.isdigit():  # Check if the string is a digit (account number)
-                        principals.append(iam.ArnPrincipal(f"arn:aws:iam::{arn}:root"))
-                    else:
-                        principals.append(iam.ArnPrincipal(arn))
-
-        return principals
-
-    def create_inline_policies(self, inline_policies_config: List[Dict[str, Any]]) -> Dict[str, iam.PolicyDocument]:
+    def create_inline_policies(self, inline_policies_config: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Create inline policies from the configuration."""
         inline_policies = {}
 
         for policy in inline_policies_config:
             if 'policyName' in policy and 'policyDocument' in policy:
-                statements = [
-                    iam.PolicyStatement(
-                        actions=stmt['Action'] if isinstance(stmt['Action'], list) else [stmt['Action']],
-                        resources=stmt['Resource'] if isinstance(stmt['Resource'], list) else [stmt['Resource']],
-                        effect=iam.Effect.ALLOW,
-                    ) for stmt in policy['policyDocument']['Statement']
-                    if 'Action' in stmt and 'Resource' in stmt and 'Principal' not in stmt
-                ]
-                inline_policies[policy['policyName']] = iam.PolicyDocument(statements=statements)
+                inline_policies[policy['policyName']] = policy['policyDocument']
 
         return inline_policies
