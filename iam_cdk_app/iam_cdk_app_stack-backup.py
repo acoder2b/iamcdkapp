@@ -12,16 +12,30 @@ import yaml
 logger = logging.getLogger(__name__)
 
 class IamRoleConfigStack(Stack):
-    def __init__(self, scope: Construct, id: str, file_path: str, account_id: str, config_data: Dict[str, Any], **kwargs):
+    def __init__(self, scope: Construct, id: str, file_path: str, **kwargs):
         super().__init__(scope, id, **kwargs)
 
-        roles = config_data.get('roles', [])
+        config = self.load_yaml_config(file_path)
+        roles = config.get('roles', [])
         if not isinstance(roles, list):
             roles = []
 
         for role in roles:
-            role_name = role.get('roleName')  # Use the role name directly from the YAML file
             self.create_iam_role(role)
+
+    def load_yaml_config(self, file_path: str) -> Dict[str, Any]:
+        """Load and parse the YAML configuration file."""
+        try:
+            with open(file_path, 'r') as file:
+                config = yaml.safe_load(file)
+                logger.info(f"Loaded configuration from {file_path}")
+                return config
+        except FileNotFoundError:
+            logger.error(f"Configuration file {file_path} not found.")
+            raise
+        except yaml.YAMLError as e:
+            logger.error(f"Error parsing YAML file {file_path}: {e}")
+            raise
 
     def create_iam_role(self, role: Dict[str, Any]) -> None:
         """Create an IAM role based on the provided configuration."""

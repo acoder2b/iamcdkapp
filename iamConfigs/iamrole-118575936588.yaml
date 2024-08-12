@@ -1,4 +1,5 @@
-account_id: "118575936588"
+account_id: 
+  - "118575936588"
 region: "us-east-1"
 
 roles:
