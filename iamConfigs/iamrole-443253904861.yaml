@@ -19,8 +19,6 @@ roles:
           Condition:
             Bool:
               aws:MultiFactorAuthPresent: "true"
-    externalIds:
-      - "1234567890"
     managedPolicies:
       - arn:aws:iam::aws:policy/AdministratorAccess
     # inlinePolicies:
