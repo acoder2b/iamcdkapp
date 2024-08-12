@@ -96,11 +96,17 @@ jobs:
             echo "AWS_SESSION_TOKEN: $TARGET_AWS_SESSION_TOKEN"
           }
 
+          # for file in iamConfigs/*.yaml; do
+          #   account_id=$(yq eval '.account_id' "$file")
+          #   role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
+          #   stack_name="IamRoleConfigStack-$account_id"
+          #   echo "Deploying stack $stack_name to account $account_id using role $role_arn"
+
           for file in iamConfigs/*.yaml; do
-            account_id=$(yq eval '.account_id' "$file")
-            role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
-            stack_name="IamRoleConfigStack-$account_id"
-            echo "Deploying stack $stack_name to account $account_id using role $role_arn"
+            for account_id in $(yq eval '.account_id | .[]' "$file"); do
+              role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
+              stack_name="IamRoleConfigStack-$account_id"
+              echo "Deploying stack $stack_name to account $account_id using role $role_arn"
 
             # Debug: Print the role ARN and account ID
             echo "Role ARN: $role_arn"
