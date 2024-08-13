@@ -54,11 +54,11 @@ for file_path in glob.glob(f"{config_directory}/*.yaml"):
         
         if account_id in combined_configs:
             combined_configs[account_id]['roles'] = combine_roles_for_account(combined_configs[account_id]['roles'], roles)
-            print(f"combine_roles {account_id} role_count={len(roles)} file_path={file_path} total_role_count={len(combined_configs[account_id]['roles'])}")
+            #print(f"combine_roles {account_id} role_count={len(roles)} file_path={file_path} total_role_count={len(combined_configs[account_id]['roles'])}")
         else:
             combined_configs[account_id]['roles'] = roles
             combined_configs[account_id]['region'] = region
-            print(f"add_new_roles {account_id} role_count={len(roles)} file_path={file_path} total_role_count={len(combined_configs[account_id]['roles'])}")
+            #print(f"add_new_roles {account_id} role_count={len(roles)} file_path={file_path} total_role_count={len(combined_configs[account_id]['roles'])}")
         print(f"role_count for 596905249077 = {len(combined_configs['596905249077']['roles'])}")
 
 
