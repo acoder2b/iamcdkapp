@@ -53,10 +53,10 @@ for file_path in glob.glob(f"{config_directory}/*.yaml"):
         env = Environment(account=account_id, region=region)
         
         if account_id in combined_configs:
-            print(f"Combining roles for {account_id} from {file_path}")
+            print(f"Combining roles for {account_id} from {file_path} role_count={len(roles)}")
             combined_configs[account_id]['roles'] = combine_roles_for_account(combined_configs[account_id]['roles'], roles)
         else:
-            print(f"Adding new roles to dictionary for {account_id} from {file_path}")
+            print(f"Adding new roles to dictionary for {account_id} from {file_path} role_count={len(roles)}")
             combined_configs[account_id]['roles'] = roles
             combined_configs[account_id]['region'] = region
 
