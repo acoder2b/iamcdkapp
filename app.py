@@ -67,7 +67,7 @@ for account_id, config_data in combined_configs.items():
     env = Environment(account=account_id, region=config_data.get('region', 'us-east-1'))
     stack_name = f"IamRoleConfigStack-{account_id}"
 
-    print(f"config_data {account_id} role_count={len(config_data['roles'])}")
+    #print(f"config_data {account_id} role_count={len(config_data['roles'])}")
     
     print(f"Creating stack {stack_name} for account {account_id}")
     
