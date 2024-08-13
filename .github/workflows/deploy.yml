@@ -83,7 +83,7 @@ jobs:
             local role_arn=$1
             local session_name=$2
 
-            # Assume the target account role
+          # Assume the target account role
             credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name $session_name || { echo "Failed to assume role: $role_arn"; exit 1; })
             export TARGET_AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
             export TARGET_AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
@@ -127,6 +127,7 @@ jobs:
 
             # Debug: Confirm credentials are unset
             echo "Unset AWS credentials"
+            done
           done
 
         env:
