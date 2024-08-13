@@ -1,6 +1,5 @@
 import logging
 from typing import List, Dict, Any
-from contextlib import contextmanager
 from aws_cdk import CfnDeletionPolicy
 from aws_cdk import (
     aws_iam as iam,
@@ -9,28 +8,22 @@ from aws_cdk import (
 from constructs import Construct
 import yaml
 
-@contextmanager
-def get_logger():
-    logger = logging.getLogger(__name__)
-    try:
-        yield logger
-    finally:
-        # Clean up the logger if needed
-        pass
+# Configure logging
+logger = logging.getLogger(__name__)
 
 class IamRoleConfigStack(Stack):
     def __init__(self, scope: Construct, id: str, file_path: str, account_id: str, config_data: Dict[str, Any], **kwargs):
         super().__init__(scope, id, **kwargs)
-        with get_logger() as logger:
-            roles = config_data.get('roles', [])
-            if not isinstance(roles, list):
-                roles = []
 
-            for role in roles:
-                role_name = role.get('roleName')  # Use the role name directly from the YAML file
-                self.create_iam_role(role, logger)
+        roles = config_data.get('roles', [])
+        if not isinstance(roles, list):
+            roles = []
 
-    def create_iam_role(self, role: Dict[str, Any], logger: logging.Logger) -> None:
+        for role in roles:
+            role_name = role.get('roleName')  # Use the role name directly from the YAML file
+            self.create_iam_role(role)
+
+    def create_iam_role(self, role: Dict[str, Any]) -> None:
         """Create an IAM role based on the provided configuration."""
         trust_policy = role.get('trustPolicy', {})
 
@@ -43,19 +36,10 @@ class IamRoleConfigStack(Stack):
             for name, doc in self.create_inline_policies(role.get('inlinePolicies', [])).items()
         ]
 
-        iam_role = self.create_cfn_role(role, inline_policies, logger)
-
-        # Set the DeletionPolicy to RETAIN if specified in the YAML configuration
-        if role.get('deletionPolicy') == 'RETAIN':
-            iam_role.cfn_options.deletion_policy = CfnDeletionPolicy.RETAIN
-
-        logger.info(f"Created IAM role {role['roleName']} with direct JSON trust policy.")
-
-    def create_cfn_role(self, role: Dict[str, Any], inline_policies: List[iam.CfnRole.PolicyProperty], logger: logging.Logger) -> iam.CfnRole:
-        """Create the CfnRole object."""
+        # Use CfnRole to directly inject the trust policy JSON
         iam_role = iam.CfnRole(
-            self, f"Role-{role['roleName']}",
-            assume_role_policy_document=role.get('trustPolicy', {}),
+            self, role['roleName'],
+            assume_role_policy_document=trust_policy,
             managed_policy_arns=role.get('managedPolicies', []),
             role_name=role['roleName'],
             description=role.get('description'),
@@ -65,7 +49,12 @@ class IamRoleConfigStack(Stack):
             policies=inline_policies,
             tags=[{"key": tag['key'], "value": tag['value']} for tag in role.get('tags', [])]
         )
-        return iam_role
+
+        # Set the DeletionPolicy to RETAIN if specified in the YAML configuration
+        if role.get('deletionPolicy') == 'RETAIN':
+            iam_role.cfn_options.deletion_policy = CfnDeletionPolicy.RETAIN
+
+        logger.info(f"Created IAM role {role['roleName']} with direct JSON trust policy.")
 
     def create_inline_policies(self, inline_policies_config: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Create inline policies from the configuration."""
