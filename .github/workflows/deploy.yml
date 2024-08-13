@@ -52,6 +52,16 @@ jobs:
           echo "Generated Stacks:"
           ls cdk.out/*.template.json | sed 's|cdk.out/||;s|.template.json||'
           
+          **- name: Display Synthesized Templates
+          run: |
+            echo "Displaying contents of synthesized CDK templates:"
+            for template in cdk.out/*.template.json; do
+              echo "-----------------------------"
+              echo "Template: $template"
+              echo "-----------------------------"
+              cat "$template"
+              echo -e "\n"
+            done**         
           
       # - name: Configure AWS credentials with long term IAM user credentials
       #   uses: aws-actions/configure-aws-credentials@v2
