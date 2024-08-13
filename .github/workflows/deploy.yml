@@ -29,6 +29,11 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Run Unit Tests
+        run: |
+            source .venv/bin/activate
+            pytest tests/unit
+
       - name: Install AWS CDK and Utilities
         run: |
           npm install -g aws-cdk@latest
