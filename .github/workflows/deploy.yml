@@ -49,7 +49,10 @@ jobs:
         run: |
           source .venv/bin/activate
           cdk synth -o cdk.out
-        
+          echo "Generated Stacks:"
+          ls cdk.out/*.template.json | sed 's|cdk.out/||;s|.template.json||'
+          
+          
       # - name: Configure AWS credentials with long term IAM user credentials
       #   uses: aws-actions/configure-aws-credentials@v2
       #   with:
@@ -82,26 +85,56 @@ jobs:
           set -eo pipefail
           source .venv/bin/activate
 
-          for file in iamConfigs/*.yaml; do
-            account_ids=$(yq eval '.account_id | .[]' "$file")
-            for account_id in $account_ids; do
-              role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
-              stack_name="IamRoleConfigStack-$account_id"
-              echo "Deploying stack $stack_name to account $account_id using role $role_arn"
 
-              # Assume the role for the current target account
-              credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name github-actions || { echo "Failed to assume role: $role_arn"; exit 1; })
-              export TARGET_AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
-              export TARGET_AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
-              export TARGET_AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
+          # List all synthesized stack templates
+          for stack_template in cdk.out/*.template.json; do
+            # Extract the stack name
+            stack_name=$(basename $stack_template .template.json)
 
-              # Deploy the stack using the pre-synthesized template
-              AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN cdk deploy $stack_name --app "cdk.out" --require-approval never --context file=$file || { echo "Failed to deploy stack: $stack_name"; exit 1; }
+          # Extract the account ID from the stack name (assuming stack names have account IDs)
+          account_id=$(echo $stack_name | grep -oP '(?<=IamRoleConfigStack-)\d+')
 
-              # Unset AWS credentials
-              unset TARGET_AWS_ACCESS_KEY_ID TARGET_AWS_SECRET_ACCESS_KEY TARGET_AWS_SESSION_TOKEN
-            done
+          if [ -n "$account_id" ]; then
+            role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
+            echo "Deploying stack $stack_name to account $account_id using role $role_arn"
+
+            # Assume the role for the current target account
+            credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name github-actions || { echo "Failed to assume role: $role_arn"; exit 1; })
+            export TARGET_AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
+            export TARGET_AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
+            export TARGET_AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
+
+            # Deploy the stack using the pre-synthesized template
+            AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN cdk deploy $stack_name --app "cdk.out" --require-approval never || { echo "Failed to deploy stack: $stack_name"; exit 1; }
+
+            # Unset AWS credentials
+            unset TARGET_AWS_ACCESS_KEY_ID TARGET_AWS_SECRET_ACCESS_KEY TARGET_AWS_SESSION_TOKEN
+          else
+            echo "Could not extract account ID from stack name $stack_name"
+            exit 1
+          fi
           done
+
+          # for file in iamConfigs/*.yaml; do
+          #   account_ids=$(yq eval '.account_id | .[]' "$file")
+          #   for account_id in $account_ids; do
+          #     role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
+          #     stack_name="IamRoleConfigStack-$account_id"
+          #     echo "Deploying stack $stack_name to account $account_id using role $role_arn"
+
+          #     # Assume the role for the current target account
+          #     credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name github-actions || { echo "Failed to assume role: $role_arn"; exit 1; })
+          #     export TARGET_AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
+          #     export TARGET_AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
+          #     export TARGET_AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
+
+          #     # Deploy the stack using the pre-synthesized template
+          #     AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN cdk deploy $stack_name --app "cdk.out" --require-approval never --context file=$file || { echo "Failed to deploy stack: $stack_name"; exit 1; }
+
+          #     # Unset AWS credentials
+          #     unset TARGET_AWS_ACCESS_KEY_ID TARGET_AWS_SECRET_ACCESS_KEY TARGET_AWS_SESSION_TOKEN
+          #   done
+          # done
 
         env:
           IAM_ROLE_CONFIG_DIRECTORY: iamConfigs
