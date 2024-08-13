@@ -27,7 +27,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStack", file_path=None, config_data=config_data, account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStack", file_path=None, roles=config_data.roles, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Validate that the IAM Role has been created with the correct name and policies
@@ -60,7 +60,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithInlinePolicy", file_path=None, config_data=config_data, account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithInlinePolicy", file_path=None, roles=config_data.roles, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Validate that the IAM Role has the inline policy attached
@@ -100,7 +100,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithConditions", file_path=None, config_data=config_data, account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithConditions", file_path=None, roles=config_data.roles, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Validate that the IAM Role has the condition in the trust policy
@@ -142,7 +142,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithExternalId", file_path=None, config_data=config_data, account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithExternalId", file_path=None, roles=config_data.roles, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Validate that the IAM Role has the External ID condition in the trust policy
