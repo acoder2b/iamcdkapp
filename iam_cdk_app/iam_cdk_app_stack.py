@@ -12,12 +12,8 @@ import yaml
 logger = logging.getLogger(__name__)
 
 class IamRoleConfigStack(Stack):
-    def __init__(self, scope: Construct, id: str, file_path: str, account_id: str, config_data: Dict[str, Any], **kwargs):
+    def __init__(self, scope: Construct, id: str, file_path: str, account_id: str, roles: Dict[str, Any], **kwargs):
         super().__init__(scope, id, **kwargs)
-
-        roles = config_data.get('roles', [])
-        if not isinstance(roles, list):
-            roles = []
 
         for role in roles:
             role_name = role.get('roleName')  # Use the role name directly from the YAML file
