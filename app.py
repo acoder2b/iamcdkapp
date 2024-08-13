@@ -24,15 +24,20 @@ def load_account_info(file_path):
         data = yaml.safe_load(file)
         account_ids = data.get('account_id')
         if isinstance(account_ids, str):
-            account_ids = [account_ids] #Convert single account_id to a list
+            account_ids = [account_ids]  # Convert single account_id to a list
         region = data.get('region', 'us-east-1')
-        return account_ids, region, data
+        roles = data.get('roles', [])
+        return account_ids, region, roles
 
-# Function to combine roles for shared accounts
-def combine_roles(existing_data, new_data):
-    if 'roles' in existing_data and 'roles' in new_data:
-        existing_data['roles'].extend(new_data['roles'])
-    return existing_data
+# Function to filter and combine roles for shared accounts
+def combine_roles_for_account(existing_roles, new_roles):
+    # Combine only unique roles
+    role_names = {role['roleName'] for role in existing_roles}
+    for role in new_roles:
+        if role['roleName'] not in role_names:
+            existing_roles.append(role)
+            role_names.add(role['roleName'])
+    return existing_roles
 
 # Create CDK App
 app = App()
@@ -42,17 +47,16 @@ combined_configs = defaultdict(lambda: {'roles': []})
 
 # Iterate over each YAML file in the directory
 for file_path in glob.glob(f"{config_directory}/*.yaml"):
-    account_ids, region, data = load_account_info(file_path)
+    account_ids, region, roles = load_account_info(file_path)
     
     for account_id in account_ids:
         env = Environment(account=account_id, region=region)
         
-        # If the account is already in the combined configs, combine the roles
         if account_id in combined_configs:
-            combined_configs[account_id] = combine_roles(combined_configs[account_id], data)
+            combined_configs[account_id]['roles'] = combine_roles_for_account(combined_configs[account_id]['roles'], roles)
         else:
-            combined_configs[account_id] = data
-
+            combined_configs[account_id]['roles'] = roles
+            combined_configs[account_id]['region'] = region
 
 # Now create stacks for each account with combined configurations
 for account_id, config_data in combined_configs.items():
@@ -64,5 +68,4 @@ for account_id, config_data in combined_configs.items():
     # Pass the account_id explicitly to the stack
     IamRoleConfigStack(app, stack_name, env=env, file_path=None, config_data=config_data, account_id=account_id)
 
-    
 app.synth()
