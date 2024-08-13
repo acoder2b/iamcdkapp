@@ -57,7 +57,7 @@ for file_path in glob.glob(f"{config_directory}/*.yaml"):
 # Now create stacks for each account with combined configurations
 for account_id, config_data in combined_configs.items():
     env = Environment(account=account_id, region=config_data.get('region', 'us-east-1'))
-    stack_name = f"IamRoleOIDCConfigStack-{account_id}"
+    stack_name = f"IamRoleConfigStack-{account_id}"
     
     print(f"Creating stack {stack_name} for account {account_id}")
     
