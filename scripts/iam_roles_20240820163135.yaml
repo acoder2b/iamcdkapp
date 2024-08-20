@@ -12,8 +12,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: AccessAnalyzerTrustedServicePlvZtJWhPMmF
-  externalIds: []
+          sts:ExternalId: AccessAnalyzerTrustedServicevykQb3AcIDqN
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -32,8 +31,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: IsengardExternalIdM9xkw0RCJXnA
-  externalIds: []
+          sts:ExternalId: IsengardExternalId9Fq3K8gScy6h
   managedPolicies:
   - arn:aws:iam::aws:policy/AdministratorAccess
   permissionBoundary: ''
@@ -53,94 +51,8 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: InspectorEnablementRoleW5FzNeVqn3DG
-  externalIds: []
+          sts:ExternalId: InspectorEnablementRoleOKkZldQGo9B3
   managedPolicies: []
-  permissionBoundary: ''
-  tags: []
-  deletionPolicy: RETAIN
-- roleName: AWS-QuickSetup-EnableCRecording-62d8q_us-east-2
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        Service:
-        - ssm.amazonaws.com
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies: []
-  permissionBoundary: ''
-  tags:
-  - key: QuickSetupVersion
-    value: '1.3'
-  - key: QuickSetupType
-    value: Config Recording
-  - key: QuickSetupID
-    value: 62d8q
-  deletionPolicy: RETAIN
-- roleName: AWS-QuickSetup-EnableCRecording-62d8q_us-west-2
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        Service:
-        - ssm.amazonaws.com
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies: []
-  permissionBoundary: ''
-  tags:
-  - key: QuickSetupVersion
-    value: '1.3'
-  - key: QuickSetupType
-    value: Config Recording
-  - key: QuickSetupID
-    value: 62d8q
-  deletionPolicy: RETAIN
-- roleName: AWS-QuickSetup-StackSet-Local-AdministrationRole
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        Service:
-        - cloudformation.amazonaws.com
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies: []
-  permissionBoundary: ''
-  tags: []
-  deletionPolicy: RETAIN
-- roleName: AWS-QuickSetup-StackSet-Local-ExecutionRole
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        AWS:
-        - arn:aws:iam::596905249077:role/AWS-QuickSetup-StackSet-Local-AdministrationRole
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies:
-  - arn:aws:iam::aws:policy/AdministratorAccess
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
@@ -157,7 +69,6 @@
         - arn:aws:iam::909180469036:root
       Action: sts:AssumeRole
       Condition: {}
-  externalIds: []
   managedPolicies:
   - arn:aws:iam::aws:policy/AdministratorAccess
   permissionBoundary: ''
@@ -177,8 +88,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: KelexDataFetcherFIrdIHzOjodp
-  externalIds: []
+          sts:ExternalId: KelexDataFetcherDIvEyoGgFIBG
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -199,8 +109,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: AwsSecurityAuditaNm7hTAkRPhL
-  externalIds: []
+          sts:ExternalId: AwsSecurityAuditmK6DA8BmJECQ
   managedPolicies:
   - arn:aws:iam::aws:policy/SecurityAudit
   permissionBoundary: ''
@@ -220,8 +129,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: AwsSecurityNacundaAuditS3A30D5SDB4W
-  externalIds: []
+          sts:ExternalId: AwsSecurityNacundaAuditg0c3uPiEEmgB
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -240,8 +148,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: AWSVAPTAudit7RqogrQauvEN
-  externalIds: []
+          sts:ExternalId: AWSVAPTAudit03iUQwdkTWw9
   managedPolicies:
   - arn:aws:iam::aws:policy/SecurityAudit
   permissionBoundary: ''
@@ -261,8 +168,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: CloudSecAuditRoleP0Z6SAu2pgdh
-  externalIds: []
+          sts:ExternalId: CloudSecAuditRoleoM3EVzV8NjoR
   managedPolicies:
   - arn:aws:iam::aws:policy/SecurityAudit
   permissionBoundary: ''
@@ -280,13 +186,12 @@
         AWS:
         - arn:aws:iam::533267069473:root
         - arn:aws:iam::637423399230:root
-        - arn:aws:iam::333692317655:root
         - arn:aws:iam::381492016180:root
+        - arn:aws:iam::333692317655:root
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: CloudSeerTrustedServiceRole8Ylo32SVou85
-  externalIds: []
+          sts:ExternalId: CloudSeerTrustedServiceRole4hDXFbhy1rsw
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -307,8 +212,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: CodeGuruProfilerPublisher0zqxZveGUb1k
-  externalIds: []
+          sts:ExternalId: CodeGuruProfilerPublisher6gzUn4kl6uDv
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -327,8 +231,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: DiscoveryAnalyzerTrustedService-DO-NOT-DELETEiwQ4sSmrA4J6
-  externalIds: []
+          sts:ExternalId: DiscoveryAnalyzerTrustedService-DO-NOT-DELETEOJwWWlATGLpv
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -342,17 +245,16 @@
     Statement:
     - Effect: Allow
       Principal:
-        AWS:
-        - arn:aws:iam::950184135563:root
         Service:
         - crs.ec2.aws.internal
+        AWS:
+        - arn:aws:iam::950184135563:root
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: EC2CapacityReservationServicegqMOyScLaoUG
-  externalIds: []
+          sts:ExternalId: EC2CapacityReservationServicemmT3ogMkp5U9
   managedPolicies:
-  - arn:aws:iam::596905249077:policy/EC2CapacityReservationService
+  - arn:aws:iam::118575936588:policy/EC2CapacityReservationService
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
@@ -370,8 +272,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: GatedGardenAuditjaama8Inq691
-  externalIds: []
+          sts:ExternalId: GatedGardenAuditoX0ygZ9WYvVo
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -390,8 +291,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: GatedGardenInternalAuditZ9SGAXxGJ3O1
-  externalIds: []
+          sts:ExternalId: GatedGardenInternalAuditcpyQzNWcZPg4
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -406,8 +306,8 @@
     - Effect: Allow
       Principal:
         AWS:
-        - arn:aws:iam::048851363556:role/BrokerService-Prod
         - arn:aws:iam::621463273587:role/BrokerService-Prod
+        - arn:aws:iam::048851363556:role/BrokerService-Prod
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -415,13 +315,12 @@
     - Effect: Allow
       Principal:
         AWS:
-        - arn:aws:iam::048851363556:role/BrokerService-Prod
         - arn:aws:iam::621463273587:role/BrokerService-Prod
+        - arn:aws:iam::048851363556:role/BrokerService-Prod
       Action:
       - sts:SetSourceIdentity
       - sts:TagSession
       Condition: {}
-  externalIds: []
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -440,9 +339,27 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: IMDSv2-automigratormnotkhntUq3A
-  externalIds: []
+          sts:ExternalId: IMDSv2-automigratorFzgFb1zvjYkW
   managedPolicies: []
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: importtestrole
+  description: Allows Lambda functions to call AWS services on your behalf.
+  sessionDuration: 3600
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        Service:
+        - lambda.amazonaws.com
+        - sns.amazonaws.com
+      Action: sts:AssumeRole
+      Condition: {}
+  managedPolicies:
+  - arn:aws:iam::aws:policy/AdministratorAccess
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
@@ -460,8 +377,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: InternalAuditInternal9MVWMFfQSUUP
-  externalIds: []
+          sts:ExternalId: InternalAuditInternalhDPDHwolDwDv
   managedPolicies:
   - arn:aws:iam::aws:policy/SecurityAudit
   permissionBoundary: ''
@@ -481,8 +397,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: IsengardAuditorExternalIdflxOurZD3xOR
-  externalIds: []
+          sts:ExternalId: IsengardAuditorExternalIdpuLuswhixOlT
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -501,8 +416,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: IsengardCloudTrailRoleHZiAkkGxPUqP
-  externalIds: []
+          sts:ExternalId: IsengardCloudTrailRolebJJqKb8lOSQQ
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -521,10 +435,9 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: IsengardConfigRoleiRl5uMEn3ArK
-  externalIds: []
+          sts:ExternalId: IsengardConfigRoleKjr3izBmh1d3
   managedPolicies:
-  - arn:aws:iam::596905249077:policy/ConfigAccessPolicy
+  - arn:aws:iam::118575936588:policy/ConfigAccessPolicy
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
@@ -542,8 +455,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: IsengardExternalIdYPaGPDJ7SWxB
-  externalIds: []
+          sts:ExternalId: IsengardExternalIdRhHPQgLzmSUf
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -557,17 +469,16 @@
     Statement:
     - Effect: Allow
       Principal:
+        AWS:
+        - arn:aws:iam::089414261608:root
+        - arn:aws:iam::796293252539:root
+        - arn:aws:iam::611447770337:root
         Service:
         - depndency-insights-prod.aws.internal
-        AWS:
-        - arn:aws:iam::796293252539:root
-        - arn:aws:iam::089414261608:root
-        - arn:aws:iam::611447770337:root
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: DependencyAssuranceIamAnalyzerTrustedService1Qbf3Crkoh2d
-  externalIds: []
+          sts:ExternalId: DependencyAssuranceIamAnalyzerTrustedServicev0y7hI9piuvk
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -586,8 +497,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: AWSComputeOptimizerCbJ1ZBl6YM7I
-  externalIds: []
+          sts:ExternalId: AWSComputeOptimizerTAIcxvPZruw6
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -606,28 +516,8 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: NawsApplicationMetrics-DO-NOT-DELETEDc9wEUdGzLhs
-  externalIds: []
+          sts:ExternalId: NawsApplicationMetrics-DO-NOT-DELETEl1qUIQsyizgO
   managedPolicies: []
-  permissionBoundary: ''
-  tags: []
-  deletionPolicy: RETAIN
-- roleName: OrganizationsReadOnlyAccess
-  description: ''
-  sessionDuration: 3600
-  iamPath: /
-  trustPolicy:
-    Version: '2012-10-17'
-    Statement:
-    - Effect: Allow
-      Principal:
-        AWS:
-        - arn:aws:iam::596905249077:root
-      Action: sts:AssumeRole
-      Condition: {}
-  externalIds: []
-  managedPolicies:
-  - arn:aws:iam::aws:policy/AWSOrganizationsReadOnlyAccess
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
@@ -646,10 +536,26 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: OrthancRoleL2cAXo4tbVPm
-  externalIds: []
+          sts:ExternalId: OrthancRolemaPKsX3C4r8H
   managedPolicies:
   - arn:aws:iam::aws:policy/AmazonGuardDutyFullAccess
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: PipelineStack-TelusShSecurityAcmProvisioningStackte-3GgllA1czIHr
+  description: ''
+  sessionDuration: 3600
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        AWS:
+        - arn:aws:iam::118575936588:root
+      Action: sts:AssumeRole
+      Condition: {}
+  managedPolicies: []
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
@@ -663,18 +569,17 @@
     - Effect: Allow
       Principal:
         Service:
-        - me-south-1.prod.rcc.aws.internal
-        - eu-south-1.prod.rcc.aws.internal
-        - af-south-1.prod.rcc.aws.internal
-        - ap-east-1.prod.rcc.aws.internal
         - prod.rcc.aws.internal
+        - af-south-1.prod.rcc.aws.internal
+        - me-south-1.prod.rcc.aws.internal
+        - ap-east-1.prod.rcc.aws.internal
+        - eu-south-1.prod.rcc.aws.internal
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: ResourceConfigurationCollectorOKumpWJOhGNj
-  externalIds: []
+          sts:ExternalId: ResourceConfigurationCollector7kgvEKUpTgn5
   managedPolicies:
-  - arn:aws:iam::596905249077:policy/ResourceConfigurationCollectorPolicy
+  - arn:aws:iam::118575936588:policy/ResourceConfigurationCollectorPolicy
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
@@ -692,8 +597,139 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: ShadowTrooperRoleK5Zx4vc8yhN2
-  externalIds: []
+          sts:ExternalId: ShadowTrooperRole6z09FsdKdpS1
+  managedPolicies: []
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: StackSet-AWSControlTowerGuardHook-373-ExecutionRole-dfDV3mPSuPao
+  description: ''
+  sessionDuration: 8400
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        Service:
+        - hooks.cloudformation.amazonaws.com
+        - resources.cloudformation.amazonaws.com
+      Action: sts:AssumeRole
+      Condition:
+        StringEquals:
+          aws:SourceAccount: '118575936588'
+        StringLike:
+          aws:SourceArn: arn:aws:cloudformation:eu-central-1:118575936588:type/hook/ControlTower-Guard-Hook/*
+  managedPolicies: []
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: StackSet-AWSControlTowerGuardHook-373aab98--LogRole-ObzTQ545p6kJ
+  description: ''
+  sessionDuration: 8400
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        Service:
+        - resources.cloudformation.amazonaws.com
+        - hooks.cloudformation.amazonaws.com
+      Action: sts:AssumeRole
+      Condition:
+        StringEquals:
+          aws:SourceAccount: '118575936588'
+        StringLike:
+          aws:SourceArn: arn:aws:cloudformation:eu-central-1:118575936588:type/hook/ControlTower-Guard-Hook/*
+  managedPolicies: []
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: StackSet-AWSControlTowerGuardHook-624-ExecutionRole-LIOG6AzWGwwc
+  description: ''
+  sessionDuration: 8400
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        Service:
+        - resources.cloudformation.amazonaws.com
+        - hooks.cloudformation.amazonaws.com
+      Action: sts:AssumeRole
+      Condition:
+        StringEquals:
+          aws:SourceAccount: '118575936588'
+        StringLike:
+          aws:SourceArn: arn:aws:cloudformation:us-east-2:118575936588:type/hook/ControlTower-Guard-Hook/*
+  managedPolicies: []
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: StackSet-AWSControlTowerGuardHook-6240da8f--LogRole-MwxWsNYiDEkR
+  description: ''
+  sessionDuration: 8400
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        Service:
+        - resources.cloudformation.amazonaws.com
+        - hooks.cloudformation.amazonaws.com
+      Action: sts:AssumeRole
+      Condition:
+        StringEquals:
+          aws:SourceAccount: '118575936588'
+        StringLike:
+          aws:SourceArn: arn:aws:cloudformation:us-east-2:118575936588:type/hook/ControlTower-Guard-Hook/*
+  managedPolicies: []
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: StackSet-AWSControlTowerGuardHook-b12-ExecutionRole-Q99pArEG9wGL
+  description: ''
+  sessionDuration: 8400
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        Service:
+        - resources.cloudformation.amazonaws.com
+        - hooks.cloudformation.amazonaws.com
+      Action: sts:AssumeRole
+      Condition:
+        StringEquals:
+          aws:SourceAccount: '118575936588'
+        StringLike:
+          aws:SourceArn: arn:aws:cloudformation:us-west-2:118575936588:type/hook/ControlTower-Guard-Hook/*
+  managedPolicies: []
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: StackSet-AWSControlTowerGuardHook-b123e1a2--LogRole-89HpGIFQ9Jhj
+  description: ''
+  sessionDuration: 8400
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        Service:
+        - hooks.cloudformation.amazonaws.com
+        - resources.cloudformation.amazonaws.com
+      Action: sts:AssumeRole
+      Condition:
+        StringEquals:
+          aws:SourceAccount: '118575936588'
+        StringLike:
+          aws:SourceArn: arn:aws:cloudformation:us-west-2:118575936588:type/hook/ControlTower-Guard-Hook/*
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -711,13 +747,12 @@
         - arn:aws:iam::909180469036:role/aws-service-role/stacksets.cloudformation.amazonaws.com/AWSServiceRoleForCloudFormationStackSetsOrgAdmin
       Action: sts:AssumeRole
       Condition: {}
-  externalIds: []
   managedPolicies:
   - arn:aws:iam::aws:policy/AdministratorAccess
   permissionBoundary: ''
   tags: []
   deletionPolicy: RETAIN
-- roleName: TestPowerUser
+- roleName: telus-security-audit-prowler-ecstaskrole
   description: ''
   sessionDuration: 3600
   iamPath: /
@@ -727,18 +762,103 @@
     - Effect: Allow
       Principal:
         AWS:
-        - arn:aws:iam::596905249077:root
-        Service:
-        - glue.amazonaws.com
+        - arn:aws:iam::118575936588:root
       Action: sts:AssumeRole
       Condition: {}
-  externalIds: []
-  managedPolicies:
-  - arn:aws:iam::aws:policy/AdministratorAccess
-  - arn:aws:iam::aws:policy/PowerUserAccess
-  - arn:aws:iam::596905249077:policy/CustomIAMPolicyDeveloper
+  managedPolicies: []
   permissionBoundary: ''
   tags: []
+  deletionPolicy: RETAIN
+- roleName: telus-security-audit-prowler-ecstaskrole1
+  description: ''
+  sessionDuration: 3600
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        AWS:
+        - arn:aws:iam::118575936588:root
+      Action: sts:AssumeRole
+      Condition: {}
+  managedPolicies: []
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: telus-sh-security-iam-publicResourceLambdaExecutionRole
+  description: ''
+  sessionDuration: 3600
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        AWS:
+        - arn:aws:iam::118575936588:root
+      Action: sts:AssumeRole
+      Condition: {}
+  managedPolicies: []
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: telus-sh-security-iamrole-lambda_kms_quicksight_execution_role
+  description: ''
+  sessionDuration: 3600
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        AWS:
+        - arn:aws:iam::118575936588:root
+      Action: sts:AssumeRole
+      Condition: {}
+  managedPolicies: []
+  permissionBoundary: ''
+  tags: []
+  deletionPolicy: RETAIN
+- roleName: testcrossaccountrole
+  description: testcrossaccountrole
+  sessionDuration: 3600
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        AWS:
+        - arn:aws:iam::118575936588:root
+      Action: sts:AssumeRole
+      Condition: {}
+  managedPolicies:
+  - arn:aws:iam::aws:policy/AdministratorAccess
+  permissionBoundary: ''
+  tags:
+  - key: environment
+    value: dev
+  deletionPolicy: RETAIN
+- roleName: testcrossaccountrole112212
+  description: testcrossaccountrole
+  sessionDuration: 3600
+  iamPath: /
+  trustPolicy:
+    Version: '2012-10-17'
+    Statement:
+    - Effect: Allow
+      Principal:
+        AWS:
+        - arn:aws:iam::118575936588:root
+      Action: sts:AssumeRole
+      Condition: {}
+  managedPolicies:
+  - arn:aws:iam::aws:policy/AdministratorAccess
+  permissionBoundary: ''
+  tags:
+  - key: environment
+    value: dev
   deletionPolicy: RETAIN
 - roleName: TurtleRoleManagement
   description: ''
@@ -750,13 +870,12 @@
     - Effect: Allow
       Principal:
         Service:
-        - prod.webui.turtle.aws.internal
         - in-amazon-1.prod.webui.turtle.aws.internal
+        - prod.webui.turtle.aws.internal
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: TurtleRoleManagementlx2gWq8WENVb
-  externalIds: []
+          sts:ExternalId: TurtleRoleManagement5S6eLMgn95ye
   managedPolicies: []
   permissionBoundary: ''
   tags: []
@@ -775,8 +894,7 @@
       Action: sts:AssumeRole
       Condition:
         StringEquals:
-          sts:ExternalId: XenaAuditorRolemMaNh48wjc0F
-  externalIds: []
+          sts:ExternalId: XenaAuditorRolel3k6LOmkdM3u
   managedPolicies:
   - arn:aws:iam::aws:policy/SecurityAudit
   permissionBoundary: ''

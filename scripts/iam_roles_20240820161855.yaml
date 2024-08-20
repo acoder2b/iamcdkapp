@@ -529,10 +529,10 @@
     - Effect: Allow
       Principal:
         AWS:
+        - arn:aws:iam::533267069473:root
+        - arn:aws:iam::637423399230:root
         - arn:aws:iam::381492016180:root
         - arn:aws:iam::333692317655:root
-        - arn:aws:iam::637423399230:root
-        - arn:aws:iam::533267069473:root
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -550,10 +550,10 @@
     Statement:
     - Effect: Allow
       Principal:
-        AWS:
-        - arn:aws:iam::054693081941:root
         Service:
         - codeguru-profiler-publisher.aws.internal
+        AWS:
+        - arn:aws:iam::054693081941:root
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -590,10 +590,10 @@
     Statement:
     - Effect: Allow
       Principal:
-        Service:
-        - crs.ec2.aws.internal
         AWS:
         - arn:aws:iam::950184135563:root
+        Service:
+        - crs.ec2.aws.internal
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -893,8 +893,8 @@
     - Effect: Allow
       Principal:
         Service:
-        - prod.stronghold.orthanc.epoxy.aws.internal
         - prod.sentry.orthanc.epoxy.aws.internal
+        - prod.stronghold.orthanc.epoxy.aws.internal
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -914,11 +914,11 @@
     - Effect: Allow
       Principal:
         Service:
+        - af-south-1.prod.rcc.aws.internal
+        - ap-east-1.prod.rcc.aws.internal
+        - me-south-1.prod.rcc.aws.internal
         - prod.rcc.aws.internal
         - eu-south-1.prod.rcc.aws.internal
-        - me-south-1.prod.rcc.aws.internal
-        - ap-east-1.prod.rcc.aws.internal
-        - af-south-1.prod.rcc.aws.internal
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -957,8 +957,8 @@
     - Effect: Allow
       Principal:
         Service:
-        - resources.cloudformation.amazonaws.com
         - hooks.cloudformation.amazonaws.com
+        - resources.cloudformation.amazonaws.com
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -979,8 +979,8 @@
     - Effect: Allow
       Principal:
         Service:
-        - hooks.cloudformation.amazonaws.com
         - resources.cloudformation.amazonaws.com
+        - hooks.cloudformation.amazonaws.com
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -1023,8 +1023,8 @@
     - Effect: Allow
       Principal:
         Service:
-        - resources.cloudformation.amazonaws.com
         - hooks.cloudformation.amazonaws.com
+        - resources.cloudformation.amazonaws.com
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -1045,8 +1045,8 @@
     - Effect: Allow
       Principal:
         Service:
-        - hooks.cloudformation.amazonaws.com
         - resources.cloudformation.amazonaws.com
+        - hooks.cloudformation.amazonaws.com
       Action: sts:AssumeRole
       Condition:
         StringEquals:
@@ -1067,8 +1067,8 @@
     - Effect: Allow
       Principal:
         Service:
-        - hooks.cloudformation.amazonaws.com
         - resources.cloudformation.amazonaws.com
+        - hooks.cloudformation.amazonaws.com
       Action: sts:AssumeRole
       Condition:
         StringEquals:

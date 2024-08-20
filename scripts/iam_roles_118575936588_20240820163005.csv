@@ -41,5 +41,6 @@ telus-security-audit-prowler-ecstaskrole1,arn:aws:iam::118575936588:role/telus-s
 telus-sh-security-iam-publicResourceLambdaExecutionRole,arn:aws:iam::118575936588:role/telus-sh-security-iam-publicResourceLambdaExecutionRole
 telus-sh-security-iamrole-lambda_kms_quicksight_execution_role,arn:aws:iam::118575936588:role/telus-sh-security-iamrole-lambda_kms_quicksight_execution_role
 testcrossaccountrole,arn:aws:iam::118575936588:role/testcrossaccountrole
+testcrossaccountrole112212,arn:aws:iam::118575936588:role/testcrossaccountrole112212
 TurtleRoleManagement,arn:aws:iam::118575936588:role/TurtleRoleManagement
 XenaAuditorRole-DO-NOT-DELETE,arn:aws:iam::118575936588:role/XenaAuditorRole-DO-NOT-DELETE
