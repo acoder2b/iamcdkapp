@@ -36,7 +36,7 @@ jobs:
 
       - name: Generate IAM Roles CSV
         run: |
-          python scripts/Iamrolefinalscript.py
+          python workflows/scripts/Iamrolefinalscript.py
         id: generate_csv
 
       - name: Set CSV file path
@@ -44,7 +44,7 @@ jobs:
 
       - name: Generate YAML from CSV
         run: |
-          python scripts/detectIamRolesFromCsv.py ${{ env.CSV_FILE_PATH }}
+          python workflows/scripts/detectIamRolesFromCsv.py ${{ env.CSV_FILE_PATH }}
 
       - name: Upload YAML file as an artifact
         uses: actions/upload-artifact@v3
