@@ -2,7 +2,6 @@ import unittest
 from aws_cdk import App, assertions
 from iam_cdk_app.iam_cdk_app_stack import IamRoleConfigStack
 
-
 class TestIamRoleConfigStack(unittest.TestCase):
 
     def setUp(self):
@@ -34,7 +33,15 @@ class TestIamRoleConfigStack(unittest.TestCase):
         template.resource_count_is("AWS::IAM::Role", 1)
         template.has_resource_properties("AWS::IAM::Role", {
             "RoleName": "TestRole",
-            "ManagedPolicyArns": ["arn:aws:iam::aws:policy/AmazonEC2FullAccess"]
+            "ManagedPolicyArns": ["arn:aws:iam::aws:policy/AmazonEC2FullAccess"],
+            "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [{
+                    "Effect": "Allow",
+                    "Principal": {"Service": "ec2.amazonaws.com"},
+                    "Action": "sts:AssumeRole"
+                }]
+            }
         })
 
     def test_inline_policy_creation(self):

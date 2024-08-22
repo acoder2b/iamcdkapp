@@ -82,6 +82,28 @@ class IamRoleConfigStack(Stack):
 
         logger.info(f"Created IAM role {role['roleName']} with direct JSON trust policy.")
 
+    # def create_inline_policies(self, inline_policies_config: List[Dict[str, Any]]) -> Dict[str, Any]:
+    #     """Create inline policies from the configuration."""
+    #     inline_policies = {}
+
+    #     for policy in inline_policies_config:
+    #         if 'policyName' in policy and 'policyDocument' in policy:
+    #             policy_document = policy['policyDocument']
+
+    #             # Remove empty condition fields if present
+    #             for statement in policy_document.get('Statement', []):
+    #                 if 'Condition' in statement and not statement['Condition']:
+    #                     del statement['Condition']
+
+    #             inline_policies.append(
+    #                 iam.CfnRole.PolicyProperty(
+    #                     policy_name=policy['policyName'],
+    #                     policy_document=policy_document
+    #                 )
+    #             )
+
+    #     return inline_policies
+
     def create_inline_policies(self, inline_policies_config: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Create inline policies from the configuration."""
         inline_policies = {}
@@ -95,11 +117,7 @@ class IamRoleConfigStack(Stack):
                     if 'Condition' in statement and not statement['Condition']:
                         del statement['Condition']
 
-                inline_policies.append(
-                    iam.CfnRole.PolicyProperty(
-                        policy_name=policy['policyName'],
-                        policy_document=policy_document
-                    )
-                )
+                # Correctly add the policy to the dictionary
+                inline_policies[policy['policyName']] = policy_document
 
-        return inline_policies
+        return inline_policies    
