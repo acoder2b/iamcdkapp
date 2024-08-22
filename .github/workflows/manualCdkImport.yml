@@ -1,0 +1,49 @@
+name: Generate IAM Roles YAML
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate-iam-roles:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install boto3 pyyaml
+
+      - name: Configure AWS Credentials using OIDC Identity
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+           role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
+           role-session-name: OIDC-GitHubActionsRole
+           aws-region: us-east-1    
+           audience: sts.amazonaws.com
+           role-duration-seconds: 3600
+
+      - name: Generate IAM Roles CSV
+        run: |
+          python scripts/Iamrolefinalscript.py
+        id: generate_csv
+
+      - name: Set CSV file path
+        run: echo "CSV_FILE_PATH=$(ls iam_roles_*.csv)" >> $GITHUB_ENV
+
+      - name: Generate YAML from CSV
+        run: |
+          python scripts/detectIamRolesFromCsv.py ${{ env.CSV_FILE_PATH }}
+
+      - name: Upload YAML file as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: iam-roles-yaml
+          path: '*.yaml'
