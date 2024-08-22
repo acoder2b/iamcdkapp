@@ -3,6 +3,10 @@ name: Generate IAM Roles YAML
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read     
+
 jobs:
   generate-iam-roles:
     runs-on: ubuntu-latest
