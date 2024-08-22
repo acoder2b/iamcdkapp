@@ -28,8 +28,8 @@ jobs:
       - name: Configure AWS Credentials using OIDC Identity
         uses: aws-actions/configure-aws-credentials@v4
         with:
-           role-to-assume: arn:aws:iam::909180469036:role/OIDC-CDKImportRole
-           role-session-name: OIDC-CDKImportRole
+           role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
+           role-session-name: OIDC-GitHubActionsRole
            aws-region: us-east-1    
            audience: sts.amazonaws.com
            role-duration-seconds: 3600
