@@ -65,16 +65,17 @@ class TestIamRoleConfigStack(unittest.TestCase):
 
         # Validate that the IAM Role has the inline policy attached
         template.has_resource_properties("AWS::IAM::Role", {
-            "Policies": [{
+            "Policies": assertions.Match.array_with([{
                 "PolicyName": "InlinePolicy",
                 "PolicyDocument": {
+                    "Version": "2012-10-17",
                     "Statement": [{
                         "Effect": "Allow",
                         "Action": "s3:ListBucket",
                         "Resource": "*"
                     }]
                 }
-            }]
+            }])
         })
 
     def test_iam_role_with_conditions(self):
@@ -106,6 +107,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         # Validate that the IAM Role has the condition in the trust policy
         template.has_resource_properties("AWS::IAM::Role", {
             "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
                 "Statement": [{
                     "Effect": "Allow",
                     "Principal": {"Service": "lambda.amazonaws.com"},
@@ -148,6 +150,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         # Validate that the IAM Role has the External ID condition in the trust policy
         template.has_resource_properties("AWS::IAM::Role", {
             "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
                 "Statement": [{
                     "Effect": "Allow",
                     "Principal": {"AWS": "arn:aws:iam::111122223333:root"},
