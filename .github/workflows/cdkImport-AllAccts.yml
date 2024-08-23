@@ -110,9 +110,14 @@ jobs:
 
           # Store the CSV file path in the GitHub environment variable for later use
           echo "CSV_FILE_PATH=$output_csv" >> $GITHUB_ENV
+          echo "CSV file path stored as: $output_csv"
 
       - name: Show CSV file contents
+        env:
+          CSV_FILE_PATH: ${{ env.CSV_FILE_PATH }}
         run: |
+          set -x
+          ls -l
           echo "Displaying contents of ${{ env.CSV_FILE_PATH }}:"
           cat ${{ env.CSV_FILE_PATH }}
 
