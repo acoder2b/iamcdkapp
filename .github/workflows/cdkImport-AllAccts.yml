@@ -1,4 +1,4 @@
-name: Generate IAM Roles YAML for Multiple Accounts
+name: CDK-Import-MultipleAccnts
 
 on:
   workflow_dispatch:
