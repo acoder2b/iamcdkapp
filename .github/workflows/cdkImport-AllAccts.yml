@@ -55,9 +55,9 @@ jobs:
     strategy:
       matrix:
         account_id: ${{ fromJson(needs.setup.outputs.accounts_map) }}
-    environment:
-      name: AssumeRole
-      url: ${{ matrix.account_id }}
+    # environment:
+    #   name: AssumeRole
+    #   url: ${{ matrix.account_id }}
 
       steps:
         - name: Checkout code
