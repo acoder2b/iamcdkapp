@@ -81,18 +81,28 @@ jobs:
            aws-region: us-east-1    
            audience: sts.amazonaws.com
            role-duration-seconds: 3600
-           
+
 
       - name: Assume Role in Child Account
         run: |
-          # enable debug
-          set -x
+          set -x  # Enable debug mode
 
           role_arn="arn:aws:iam::${{ matrix.account_id }}:role/GitHubActionsRole"
-          credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name github-actions || { echo "Failed to assume role: $role_arn"; exit 1; })
+          echo "Attempting to assume role: $role_arn"
+          
+          # Attempt to assume role
+          credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name github-actions)
+          
+          if [ -z "$credentials" ]; then
+            echo "Failed to assume role: $role_arn"
+            exit 1
+          fi
+
           export TARGET_AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
           export TARGET_AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
           export TARGET_AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
+
+          echo "Successfully assumed role for account ${{ matrix.account_id }}"
 
           # Run the script to generate IAM roles CSV
           AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN python .github/workflows/scripts/Iamrolefinalscript.py
