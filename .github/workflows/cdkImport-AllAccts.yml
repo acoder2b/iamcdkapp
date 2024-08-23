@@ -75,6 +75,9 @@ jobs:
 
       - name: Assume Role in Child Account
         run: |
+          # enable debug
+          set -x
+
           role_arn="arn:aws:iam::${{ matrix.account_id }}:role/GitHubActionsRole"
           credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name github-actions || { echo "Failed to assume role: $role_arn"; exit 1; })
           export TARGET_AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
