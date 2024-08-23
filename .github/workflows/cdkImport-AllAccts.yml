@@ -1,4 +1,4 @@
-name: CDKImport-MultipleAccnts
+name: Generate IAM Roles YAML for Multiple Accounts
 
 on:
   workflow_dispatch:
@@ -6,13 +6,12 @@ on:
 permissions:
   id-token: write
   contents: read
-  organizations: read # Needed to access AWS Organizations API
 
 jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      accounts: ${{ steps.generate_accounts.outputs.accounts_map }}
+      accounts_map: ${{ steps.generate_accounts.outputs.accounts_map }}
 
     steps:
       - name: Checkout code
@@ -41,38 +40,38 @@ jobs:
         id: generate_accounts
         run: |
           python -c "
-          import boto3
-          import json
+import boto3
+import json
 
-          client = boto3.client('organizations')
-          accounts = client.list_accounts()
-          accounts_map = {account['Id']: account['Name'] for account in accounts['Accounts']}
-          print('::set-output name=accounts_map::' + json.dumps(accounts_map))
-          "               
-          
-        run-scripts:
-          needs: setup
-          runs-on: ubuntu-latest
-          strategy:
-            matrix:
-              account_id: ${{ fromJson(needs.setup.outputs.accounts) }}
-          environment:
-            name: AssumeRole
-            url: ${{ matrix.account_id }}
-    
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v4
+client = boto3.client('organizations')
+accounts = client.list_accounts()
+accounts_map = {account['Id']: account['Name'] for account in accounts['Accounts']}
+print('::set-output name=accounts_map::' + json.dumps(accounts_map))
+          "
 
-          - name: Set up Python
-            uses: actions/setup-python@v4
-            with:
-              python-version: '3.11'
+  run-scripts:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        account_id: ${{ fromJson(needs.setup.outputs.accounts_map) }}
+    environment:
+      name: AssumeRole
+      url: ${{ matrix.account_id }}
 
-          - name: Install dependencies
-            run: |
-              python -m pip install --upgrade pip
-              pip install boto3 pyyaml
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install boto3 pyyaml
 
       - name: Assume Role in Child Account
         run: |
@@ -97,4 +96,3 @@ jobs:
         with:
           name: iam-roles-yaml-${{ matrix.account_id }}
           path: '*.yaml'
-
