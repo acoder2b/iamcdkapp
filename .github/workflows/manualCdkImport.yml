@@ -1,4 +1,4 @@
-name: Generate IAM Roles YAML
+name: manual-CDKImport
 
 on:
   workflow_dispatch:
