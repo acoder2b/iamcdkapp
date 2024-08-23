@@ -105,10 +105,11 @@ jobs:
           echo "Successfully assumed role for account ${{ matrix.account_id }}"
 
           # Run the script to generate IAM roles CSV
-          AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN python .github/workflows/scripts/Iamrolefinalscript.py
+          output_csv="iam_roles_${{ matrix.account_id }}_$(date +'%Y%m%d%H%M%S').csv"
+          AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN python .github/workflows/scripts/Iamrolefinalscript.py --output $output_csv
 
-      - name: Set CSV file path
-        run: echo "CSV_FILE_PATH=$(ls iam_roles_*.csv)" >> $GITHUB_ENV
+          # Store the CSV file path in the GitHub environment variable for later use
+          echo "CSV_FILE_PATH=$output_csv" >> $GITHUB_ENV
 
       - name: Generate YAML from CSV
         run: |
