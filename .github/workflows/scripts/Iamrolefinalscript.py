@@ -71,7 +71,7 @@ def main():
 
     account_id = get_account_id()
     current_time = datetime.now().strftime("%Y%m%d%H%M%S")
-    output_csv = f'iam_roles_{account_id}_{current_time}.csv'
+    output_csv = f'iam_roles_{account_id}.csv'
 
     # List all roles in the account
     roles = list_iam_roles(exclude_paths, exclude_role_prefix)
