@@ -49,15 +49,15 @@ jobs:
           print('::set-output name=accounts_map::' + json.dumps(accounts_map))
                     "       
 
-    run-scripts:
-      needs: setup
-      runs-on: ubuntu-latest
-      strategy:
-        matrix:
-          account_id: ${{ fromJson(needs.setup.outputs.accounts_map) }}
-      environment:
-        name: AssumeRole
-        url: ${{ matrix.account_id }}
+  run-scripts:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        account_id: ${{ fromJson(needs.setup.outputs.accounts_map) }}
+    environment:
+      name: AssumeRole
+      url: ${{ matrix.account_id }}
 
       steps:
         - name: Checkout code
