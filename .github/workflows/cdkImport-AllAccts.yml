@@ -106,11 +106,11 @@ jobs:
 
           # Run the script to generate IAM roles CSV
           output_csv="iam_roles_${{ matrix.account_id }}_$(date +'%Y%m%d%H%M%S').csv"
-          AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN python .github/workflows/scripts/Iamrolefinalscript.py --output $output_csv
+          AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN python3 .github/workflows/scripts/Iamrolefinalscript.py --output $output_csv
 
           # Store the CSV file path in the GitHub environment variable for later use
           echo "CSV_FILE_PATH=$output_csv" >> $GITHUB_ENV
-          
+
       - name: Show CSV file contents
         run: |
           echo "Displaying contents of ${{ env.CSV_FILE_PATH }}:"
@@ -118,7 +118,7 @@ jobs:
 
       - name: Generate YAML from CSV
         run: |
-          AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN python .github/workflows/scripts/detectIamRolesFromCsv.py ${{ env.CSV_FILE_PATH }}
+          AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN python3 .github/workflows/scripts/detectIamRolesFromCsv.py ${{ env.CSV_FILE_PATH }}
 
       - name: Upload YAML file as an artifact
         uses: actions/upload-artifact@v3
