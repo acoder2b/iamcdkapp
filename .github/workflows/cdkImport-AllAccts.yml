@@ -1,0 +1,100 @@
+name: Generate IAM Roles YAML for Multiple Accounts
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  organizations: read # Needed to access AWS Organizations API
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      accounts: ${{ steps.generate_accounts.outputs.accounts_map }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install boto3 pyyaml
+
+      - name: Configure AWS Credentials using OIDC Identity
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+           role-to-assume: arn:aws:iam::909180469036:role/OIDC-GitHubActionsRole
+           role-session-name: OIDC-GitHubActionsRole
+           aws-region: us-east-1    
+           audience: sts.amazonaws.com
+           role-duration-seconds: 3600
+
+      - name: List AWS Accounts
+        id: generate_accounts
+        run: |
+          python -c "
+import boto3
+import json
+
+client = boto3.client('organizations')
+accounts = client.list_accounts()
+accounts_map = {account['Id']: account['Name'] for account in accounts['Accounts']}
+print('::set-output name=accounts_map::' + json.dumps(accounts_map))
+          "
+          
+  run-scripts:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        account_id: ${{ fromJson(needs.setup.outputs.accounts) }}
+    environment:
+      name: AssumeRole
+      url: ${{ matrix.account_id }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install boto3 pyyaml
+
+      - name: Assume Role in Child Account
+        run: |
+          role_arn="arn:aws:iam::${{ matrix.account_id }}:role/GitHubActionsRole"
+          credentials=$(aws sts assume-role --role-arn $role_arn --role-session-name github-actions || { echo "Failed to assume role: $role_arn"; exit 1; })
+          export TARGET_AWS_ACCESS_KEY_ID=$(echo $credentials | jq -r '.Credentials.AccessKeyId')
+          export TARGET_AWS_SECRET_ACCESS_KEY=$(echo $credentials | jq -r '.Credentials.SecretAccessKey')
+          export TARGET_AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
+
+          # Run the script to generate IAM roles CSV
+          AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN python .github/workflows/scripts/Iamrolefinalscript.py
+
+      - name: Set CSV file path
+        run: echo "CSV_FILE_PATH=$(ls iam_roles_*.csv)" >> $GITHUB_ENV
+
+      - name: Generate YAML from CSV
+        run: |
+          AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN python .github/workflows/scripts/detectIamRolesFromCsv.py ${{ env.CSV_FILE_PATH }}
+
+      - name: Upload YAML file as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: iam-roles-yaml-${{ matrix.account_id }}
+          path: '*.yaml'
+

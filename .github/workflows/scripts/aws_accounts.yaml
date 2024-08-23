@@ -1,0 +1,42 @@
+- Id: '443253904861'
+  Name: TestSharedServices
+  Email: kamaljas+test234@amazon.com
+  Status: ACTIVE
+  JoinedMethod: CREATED
+  JoinedTimestamp: '2023-02-17T11:36:38.810000-05:00'
+- Id: '233693416966'
+  Name: Test-InfraAccount
+  Email: kamaljas+testinfra909180469036@amazon.com
+  Status: ACTIVE
+  JoinedMethod: CREATED
+  JoinedTimestamp: '2023-02-17T10:53:29.452000-05:00'
+- Id: '909180469036'
+  Name: First account
+  Email: kamaljas+Intro@amazon.com
+  Status: ACTIVE
+  JoinedMethod: INVITED
+  JoinedTimestamp: '2022-09-21T15:39:09.674000-04:00'
+- Id: '118575936588'
+  Name: kamal jassal
+  Email: kamaljas+ss909180469036@amazon.com
+  Status: ACTIVE
+  JoinedMethod: CREATED
+  JoinedTimestamp: '2023-02-17T11:25:25.083000-05:00'
+- Id: '482205423380'
+  Name: Network
+  Email: kamaljas+intro+network@amazon.com
+  Status: ACTIVE
+  JoinedMethod: CREATED
+  JoinedTimestamp: '2022-09-21T21:58:58.078000-04:00'
+- Id: '780258025701'
+  Name: Log Archive
+  Email: kamaljas+tef+log@amazon.com
+  Status: ACTIVE
+  JoinedMethod: CREATED
+  JoinedTimestamp: '2022-09-21T16:29:09.319000-04:00'
+- Id: '596905249077'
+  Name: Audit
+  Email: kamaljas+tef+audit@amazon.com
+  Status: ACTIVE
+  JoinedMethod: CREATED
+  JoinedTimestamp: '2022-09-21T16:29:17.008000-04:00'
