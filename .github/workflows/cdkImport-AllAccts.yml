@@ -11,7 +11,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      accounts_map: ${{ steps.generate_accounts.outputs.accounts_map }}
+      accounts_map: ${{ steps.generate_accounts.outputs.accounts }}
 
     steps:
       - name: Checkout code
@@ -45,9 +45,9 @@ jobs:
 
           client = boto3.client('organizations')
           accounts = client.list_accounts()
-          accounts_map = {account['Id']: account['Name'] for account in accounts['Accounts']}
-          print('::set-output name=accounts_map::' + json.dumps(accounts_map))
-                    "       
+          account_ids = [account['Id'] for account in accounts['Accounts']]
+          print('::set-output name=accounts::' + json.dumps(account_ids))
+          "      
 
   run-scripts:
     needs: setup
