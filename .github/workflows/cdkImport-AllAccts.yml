@@ -118,7 +118,7 @@ jobs:
 
       - name: Generate YAML from CSV
         run: |
-          AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN python3 .github/workflows/scripts/detectIamRolesFromCsv.py ${{ env.CSV_FILE_PATH }}
+          python3 .github/workflows/scripts/detectIamRolesFromCsv.py ${{ env.CSV_FILE_PATH }}
 
       - name: Upload YAML file as an artifact
         uses: actions/upload-artifact@v3
