@@ -28,6 +28,8 @@ def get_inline_policies(role_name):
     
     return inline_policies
 
+
+
 def create_yaml_file(roles_data):
     yaml_content = []
     
@@ -103,6 +105,10 @@ def create_yaml_file(roles_data):
     final_yaml_content = yaml_content
 
 
+    def get_account_id():
+        sts_client = boto3.client('sts', region_name='us-east-1')
+        identity = sts_client.get_caller_identity()
+        return identity['Account']
 
 
     # Custom representer for OrderedDict
@@ -117,8 +123,9 @@ def create_yaml_file(roles_data):
 
     yaml.add_representer(list, list_representer)
     # Save YAML file
+    account_id = get_account_id()
     current_time = datetime.now().strftime("%Y%m%d%H%M%S")
-    yaml_file_name = f"iam_roles_{current_time}.yaml"
+    yaml_file_name = f"iam_roles_{account_id}.yaml"
     with open(yaml_file_name, 'w') as yaml_file:
         yaml.dump(yaml_content, yaml_file, default_flow_style=False, sort_keys=False)
     print(f"YAML file {yaml_file_name} created successfully.")
