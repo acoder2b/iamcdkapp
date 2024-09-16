@@ -23,14 +23,20 @@ class IamRoleConfigStack(Stack):
         """Create an IAM role based on the provided configuration."""
         trust_policy = role.get('trustPolicy', {})
 
-        # Handle inline policies
-        inline_policies = [
-            iam.CfnRole.PolicyProperty(
-                policy_name=name,
-                policy_document=doc
-            )
-            for name, doc in self.create_inline_policies(role.get('inlinePolicies', [])).items()
-        ]
+        # # Handle inline policies
+        # inline_policies = [
+        #     iam.CfnRole.PolicyProperty(
+        #         policy_name=name,
+        #         policy_document=doc
+        #     )
+        #     for name, doc in self.create_inline_policies(role.get('inlinePolicies', [])).items()
+        # ]
+        inline_policies = self.create_inline_policies(role.get('inlinePolicies', {}))
+
+        if inline_policies:
+            logger.info(f"Adding inline policies for role: {role['roleName']}")
+        else:
+            logger.warning(f"No inline policies found for role: {role['roleName']}")
 
         # # Use CfnRole to directly inject the trust policy JSON
         # iam_role = iam.CfnRole(
@@ -82,6 +88,36 @@ class IamRoleConfigStack(Stack):
 
         logger.info(f"Created IAM role {role['roleName']} with direct JSON trust policy.")
 
+    def create_inline_policies(self, inline_policies_config: Dict[str, Any]) -> List[iam.CfnRole.PolicyProperty]:
+        """Create inline policies from the configuration."""
+        inline_policies = []
+
+        # Ensure inline_policies_config is a dictionary
+        if isinstance(inline_policies_config, dict):
+            for policy_name, policy_document in inline_policies_config.items():
+                logger.info(f"Processing inline policy: {policy_name}")
+                
+                if policy_document:
+                    # Remove empty condition fields if present
+                    for statement in policy_document.get('Statement', []):
+                        if 'Condition' in statement and not statement['Condition']:
+                            del statement['Condition']
+
+                    # Append each policy as a CfnRole.PolicyProperty
+                    inline_policies.append(
+                        iam.CfnRole.PolicyProperty(
+                            policy_name=policy_name,
+                            policy_document=policy_document
+                        )
+                    )
+                else:
+                    logger.warning(f"Policy document for {policy_name} is empty or invalid.")
+        else:
+            logger.error("inlinePolicies config is not a dictionary. Please check your YAML format.")
+
+        return inline_policies
+
+
     # def create_inline_policies(self, inline_policies_config: List[Dict[str, Any]]) -> Dict[str, Any]:
     #     """Create inline policies from the configuration."""
     #     inline_policies = {}
@@ -104,20 +140,20 @@ class IamRoleConfigStack(Stack):
 
     #     return inline_policies
 
-    def create_inline_policies(self, inline_policies_config: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Create inline policies from the configuration."""
-        inline_policies = {}
+    # def create_inline_policies(self, inline_policies_config: List[Dict[str, Any]]) -> Dict[str, Any]:
+    #     """Create inline policies from the configuration."""
+    #     inline_policies = {}
 
-        for policy in inline_policies_config:
-            if 'policyName' in policy and 'policyDocument' in policy:
-                policy_document = policy['policyDocument']
+    #     for policy in inline_policies_config:
+    #         if 'policyName' in policy and 'policyDocument' in policy:
+    #             policy_document = policy['policyDocument']
 
-                # Remove empty condition fields if present
-                for statement in policy_document.get('Statement', []):
-                    if 'Condition' in statement and not statement['Condition']:
-                        del statement['Condition']
+    #             # Remove empty condition fields if present
+    #             for statement in policy_document.get('Statement', []):
+    #                 if 'Condition' in statement and not statement['Condition']:
+    #                     del statement['Condition']
 
-                # Correctly add the policy to the dictionary
-                inline_policies[policy['policyName']] = policy_document
+    #             # Correctly add the policy to the dictionary
+    #             inline_policies[policy['policyName']] = policy_document
 
-        return inline_policies    
+    #     return inline_policies    
