@@ -1,7 +1,6 @@
 import boto3
 import yaml
 import logging
-from collections import OrderedDict
 from datetime import datetime
 from botocore.exceptions import BotoCoreError, ClientError
 
@@ -104,7 +103,8 @@ def get_inline_policies(role_name):
     except Exception as e:
         logging.error(f"Error fetching inline policies for role {role_name}: {e}")
     
-    return inline_policies
+    # Return None if no inline policies are found, otherwise return the policies
+    return inline_policies if inline_policies else None
 
 
 def create_yaml_file(roles_data, account_id):
@@ -114,6 +114,8 @@ def create_yaml_file(roles_data, account_id):
     yaml_content = []
 
     logging.info("Creating YAML content for IAM roles...")
+    iam_client = boto3.client('iam')
+
     for role_data in roles_data:
         role_name = role_data['RoleName']
         description = role_data.get('Description')
@@ -123,7 +125,6 @@ def create_yaml_file(roles_data, account_id):
         tags = [{'key': tag['Key'], 'value': tag['Value']} for tag in role_data.get('Tags', [])] if 'Tags' in role_data else None
 
         # Get attached managed policies
-        iam_client = boto3.client('iam')
         attached_policies = iam_client.list_attached_role_policies(RoleName=role_name)['AttachedPolicies']
         managed_policies = [policy['PolicyArn'] for policy in attached_policies] if attached_policies else None
 
@@ -133,8 +134,10 @@ def create_yaml_file(roles_data, account_id):
         # Get permission boundary
         permission_boundary = role_data.get('PermissionsBoundary', {}).get('PermissionsBoundaryArn') if role_data.get('PermissionsBoundary') else None
 
-        # Create YAML structure using OrderedDict to maintain order
-        role_dict = OrderedDict([('roleName', role_name)])
+        # Create YAML structure using dict to maintain order
+        role_dict = {
+            'roleName': role_name
+        }
 
         if description:
             role_dict['description'] = description
@@ -145,25 +148,24 @@ def create_yaml_file(roles_data, account_id):
         if trust_policy:
             trust_policy_statements = []
             for statement in trust_policy.get('Statement', []):
-                statement_dict = OrderedDict([
-                    ('Effect', statement['Effect']),
-                    ('Principal', OrderedDict([
-                        (key, value if isinstance(value, list) else [value])
-                        for key, value in statement['Principal'].items()
-                    ])),
-                    ('Action', statement['Action'])
-                ])
+                statement_dict = {
+                    'Effect': statement['Effect'],
+                    'Principal': {k: (v if isinstance(v, list) else [v]) for k, v in statement['Principal'].items()},
+                    'Action': statement['Action']
+                }
+                # Only add Condition if it exists and is not empty
                 if 'Condition' in statement and statement['Condition']:
                     statement_dict['Condition'] = statement['Condition']
                 trust_policy_statements.append(statement_dict)
 
-            role_dict['trustPolicy'] = OrderedDict([
-                ('Version', trust_policy.get('Version', '2012-10-17')),
-                ('Statement', trust_policy_statements)
-            ])
+            role_dict['trustPolicy'] = {
+                'Version': trust_policy.get('Version', '2012-10-17'),
+                'Statement': trust_policy_statements
+            }
         if managed_policies:
             role_dict['managedPolicies'] = managed_policies
         if inline_policies:
+            # Process inline policies to remove empty conditions
             processed_inline_policies = {}
             for policy_name, policy_document in inline_policies.items():
                 for statement in policy_document.get('Statement', []):
@@ -177,6 +179,7 @@ def create_yaml_file(roles_data, account_id):
             role_dict['tags'] = tags
 
         role_dict['deletionPolicy'] = 'RETAIN'
+
         yaml_content.append(role_dict)
 
     # Save YAML file
