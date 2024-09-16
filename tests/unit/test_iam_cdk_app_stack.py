@@ -7,7 +7,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
     def setUp(self):
         self.app = App()
 
-    def test_iam_role_creation(self):
+    def test_iam_role_creation_with_trust_policy(self):
         config_data = {
             "roles": [
                 {
@@ -29,7 +29,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         stack = IamRoleConfigStack(self.app, "TestStack", file_path=None, roles=config_data['roles'], account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
-        # Validate that the IAM Role has been created with the correct name and policies
+        # Assert the IAM Role is created with the correct trust policy and managed policy
         template.resource_count_is("AWS::IAM::Role", 1)
         template.has_resource_properties("AWS::IAM::Role", {
             "RoleName": "TestRole",
@@ -49,21 +49,18 @@ class TestIamRoleConfigStack(unittest.TestCase):
             "roles": [
                 {
                     "roleName": "TestRoleWithInlinePolicy",
-                    "inlinePolicies": [
-                        {
-                            "policyName": "InlinePolicy",
-                            "policyDocument": {
-                                "Version": "2012-10-17",
-                                "Statement": [
-                                    {
-                                        "Effect": "Allow",
-                                        "Action": "s3:ListBucket",
-                                        "Resource": "*"
-                                    }
-                                ]
-                            }
+                    "inlinePolicies": {
+                        "s3ReadOnlyPolicy": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": "s3:ListBucket",
+                                    "Resource": "*"
+                                }
+                            ]
                         }
-                    ]
+                    }
                 }
             ]
         }
@@ -73,7 +70,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         # Validate that the IAM Role has the inline policy attached
         template.has_resource_properties("AWS::IAM::Role", {
             "Policies": assertions.Match.array_with([{
-                "PolicyName": "InlinePolicy",
+                "PolicyName": "s3ReadOnlyPolicy",
                 "PolicyDocument": {
                     "Version": "2012-10-17",
                     "Statement": [{
@@ -85,54 +82,90 @@ class TestIamRoleConfigStack(unittest.TestCase):
             }])
         })
 
-    def test_iam_role_with_conditions(self):
+    def test_iam_role_with_session_duration_and_permissions_boundary(self):
         config_data = {
             "roles": [
                 {
-                    "roleName": "TestRoleWithConditions",
-                    "trustPolicy": {
-                        "Version": "2012-10-17",
-                        "Statement": [
-                            {
-                                "Effect": "Allow",
-                                "Principal": {"Service": "lambda.amazonaws.com"},
-                                "Action": "sts:AssumeRole",
-                                "Condition": {
-                                    "StringEquals": {
-                                        "aws:PrincipalTag/Environment": "Production"
-                                    }
-                                }
-                            }
-                        ]
-                    }
+                    "roleName": "TestRoleWithSession",
+                    "sessionDuration": 7200,
+                    "permissionsBoundary": "arn:aws:iam::aws:policy/AdministratorAccess"
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithConditions", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithSession", file_path=None, roles=config_data['roles'], account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
-        # Validate that the IAM Role has the condition in the trust policy
+        # Assert that the role has the correct session duration and permissions boundary
         template.has_resource_properties("AWS::IAM::Role", {
-            "AssumeRolePolicyDocument": {
-                "Version": "2012-10-17",
-                "Statement": [{
-                    "Effect": "Allow",
-                    "Principal": {"Service": "lambda.amazonaws.com"},
-                    "Action": "sts:AssumeRole",
-                    "Condition": {
-                        "StringEquals": {
-                            "aws:PrincipalTag/Environment": "Production"
-                        }
-                    }
-                }]
-            }
+            "RoleName": "TestRoleWithSession",
+            "MaxSessionDuration": 7200,
+            "PermissionsBoundary": "arn:aws:iam::aws:policy/AdministratorAccess"
         })
 
-    def test_iam_role_with_external_id_condition(self):
+    def test_iam_role_with_tags(self):
         config_data = {
             "roles": [
                 {
-                    "roleName": "TestRoleWithExternalId",
+                    "roleName": "TestRoleWithTags",
+                    "tags": [
+                        {"key": "Environment", "value": "Production"}
+                    ]
+                }
+            ]
+        }
+        stack = IamRoleConfigStack(self.app, "TestStackWithTags", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        template = assertions.Template.from_stack(stack)
+
+        # Assert that the role has the correct tags
+        template.has_resource_properties("AWS::IAM::Role", {
+            "RoleName": "TestRoleWithTags",
+            "Tags": [
+                {"Key": "Environment", "Value": "Production"}
+            ]
+        })
+
+    def test_iam_role_with_deletion_policy_retain(self):
+        config_data = {
+            "roles": [
+                {
+                    "roleName": "TestRoleWithRetain",
+                    "deletionPolicy": "RETAIN"
+                }
+            ]
+        }
+        stack = IamRoleConfigStack(self.app, "TestStackWithRetain", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        template = assertions.Template.from_stack(stack)
+
+        # Assert that the role has the DeletionPolicy RETAIN
+        role_resource = template.find_resources("AWS::IAM::Role")
+        self.assertIn("TestRoleWithRetain", role_resource)
+        self.assertEqual(role_resource["TestRoleWithRetain"]["DeletionPolicy"], "Retain")
+
+    def test_invalid_inline_policy(self):
+        config_data = {
+            "roles": [
+                {
+                    "roleName": "TestRoleWithInvalidInlinePolicy",
+                    "inlinePolicies": [
+                        {"policyName": "InvalidPolicy", "policyDocument": None}  # Invalid document
+                    ]
+                }
+            ]
+        }
+        stack = IamRoleConfigStack(self.app, "TestStackWithInvalidPolicy", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        template = assertions.Template.from_stack(stack)
+
+        # Assert that no inline policies are attached
+        template.has_resource_properties("AWS::IAM::Role", {
+            "RoleName": "TestRoleWithInvalidInlinePolicy",
+            "Policies": assertions.Match.absent()
+        })
+
+    def test_iam_role_with_trust_policy_conditions(self):
+        config_data = {
+            "roles": [
+                {
+                    "roleName": "TestRoleWithCondition",
                     "trustPolicy": {
                         "Version": "2012-10-17",
                         "Statement": [
@@ -151,11 +184,12 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithExternalId", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithCondition", file_path=None, roles=config_data['roles'], account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
-        # Validate that the IAM Role has the External ID condition in the trust policy
+        # Assert that the trust policy includes the condition sts:ExternalId
         template.has_resource_properties("AWS::IAM::Role", {
+            "RoleName": "TestRoleWithCondition",
             "AssumeRolePolicyDocument": {
                 "Version": "2012-10-17",
                 "Statement": [{
@@ -170,7 +204,6 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }]
             }
         })
-
 
 if __name__ == '__main__':
     unittest.main()
