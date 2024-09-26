@@ -1,3 +1,4 @@
+import logging
 import boto3
 import csv
 from datetime import datetime
@@ -23,28 +24,81 @@ def list_iam_roles(exclude_paths, exclude_role_prefix):
 
     return roles
 
+# def list_cf_stack_roles():
+#     cf_client = boto3.client('cloudformation', region_name='us-east-1')
+#     paginator = cf_client.get_paginator('describe_stacks')
+#     roles = []
+
+#     for page in paginator.paginate():
+#         for stack in page['Stacks']:
+#             stack_name = stack['StackName']
+#             resources = cf_client.describe_stack_resources(StackName=stack_name)['StackResources']
+#             for resource in resources:
+#                 if resource['ResourceType'] == 'AWS::IAM::Role':
+#                     role_info = {
+#                         'StackName': stack_name,
+#                         'LogicalID': resource['LogicalResourceId'],
+#                         'PhysicalID': resource['PhysicalResourceId'],
+#                         'Type': resource['ResourceType'],
+#                         'Status': resource['ResourceStatus']
+#                     }
+#                     roles.append(role_info)
+#                     print(f"Found IAM Role in CFN Stack: {role_info}")
+
+#     return roles
+import boto3
+from botocore.exceptions import BotoCoreError, ClientError
+
+import boto3
+from botocore.exceptions import BotoCoreError, ClientError
+
 def list_cf_stack_roles():
-    cf_client = boto3.client('cloudformation', region_name='us-east-1')
-    paginator = cf_client.get_paginator('describe_stacks')
+    """
+    List IAM roles provisioned by CloudFormation stacks in all enabled regions and log their stack names.
+    """
+    session = boto3.Session()
+    
+    try:
+        # Get enabled regions for the account
+        enabled_regions = session.get_available_regions('cloudformation')
+    except (BotoCoreError, ClientError) as error:
+        logging.error(f"Error retrieving enabled regions: {error}")
+        return []
+
     roles = []
 
-    for page in paginator.paginate():
-        for stack in page['Stacks']:
-            stack_name = stack['StackName']
-            resources = cf_client.describe_stack_resources(StackName=stack_name)['StackResources']
-            for resource in resources:
-                if resource['ResourceType'] == 'AWS::IAM::Role':
-                    role_info = {
-                        'StackName': stack_name,
-                        'LogicalID': resource['LogicalResourceId'],
-                        'PhysicalID': resource['PhysicalResourceId'],
-                        'Type': resource['ResourceType'],
-                        'Status': resource['ResourceStatus']
-                    }
-                    roles.append(role_info)
-                    print(f"Found IAM Role in CFN Stack: {role_info}")
+    logging.info("Listing IAM roles from CloudFormation stacks in all enabled regions...")
+    for region in enabled_regions:
+        try:
+            cf_client = session.client('cloudformation', region_name=region)
+            paginator = cf_client.get_paginator('describe_stacks')
+            for page in paginator.paginate():
+                for stack in page['Stacks']:
+                    stack_name = stack['StackName']
+                    resources = cf_client.describe_stack_resources(StackName=stack_name)['StackResources']
+                    for resource in resources:
+                        if resource['ResourceType'] == 'AWS::IAM::Role':
+                            role_info = {
+                                'Region': region,
+                                'StackName': stack_name,
+                                'LogicalID': resource['LogicalResourceId'],
+                                'PhysicalID': resource['PhysicalResourceId'],
+                                'Type': resource['ResourceType'],
+                                'Status': resource['ResourceStatus']
+                            }
+                            roles.append(role_info)
+                            logging.info(f"Role '{resource['PhysicalResourceId']}' is provisioned by CloudFormation stack '{stack_name}' in region '{region}'.")
 
+        except (BotoCoreError, ClientError) as error:
+            if 'InvalidClientTokenId' in str(error):
+                logging.warning(f"Region {region} is not enabled for this account. Skipping.")
+            else:
+                logging.error(f"Error listing CloudFormation stack roles in region {region}: {error}")
+
+    logging.info(f"Total IAM roles in CloudFormation stacks found across all enabled regions: {len(roles)}")
     return roles
+
+
 
 def get_account_id():
     sts_client = boto3.client('sts', region_name='us-east-1')
