@@ -73,6 +73,7 @@ roles:
               'aws:MultiFactorAuthPresent': true
     managedPolicies:
       - arn:aws:iam::aws:policy/AdministratorAccess
+      - arn:aws:iam::aws:policy/AdministratorAccess-Amplify
     inlinePolicies:
       s3ReadOnlyPolicy:
         Version: '2012-10-17'
@@ -88,6 +89,4 @@ roles:
         value: testtag1
       - key: managedBy  
         value: IamPipeline
-      - key : testkey2
-        value: testtag2  
 
