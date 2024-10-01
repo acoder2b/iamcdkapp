@@ -88,4 +88,6 @@ roles:
         value: testtag1
       - key: managedBy  
         value: IamPipeline
+      - key : testkey2
+        value: testtag2  
 
