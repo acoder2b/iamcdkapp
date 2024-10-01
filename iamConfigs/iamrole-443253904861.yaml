@@ -86,4 +86,6 @@ roles:
     tags:
       - key: testkey
         value: testtag1
+      - key: managedBy  
+        value: IamPipeline
 
