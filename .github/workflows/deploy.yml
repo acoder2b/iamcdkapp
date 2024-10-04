@@ -109,7 +109,7 @@ jobs:
             export TARGET_AWS_SESSION_TOKEN=$(echo $credentials | jq -r '.Credentials.SessionToken')
 
             # Deploy the stack using the pre-synthesized template
-            AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN cdk deploy $stack_name --app "cdk.out" --require-approval never -r $role_arn || { echo "Failed to deploy stack: $stack_name"; exit 1; }
+            AWS_ACCESS_KEY_ID=$TARGET_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$TARGET_AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN=$TARGET_AWS_SESSION_TOKEN cdk deploy $stack_name --app "cdk.out" --require-approval never  || { echo "Failed to deploy stack: $stack_name"; exit 1; }
 
             # Unset AWS credentials
             unset TARGET_AWS_ACCESS_KEY_ID TARGET_AWS_SECRET_ACCESS_KEY TARGET_AWS_SESSION_TOKEN
