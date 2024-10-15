@@ -31,3 +31,5 @@ roles:
     tags:
       - key: testkey
         value: testtag1
+      - key: testkey1
+        value: testtag11
