@@ -3,6 +3,7 @@ account_id:
   - "482205423380"
   - "443253904861"
 region: "us-east-1"
+stack_name: iampipeline-stack
 
 roles:
   - roleName: test-sh-security-iamrole-breakglassTEST11

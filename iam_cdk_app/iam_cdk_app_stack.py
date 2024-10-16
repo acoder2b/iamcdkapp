@@ -12,12 +12,32 @@ import yaml
 logger = logging.getLogger(__name__)
 
 class IamRoleConfigStack(Stack):
-    def __init__(self, scope: Construct, id: str, file_path: str, account_id: str, roles: Dict[str, Any], **kwargs):
+    def __init__(self, scope: Construct, id: str, file_path: str, account_id: str, resources: Dict[str, Any], **kwargs):
         super().__init__(scope, id, **kwargs)
 
+        roles = resources.get("roles", [])
         for role in roles:
-            role_name = role.get('roleName')  # Use the role name directly from the YAML file
             self.create_iam_role(role)
+
+        # Process and create custom managed policies
+        managed_policies = resources.get("iam_policies", [])
+        for policy in managed_policies:
+            self.create_managed_policy(policy)
+
+    def create_managed_policy(self, policy_config: Dict[str, Any]) -> None:
+        """Create a custom managed IAM policy based on the provided configuration."""
+        policy_name = policy_config.get('policyName')
+        policy_document = policy_config.get('policyDocument', {})
+
+        # Create the IAM managed policy
+        iam_policy = iam.CfnManagedPolicy(
+            self,
+            id=f"{policy_name}-ManagedPolicy",
+            managed_policy_name=policy_name,
+            policy_document=policy_document,
+        )
+
+        logger.info(f"Created IAM managed policy {policy_name}")
 
     def create_iam_role(self, role: Dict[str, Any]) -> None:
         """Create an IAM role based on the provided configuration."""

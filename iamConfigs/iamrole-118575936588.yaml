@@ -1,6 +1,7 @@
 account_id: 
   - "118575936588"
 region: "us-east-1"
+stack_name: iampipeline-stack
 
 roles:
   - roleName: test-sh-security-iamrole-breakglass
@@ -51,3 +52,26 @@ roles:
     # - key: environment
     #   value: dev
 
+iam_policies:
+  - policyName: CustomPolicy1
+    policyDocument:
+      Version: '2012-10-17'
+      Statement:
+        - Effect: Allow
+          Action:
+            - s3:ListBucket
+          Resource: 
+            - arn:aws:s3:::example-bucket
+
+  - policyName: CustomPolicy2
+    policyDocument:
+      Version: '2012-10-17'
+      Statement:
+        - Effect: Deny
+          Action:
+            - ec2:StartInstances
+            - ec2:StopInstances
+          Resource: "*"
+          Condition:
+            StringNotEquals:
+              aws:username: "admin-user"
