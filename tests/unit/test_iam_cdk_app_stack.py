@@ -8,7 +8,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         self.app = App()
 
     def test_iam_role_creation_with_trust_policy(self):
-        config_data = {
+        resources = {
             "roles": [
                 {
                     "roleName": "TestRole",
@@ -26,7 +26,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStack", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStack", file_path=None, resources=resources, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Assert the IAM Role is created with the correct trust policy and managed policy
@@ -45,7 +45,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         })
 
     def test_inline_policy_creation(self):
-        config_data = {
+        resources = {
             "roles": [
                 {
                     "roleName": "TestRoleWithInlinePolicy",
@@ -64,7 +64,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithInlinePolicy", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithInlinePolicy", file_path=None, resources=resources, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Validate that the IAM Role has the inline policy attached
@@ -83,7 +83,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         })
 
     def test_iam_role_with_session_duration_and_permissions_boundary(self):
-        config_data = {
+        resources = {
             "roles": [
                 {
                     "roleName": "TestRoleWithSession",
@@ -92,7 +92,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithSession", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithSession", file_path=None, resources=resources, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Assert that the role has the correct session duration and permissions boundary
@@ -103,7 +103,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         })
 
     def test_iam_role_with_tags(self):
-        config_data = {
+        resources = {
             "roles": [
                 {
                     "roleName": "TestRoleWithTags",
@@ -113,7 +113,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithTags", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithTags", file_path=None, resources=resources, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Assert that the role has the correct tags
@@ -125,7 +125,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         })
 
     def test_iam_role_with_deletion_policy_retain(self):
-        config_data = {
+        resources = {
             "roles": [
                 {
                     "roleName": "TestRoleWithRetain",
@@ -133,7 +133,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithRetain", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithRetain", file_path=None, resources=resources, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Assert that the role has the DeletionPolicy RETAIN
@@ -142,7 +142,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         self.assertEqual(role_resource["TestRoleWithRetain"]["DeletionPolicy"], "Retain")
 
     def test_invalid_inline_policy(self):
-        config_data = {
+        resources = {
             "roles": [
                 {
                     "roleName": "TestRoleWithInvalidInlinePolicy",
@@ -152,7 +152,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithInvalidPolicy", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithInvalidPolicy", file_path=None, resources=resources, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Assert that no inline policies are attached
@@ -162,7 +162,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
         })
 
     def test_iam_role_with_trust_policy_conditions(self):
-        config_data = {
+        resources = {
             "roles": [
                 {
                     "roleName": "TestRoleWithCondition",
@@ -184,7 +184,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }
             ]
         }
-        stack = IamRoleConfigStack(self.app, "TestStackWithCondition", file_path=None, roles=config_data['roles'], account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackWithCondition", file_path=None, resources=resources, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
         # Assert that the trust policy includes the condition sts:ExternalId
