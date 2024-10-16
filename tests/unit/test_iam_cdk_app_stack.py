@@ -204,6 +204,50 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }]
             }
         })
+    def test_managed_policy_creation(self):
+        resources = {
+            "roles": [],  # Empty roles for this test case
+            "iam_policies": [  # Corrected key to match the stack's implementation
+                {
+                    "policyName": "TestManagedPolicy",
+                    "policyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Action": ["s3:ListBucket"],
+                                "Resource": ["arn:aws:s3:::example-bucket"]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+
+        stack = IamRoleConfigStack(self.app, "TestStack", file_path=None, resources=resources, account_id="123456789012")
+        template = assertions.Template.from_stack(stack)
+
+        # Debug: print the synthesized template to inspect the actual output
+        print(template.to_json())
+
+        # Verify that a managed policy is created with the expected properties
+        template.resource_count_is("AWS::IAM::ManagedPolicy", 1)
+        template.has_resource_properties("AWS::IAM::ManagedPolicy", {
+            "ManagedPolicyName": "TestManagedPolicy",
+            "PolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": ["s3:ListBucket"],
+                        "Resource": ["arn:aws:s3:::example-bucket"]
+                    }
+                ]
+            }
+        })
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

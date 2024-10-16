@@ -36,3 +36,22 @@ roles:
         value: testtag11
       - key: testkey12
         value: testtag112        
+
+iam_policies:
+  - policyName: CustomPolicy2
+    policyDocument:
+      Version: '2012-10-17'
+      Statement:
+      - Sid: VisualEditor0
+        Effect: Allow
+        Action: iam:*
+        Resource: "*"
+      - Sid: VisualEditor1
+        Effect: Allow
+        Action: lambda:*
+        Resource: "*"
+        Condition:
+          StringEquals:
+            aws:PrincipalTag/test: test
+          Bool:
+            aws:ViaAWSService: 'true'
