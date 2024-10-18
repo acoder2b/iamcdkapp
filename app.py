@@ -11,6 +11,7 @@ from iam_cdk_app.iam_cdk_app_stack import IamRoleConfigStack
 import glob
 import yaml
 from collections import defaultdict
+import hashlib
 
 # Load environment variables from .env file
 load_dotenv()

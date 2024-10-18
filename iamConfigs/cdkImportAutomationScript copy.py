@@ -4,76 +4,11 @@ import logging
 from datetime import datetime
 from botocore.exceptions import BotoCoreError, ClientError
 
-
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def list_cf_stack_policies(account_id):
-    """
-    List IAM managed policies provisioned by CloudFormation stacks and log their stack names.
-    """
-    cf_client = boto3.client('cloudformation', region_name='us-east-1')
-    paginator = cf_client.get_paginator('describe_stacks')
-    cf_policy_arns = []
 
-    logging.info("Listing IAM managed policies from CloudFormation stacks...")
-    try:
-        for page in paginator.paginate():
-            for stack in page['Stacks']:
-                stack_name = stack['StackName']
-                resources = cf_client.describe_stack_resources(StackName=stack_name)['StackResources']
-                for resource in resources:
-                    if resource['ResourceType'] == 'AWS::IAM::ManagedPolicy':
-                        physical_id = resource['PhysicalResourceId']
-                        cf_policy_arns.append(f'arn:aws:iam::{account_id}:policy/{physical_id}')
-                        logging.info(f"Managed Policy '{physical_id}' is provisioned by CloudFormation stack '{stack_name}'.")
-
-        logging.info(f"Total IAM managed policies in CloudFormation stacks found: {len(cf_policy_arns)}")
-        return cf_policy_arns
-
-    except (BotoCoreError, ClientError) as error:
-        logging.error(f"Error listing CloudFormation stack managed policies: {error}")
-        return []
-
-def list_customer_managed_policies(exclude_policy_arns):
-    """
-    List all customer-managed IAM policies, excluding those provisioned by CloudFormation.
-    """
-    iam_client = boto3.client('iam', region_name='us-east-1')
-    paginator = iam_client.get_paginator('list_policies')
-    policies = []
-
-    logging.info("Listing IAM customer-managed policies...")
-    try:
-        for page in paginator.paginate(Scope='Local'):
-            for policy in page['Policies']:
-                if policy['Arn'] not in exclude_policy_arns:
-                    policies.append({
-                        'PolicyName': policy['PolicyName'],
-                        'PolicyArn': policy['Arn']
-                    })
-        logging.info(f"Total customer-managed policies after exclusion: {len(policies)}")
-        return policies
-
-    except (BotoCoreError, ClientError) as error:
-        logging.error(f"Error listing IAM policies: {error}")
-        return []
-
-def get_policy_details(policy_arn):
-    """
-    Get details of a customer-managed IAM policy by its ARN.
-    """
-    iam_client = boto3.client('iam')
-    try:
-        policy_version = iam_client.get_policy_version(
-            PolicyArn=policy_arn,
-            VersionId=iam_client.get_policy(PolicyArn=policy_arn)['Policy']['DefaultVersionId']
-        )
-        return policy_version['PolicyVersion']['Document']
-    except (BotoCoreError, ClientError) as error:
-        logging.error(f"Error fetching IAM policy details for {policy_arn}: {error}")
-        return None
 
 def list_iam_roles(exclude_paths, exclude_role_prefixes):
     """
@@ -111,6 +46,8 @@ def list_iam_roles(exclude_paths, exclude_role_prefixes):
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error listing IAM roles: {error}")
         return roles
+    
+
 
 def list_cf_stack_roles():
     """
@@ -128,7 +65,14 @@ def list_cf_stack_roles():
                 resources = cf_client.describe_stack_resources(StackName=stack_name)['StackResources']
                 for resource in resources:
                     if resource['ResourceType'] == 'AWS::IAM::Role':
-                        roles.append(resource['PhysicalResourceId'])
+                        role_info = {
+                            'StackName': stack_name,
+                            'LogicalID': resource['LogicalResourceId'],
+                            'PhysicalID': resource['PhysicalResourceId'],
+                            'Type': resource['ResourceType'],
+                            'Status': resource['ResourceStatus']
+                        }
+                        roles.append(role_info)
                         logging.info(f"Role '{resource['PhysicalResourceId']}' is provisioned by CloudFormation stack '{stack_name}'.")
 
         logging.info(f"Total IAM roles in CloudFormation stacks found: {len(roles)}")
@@ -136,8 +80,9 @@ def list_cf_stack_roles():
 
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error listing CloudFormation stack roles: {error}")
-        return []
+        return roles
     
+
 def get_iam_role_state(role_name):
     """
     Get details of an IAM role by its name.
@@ -152,6 +97,7 @@ def get_iam_role_state(role_name):
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error fetching IAM role state for {role_name}: {error}")
         return None
+
 
 def get_inline_policies(role_name):
     """
@@ -169,6 +115,7 @@ def get_inline_policies(role_name):
 
     # Return None if no inline policies are found, otherwise return the policies
     return inline_policies if inline_policies else None
+
 
 def create_yaml_content(roles_data):
     """
@@ -247,34 +194,44 @@ def create_yaml_content(roles_data):
 
     return yaml_content
 
-def build_full_yaml_structure(account_id, region, roles_data, policies_data):
-    """
-    Build a complete ordered YAML structure including account and policy information.
-    """
-    roles_content = create_yaml_content(roles_data)
-    
-    yaml_structure = {
-        'account_id': [account_id],
-        'region': region,
-        'stack_name': 'iampipeline-stack',
-        'roles': roles_content,
-        'iam_policies': policies_data
-    }
 
-    return yaml_structure
-
-def append_to_yaml_file(full_yaml_structure, account_id):
+def append_to_yaml_file(new_roles_data, account_id):
     """
-    Write the ordered YAML content to a file.
+    Append new roles data to the existing YAML file, maintaining proper indentation and structure.
+    If the file doesn't exist, create a new file with the new roles data.
     """
     yaml_file_name = f"iamrole-{account_id}.yaml"
 
     try:
+        with open(yaml_file_name, 'r') as yaml_file:
+            existing_content = yaml.safe_load(yaml_file) or {}
+            logging.info(f"Loaded existing content from {yaml_file_name}.")
+    except FileNotFoundError:
+        existing_content = {
+            'account_id': [account_id],
+            'stack_name': 'iampipeline-stack',
+            'roles': []
+        }
+        logging.info(f"No existing YAML file found. A new file will be created: {yaml_file_name}.")
+    except yaml.YAMLError as error:
+        logging.error(f"Error loading YAML file: {error}")
+        return
+
+    # Ensure 'roles' section exists
+    existing_content.setdefault('roles', [])
+
+    # Append new roles data
+    existing_content['roles'].extend(new_roles_data)
+
+    logging.info("Appending new roles to YAML file...")
+    try:
         with open(yaml_file_name, 'w') as yaml_file:
-            yaml.dump(full_yaml_structure, yaml_file, default_flow_style=False, sort_keys=False, indent=4)
-        logging.info(f"YAML file {yaml_file_name} created successfully.")
+            yaml.dump(existing_content, yaml_file, default_flow_style=False, sort_keys=False)
+        logging.info(f"Appended new roles to YAML file {yaml_file_name} successfully.")
     except Exception as e:
-        logging.error(f"Error writing to YAML file: {e}")
+        logging.error(f"Error appending to YAML file: {e}")
+
+
 
 def get_account_id():
     """
@@ -289,65 +246,52 @@ def get_account_id():
         logging.error(f"Error fetching account ID: {error}")
         return None
 
+
 def main():
     logging.info("Script started...")
 
-    exclude_paths = ['/aws-reserved/', '/aws-service-role/', '/service-role/', '/cdk-hnb']
+    exclude_paths = [
+        '/aws-reserved/',
+        '/aws-service-role/',
+        '/service-role/',
+        '/cdk-hnb'
+    ]
     exclude_role_prefixes = ['cdk-hnb659fds', 'StackSet', 'stackset', 'AWSControlTower']
-    account_id = get_account_id()
-    region = 'us-east-1'
 
+    # Get the account ID
+    account_id = get_account_id()
     if not account_id:
         logging.error("Failed to retrieve account ID.")
         return
 
-    # Step 1: List all roles in the account
+    # List all roles in the account
     roles = list_iam_roles(exclude_paths, exclude_role_prefixes)
 
-    # Step 2: List roles in CloudFormation stacks
+    # List roles in CloudFormation stacks
     cf_stack_roles = list_cf_stack_roles()
 
-    # Handle case where `cf_stack_roles` may not be in expected format
-    if isinstance(cf_stack_roles, list) and all(isinstance(role, dict) and 'PhysicalID' in role for role in cf_stack_roles):
-        cf_stack_role_names = {role['PhysicalID'] for role in cf_stack_roles}
-    else:
-        cf_stack_role_names = set(cf_stack_roles)  # Assuming it may just be a list of role names
-
+    # Create a set of Role Names provisioned by CloudFormation stacks
+    cf_stack_role_names = {role['PhysicalID'] for role in cf_stack_roles}
     logging.info(f"Roles provisioned by CloudFormation stacks: {cf_stack_role_names}")
 
-    # Step 3: Exclude roles that are part of CloudFormation stacks
+    # Exclude roles that are part of CloudFormation stacks
     filtered_roles = [role for role in roles if role['RoleName'] not in cf_stack_role_names]
     logging.info(f"Roles after filtering out CloudFormation provisioned roles: {len(filtered_roles)}")
 
-    # Step 4: Fetch role details for each filtered role
+    # Fetch role details and create YAML content
     roles_data = []
     for role in filtered_roles:
         role_state = get_iam_role_state(role['RoleName'])
         if role_state:
             roles_data.append(role_state)
 
-    # Step 5: List IAM policies provisioned by CloudFormation stacks
-    cf_stack_policy_arns = list_cf_stack_policies(account_id)
+    if roles_data:
+        logging.info(f"Roles data found: {len(roles_data)} roles to process.")
+        yaml_content = create_yaml_content(roles_data)
+        append_to_yaml_file(yaml_content, account_id)
+    else:
+        logging.warning("No valid role data found to process.")
 
-    # Step 6: List all customer-managed policies excluding CloudFormation-managed ones
-    customer_managed_policies = list_customer_managed_policies(cf_stack_policy_arns)
-
-    # Step 7: Only include the policy name and document (removing the ARN)
-    policies_data = []
-    for policy in customer_managed_policies:
-        policy_details = get_policy_details(policy['PolicyArn'])
-        if policy_details:
-            policies_data.append({
-                'policyName': policy['PolicyName'],  
-                'policyDocument': policy_details     
-            })
-
-    # Step 8: Build full YAML structure
-    full_yaml_structure = build_full_yaml_structure(account_id, region, roles_data, policies_data)
-
-    # Step 9: Append the data to the YAML file
-    append_to_yaml_file(full_yaml_structure, account_id)
 
 if __name__ == "__main__":
     main()
-

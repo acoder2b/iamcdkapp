@@ -7,6 +7,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 import yaml
+import hashlib
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -24,20 +25,27 @@ class IamRoleConfigStack(Stack):
         for policy in managed_policies:
             self.create_managed_policy(policy)
 
+
     def create_managed_policy(self, policy_config: Dict[str, Any]) -> None:
         """Create a custom managed IAM policy based on the provided configuration."""
         policy_name = policy_config.get('policyName')
         policy_document = policy_config.get('policyDocument', {})
 
-        # Create the IAM managed policy
+        if not policy_name:
+            raise ValueError("Policy name cannot be None or empty.")
+
+        # Create a unique id using a hash of the policy name for internal CDK use
+        unique_id = hashlib.md5(f"Policy-{policy_name}".encode()).hexdigest()[:8]
+
+        # Create the IAM managed policy with a unique id but keep the managed_policy_name unchanged
         iam_policy = iam.CfnManagedPolicy(
             self,
-            id=f"{policy_name}-ManagedPolicy",
-            managed_policy_name=policy_name,
+            id=f"ManagedPolicy-{unique_id}",  # Unique id for CDK, won't affect the resource name in AWS
+            managed_policy_name=policy_name,  # Use the provided policy_name unchanged
             policy_document=policy_document,
         )
 
-        logger.info(f"Created IAM managed policy {policy_name}")
+        logger.info(f"Imported IAM managed policy {policy_name}")
 
     def create_iam_role(self, role: Dict[str, Any]) -> None:
         """Create an IAM role based on the provided configuration."""
@@ -48,6 +56,9 @@ class IamRoleConfigStack(Stack):
             logger.info(f"Adding inline policies for role: {role['roleName']}")
         else:
             logger.warning(f"No inline policies found for role: {role['roleName']}")
+
+        # Create a unique id using a hash of the role name for internal CDK use
+        unique_id = hashlib.md5(f"Role-{role['roleName']}".encode()).hexdigest()[:8]
 
         # Create the role's properties dynamically, avoiding empty lists or unnecessary fields
         role_properties = {
@@ -73,7 +84,7 @@ class IamRoleConfigStack(Stack):
 
         # Use CfnRole to directly inject the trust policy JSON
         iam_role = iam.CfnRole(
-            self, role['roleName'],
+            self, f"Role-{unique_id}", # Unique id for CDK, won't affect the resource name in AWS
             **role_properties
         )
         # Set the DeletionPolicy to RETAIN if specified in the YAML configuration
