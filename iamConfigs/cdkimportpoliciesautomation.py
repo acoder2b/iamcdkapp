@@ -138,7 +138,8 @@ def create_yaml_content(policies):
             policy_dict['path'] = policy['Path']
  
         if policy.get('Tags'):
-            policy_dict['tags'] = {tag['Key']: tag['Value'] for tag in policy['Tags']}
+            # More explicit key-value structure for tags
+            policy_dict['tags'] = [{'Key': tag['Key'], 'Value': tag['Value']} for tag in policy['Tags']]
 
         yaml_content.append(policy_dict)
 

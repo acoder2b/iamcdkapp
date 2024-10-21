@@ -1,6 +1,7 @@
 import logging
 from typing import List, Dict, Any
 from aws_cdk import CfnDeletionPolicy
+from aws_cdk import Tags
 from aws_cdk import (
     aws_iam as iam,
     Stack
@@ -38,7 +39,7 @@ class IamRoleConfigStack(Stack):
         # Create a unique id using a hash of the policy name for internal CDK use
         unique_id = hashlib.md5(f"Policy-{policy_name}".encode()).hexdigest()[:8]
 
-        # Create the IAM managed policy with a unique id but keep the managed_policy_name unchanged
+        # Create the IAM managed policy
         iam_policy = iam.CfnManagedPolicy(
             self,
             id=f"ManagedPolicy-{unique_id}",  # Unique id for CDK, won't affect the resource name in AWS
@@ -47,12 +48,14 @@ class IamRoleConfigStack(Stack):
             description=policy_description
         )
 
-        # Add tags using TagManager after the policy is created
+        # Add tags after the policy is created using CDK's tagging mechanism
         if policy_tags:
             for tag in policy_tags:
-                iam.Tag.add(iam_policy, tag['key'], tag['value'])
+                Tags.of(iam_policy).add(tag['Key'], tag['Value'])
 
         logger.info(f"Imported IAM managed policy {policy_name}")
+
+
 
 
     def create_iam_role(self, role: Dict[str, Any]) -> None:

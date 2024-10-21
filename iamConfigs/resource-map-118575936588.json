@@ -1,8 +1,8 @@
 {
-  "ManagedPolicye48a5dbc": {
-    "PolicyArn": "arn:aws:iam::118575936588:policy/testiottester"
+  "ManagedPolicy9cc35399": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/testpolicy123"
   },
-  "ManagedPolicy63df57b0": {
-    "PolicyArn": "arn:aws:iam::118575936588:policy/testautopolicyd"
+  "ManagedPolicy9d765f81": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/testahdpolicy"
   }
 }
