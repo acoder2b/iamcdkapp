@@ -23,5 +23,9 @@ iam_policies:
             Effect: Allow
             Action: autoscaling-plans:*
             Resource: '*'
+        -   Sid: VisualEditor1
+            Effect: Allow
+            Action: ec2:*
+            Resource: '*'           
     description: test policy
     path: /
