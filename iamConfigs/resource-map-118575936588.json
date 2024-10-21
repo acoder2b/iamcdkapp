@@ -1,11 +1,8 @@
 {
-  "ManagedPolicy60266f9b": {
-    "PolicyArn": "arn:aws:iam::118575936588:policy/EC2CapacityReservationService"
+  "ManagedPolicy91f92a25": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/testcdkimportpolicy"
   },
-  "ManagedPolicy55c09a35": {
-    "PolicyArn": "arn:aws:iam::118575936588:policy/ResourceConfigurationCollectorPolicy"
-  },
-  "ManagedPolicyf7133b17": {
-    "PolicyArn": "arn:aws:iam::118575936588:policy/ConfigAccessPolicy"
+  "ManagedPolicy749e48e4": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/testautoscalingpolicy"
   }
 }

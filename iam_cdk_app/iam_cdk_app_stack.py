@@ -30,6 +30,7 @@ class IamRoleConfigStack(Stack):
         policy_name = policy_config.get('policyName')
         policy_document = policy_config.get('policyDocument', {})
         policy_tags = policy_config.get('tags', [])
+        policy_description = policy_config.get('description')
 
         if not policy_name:
             raise ValueError("Policy name cannot be None or empty.")
@@ -43,6 +44,7 @@ class IamRoleConfigStack(Stack):
             id=f"ManagedPolicy-{unique_id}",  # Unique id for CDK, won't affect the resource name in AWS
             managed_policy_name=policy_name,  # Use the provided policy_name unchanged
             policy_document=policy_document,
+            description=policy_description
         )
 
         # Add tags using TagManager after the policy is created
