@@ -925,6 +925,11 @@ roles:
   description: Allows Lambda functions to call AWS services on your behalf.
   sessionDuration: 3600
   iamPath: /
+  tags:
+    - key: Environment
+      value: Production
+    - key: Application
+      value: IIBS
   trustPolicy:
     Version: '2012-10-17'
     Statement:
@@ -936,6 +941,7 @@ roles:
       Action: sts:AssumeRole
   managedPolicies:
   - arn:aws:iam::aws:policy/AdministratorAccess
+  - arn:aws:iam::aws:policy/AmazonAthenaFullAccess
   deletionPolicy: RETAIN
 - roleName: InternalAuditInternal
   sessionDuration: 3600
