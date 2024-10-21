@@ -3,22 +3,19 @@ account_id:
 region: us-east-1
 stack_name: iampipeline-iampolicies-stack
 iam_policies:
--   policyName: testec2policy
+-   policyName: testiottester
     deletionPolicy: RETAIN
     policyDocument:
         Version: '2012-10-17'
         Statement:
         -   Sid: VisualEditor0
             Effect: Allow
-            Action: ec2:*
+            Action: iot-device-tester:*
             Resource: '*'
-    description: test policy ece2
+    description: iot tester
     path: /
--   policyName: testautopolicy
+-   policyName: testautopolicyd
     deletionPolicy: RETAIN
-    tag:
-        - Key: test1
-          Value: test1
     policyDocument:
         Version: '2012-10-17'
         Statement:
@@ -26,9 +23,5 @@ iam_policies:
             Effect: Allow
             Action: autoscaling-plans:*
             Resource: '*'
-        -   Sid: VisualEditor1
-            Effect: Allow
-            Action: ec2:*
-            Resource: '*'           
     description: test policy
     path: /

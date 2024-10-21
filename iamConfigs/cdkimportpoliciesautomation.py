@@ -90,12 +90,15 @@ def get_policy_details(policy_arn):
             PolicyArn=policy_arn,
             VersionId=policy['DefaultVersionId']
         )['PolicyVersion']['Document']
-        
+        # Get the tags associated with the policy
+        tags = iam_client.list_policy_tags(PolicyArn=policy_arn).get('Tags', [])
+
         return {
             'PolicyName': policy['PolicyName'],
             'Description': policy.get('Description'),
             'Path': policy.get('Path'),
-            'PolicyDocument': policy_version
+            'PolicyDocument': policy_version,
+            'Tags': tags
         }
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error fetching IAM policy details for {policy_arn}: {error}")
@@ -133,6 +136,9 @@ def create_yaml_content(policies):
 
         if policy.get('Path'):
             policy_dict['path'] = policy['Path']
+ 
+        if policy.get('Tags'):
+            policy_dict['tags'] = {tag['Key']: tag['Value'] for tag in policy['Tags']}
 
         yaml_content.append(policy_dict)
 
