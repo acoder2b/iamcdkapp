@@ -25,11 +25,11 @@ class IamRoleConfigStack(Stack):
         for policy in managed_policies:
             self.create_managed_policy(policy)
 
-
     def create_managed_policy(self, policy_config: Dict[str, Any]) -> None:
         """Create a custom managed IAM policy based on the provided configuration."""
         policy_name = policy_config.get('policyName')
         policy_document = policy_config.get('policyDocument', {})
+        policy_tags = policy_config.get('tags', [])
 
         if not policy_name:
             raise ValueError("Policy name cannot be None or empty.")
@@ -45,7 +45,13 @@ class IamRoleConfigStack(Stack):
             policy_document=policy_document,
         )
 
+        # Add tags using TagManager after the policy is created
+        if policy_tags:
+            for tag in policy_tags:
+                iam.Tag.add(iam_policy, tag['key'], tag['value'])
+
         logger.info(f"Imported IAM managed policy {policy_name}")
+
 
     def create_iam_role(self, role: Dict[str, Any]) -> None:
         """Create an IAM role based on the provided configuration."""

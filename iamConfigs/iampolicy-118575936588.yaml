@@ -1,0 +1,90 @@
+account_id:
+- '118575936588'
+region: us-east-1
+stack_name: iampipeline-iampolicies-stack
+iam_policies:
+-   policyName: EC2CapacityReservationService
+    deletionPolicy: RETAIN
+    policyDocument:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Action:
+            - ec2:DescribeReservedInstances
+            - ec2:ModifyReservedInstances
+            - ec2:PurchaseReservedInstancesOffering
+            - ec2:DescribeInstances
+            - ec2:DescribeAvailabilityZones
+            - ec2:DescribeReservedInstancesOfferings
+            Resource: '*'
+    path: /
+-   policyName: ResourceConfigurationCollectorPolicy
+    deletionPolicy: RETAIN
+    policyDocument:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Action:
+            - s3:CreateBucket
+            - s3:PutBucketPolicy
+            Resource: arn:aws:s3:::rcc-bucket-trustedservice-do-not-delete-*
+        -   Effect: Allow
+            Action:
+            - s3:ListAllMyBuckets
+            - s3:GetBucketPolicyStatus
+            - s3:GetBucketPublicAccessBlock
+            - s3:PutBucketPublicAccessBlock
+            Resource: arn:aws:s3:::*
+        -   Effect: Allow
+            Action:
+            - config:DescribeConfigurationRecorders
+            - config:DescribeConfigurationRecorderStatus
+            - config:PutConfigurationRecorder
+            - config:StartConfigurationRecorder
+            - config:DescribeDeliveryChannels
+            - config:DescribeDeliveryChannelStatus
+            - config:PutDeliveryChannel
+            - config:DescribeAggregationAuthorizations
+            - config:PutAggregationAuthorization
+            - config:ListDiscoveredResources
+            - config:BatchGetResourceConfig
+            Resource: '*'
+        -   Effect: Allow
+            Action:
+            - iam:GetRole
+            - iam:PassRole
+            - iam:CreateServiceLinkedRole
+            - iam:DeleteServiceLinkedRole
+            - iam:GetServiceLinkedRoleDeletionStatus
+            Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/*
+    path: /
+-   policyName: ConfigAccessPolicy
+    deletionPolicy: RETAIN
+    policyDocument:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Action:
+            - s3:CreateBucket
+            - s3:DeleteBucket
+            - s3:PutBucketPolicy
+            - s3:PutPublicAccessBlock
+            - s3:GetPublicAccessBlock
+            Resource: arn:aws:s3:::config-bucket-trustedservice-do-not-delete-*
+        -   Effect: Allow
+            Action:
+            - s3:ListAllMyBuckets
+            Resource: arn:aws:s3:::*
+        -   Effect: Allow
+            Action:
+            - config:*
+            Resource: '*'
+        -   Effect: Allow
+            Action:
+            - iam:GetRole
+            - iam:PassRole
+            - iam:CreateServiceLinkedRole
+            - iam:DeleteServiceLinkedRole
+            - iam:GetServiceLinkedRoleDeletionStatus
+            Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/*
+    path: /

@@ -3,32 +3,43 @@ import yaml
 import logging
 from botocore.exceptions import BotoCoreError, ClientError
 
-
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 
 def list_cf_stack_policies(account_id):
     """
     List IAM managed policies provisioned by CloudFormation stacks.
+    Handles pagination for stack resources and fixes ARN construction.
     """
     cf_client = boto3.client('cloudformation', region_name='us-east-1')
-    paginator = cf_client.get_paginator('describe_stacks')
+    paginator = cf_client.get_paginator('list_stacks')
     cf_policy_arns = []
 
     logging.info("Listing IAM managed policies provisioned by CloudFormation stacks...")
-    try:
-        for page in paginator.paginate():
-            for stack in page['Stacks']:
-                stack_name = stack['StackName']
-                resources = cf_client.describe_stack_resources(StackName=stack_name)['StackResources']
-                for resource in resources:
-                    if resource['ResourceType'] == 'AWS::IAM::ManagedPolicy':
-                        physical_id = resource['PhysicalResourceId']
-                        policy_arn = f'arn:aws:iam::{account_id}:policy/{physical_id}'
-                        cf_policy_arns.append(policy_arn)
-                        logging.info(f"Managed Policy '{policy_arn}' is provisioned by CloudFormation stack '{stack_name}'.")
 
+    try:
+        for page in paginator.paginate(StackStatusFilter=['CREATE_COMPLETE', 'UPDATE_COMPLETE']):
+            for stack_summary in page['StackSummaries']:
+                stack_name = stack_summary['StackName']
+                logging.info(f"Checking resources for stack: {stack_name}")
+                
+                # Handle pagination for stack resources
+                stack_resource_paginator = cf_client.get_paginator('list_stack_resources')
+                for resource_page in stack_resource_paginator.paginate(StackName=stack_name):
+                    stack_resources = resource_page['StackResourceSummaries']
+                    for resource in stack_resources:
+                        if resource['ResourceType'] == 'AWS::IAM::ManagedPolicy':
+                            physical_id = resource['PhysicalResourceId']
+                            
+                            # Fix ARN construction: Check if `PhysicalResourceId` is already an ARN
+                            if physical_id.startswith('arn:aws:iam::'):
+                                policy_arn = physical_id
+                            else:
+                                policy_arn = f'arn:aws:iam::{account_id}:policy/{physical_id}'
+                            
+                            cf_policy_arns.append(policy_arn)
+                            logging.info(f"Managed Policy '{policy_arn}' is provisioned by CloudFormation stack '{stack_name}'.")
+        
         logging.info(f"Total IAM managed policies in CloudFormation stacks found: {len(cf_policy_arns)}")
         return cf_policy_arns
 

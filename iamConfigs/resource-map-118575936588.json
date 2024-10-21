@@ -1,0 +1,11 @@
+{
+  "ManagedPolicy60266f9b": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/EC2CapacityReservationService"
+  },
+  "ManagedPolicy55c09a35": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/ResourceConfigurationCollectorPolicy"
+  },
+  "ManagedPolicyf7133b17": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/ConfigAccessPolicy"
+  }
+}

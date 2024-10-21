@@ -11,29 +11,43 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 def list_cf_stack_policies(account_id):
     """
-    List IAM managed policies provisioned by CloudFormation stacks and log their stack names.
+    List IAM managed policies provisioned by CloudFormation stacks.
+    Handles pagination for stack resources and fixes ARN construction.
     """
     cf_client = boto3.client('cloudformation', region_name='us-east-1')
-    paginator = cf_client.get_paginator('describe_stacks')
+    paginator = cf_client.get_paginator('list_stacks')
     cf_policy_arns = []
 
-    logging.info("Listing IAM managed policies from CloudFormation stacks...")
-    try:
-        for page in paginator.paginate():
-            for stack in page['Stacks']:
-                stack_name = stack['StackName']
-                resources = cf_client.describe_stack_resources(StackName=stack_name)['StackResources']
-                for resource in resources:
-                    if resource['ResourceType'] == 'AWS::IAM::ManagedPolicy':
-                        physical_id = resource['PhysicalResourceId']
-                        cf_policy_arns.append(f'arn:aws:iam::{account_id}:policy/{physical_id}')
-                        logging.info(f"Managed Policy '{physical_id}' is provisioned by CloudFormation stack '{stack_name}'.")
+    logging.info("Listing IAM managed policies provisioned by CloudFormation stacks...")
 
+    try:
+        for page in paginator.paginate(StackStatusFilter=['CREATE_COMPLETE', 'UPDATE_COMPLETE']):
+            for stack_summary in page['StackSummaries']:
+                stack_name = stack_summary['StackName']
+                logging.info(f"Checking resources for stack: {stack_name}")
+                
+                # Handle pagination for stack resources
+                stack_resource_paginator = cf_client.get_paginator('list_stack_resources')
+                for resource_page in stack_resource_paginator.paginate(StackName=stack_name):
+                    stack_resources = resource_page['StackResourceSummaries']
+                    for resource in stack_resources:
+                        if resource['ResourceType'] == 'AWS::IAM::ManagedPolicy':
+                            physical_id = resource['PhysicalResourceId']
+                            
+                            # Fix ARN construction: Check if `PhysicalResourceId` is already an ARN
+                            if physical_id.startswith('arn:aws:iam::'):
+                                policy_arn = physical_id
+                            else:
+                                policy_arn = f'arn:aws:iam::{account_id}:policy/{physical_id}'
+                            
+                            cf_policy_arns.append(policy_arn)
+                            logging.info(f"Managed Policy '{policy_arn}' is provisioned by CloudFormation stack '{stack_name}'.")
+        
         logging.info(f"Total IAM managed policies in CloudFormation stacks found: {len(cf_policy_arns)}")
         return cf_policy_arns
 
     except (BotoCoreError, ClientError) as error:
-        logging.error(f"Error listing CloudFormation stack managed policies: {error}")
+        logging.error(f"Error listing CloudFormation managed policies: {error}")
         return []
 
 def list_customer_managed_policies(exclude_policy_arns):
@@ -48,29 +62,50 @@ def list_customer_managed_policies(exclude_policy_arns):
     try:
         for page in paginator.paginate(Scope='Local'):
             for policy in page['Policies']:
-                if policy['Arn'] not in exclude_policy_arns:
+                # Exclude policies provisioned by CloudFormation (based on ARNs in exclude_policy_arns)
+                if policy['Arn'] not in exclude_policy_arns and '/service-role/' not in policy.get('Path', ''):
                     policies.append({
                         'PolicyName': policy['PolicyName'],
-                        'PolicyArn': policy['Arn']
+                        'PolicyArn': policy['Arn'],
+                        'PolicyId': policy['PolicyId'],
+                        'Path': policy.get('Path')  # Include path in case it's useful later
                     })
-        logging.info(f"Total customer-managed policies after exclusion: {len(policies)}")
+        logging.info(f"Total customer-managed policies found after exclusion: {len(policies)}")
         return policies
 
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error listing IAM policies: {error}")
         return []
 
-def get_policy_details(policy_arn):
-    """
-    Get details of a customer-managed IAM policy by its ARN.
-    """
+def get_policy_tags(policy_arn):
+    """Retrieve the tags for a given IAM managed policy."""
     iam_client = boto3.client('iam')
     try:
+        tags = iam_client.list_policy_tags(PolicyArn=policy_arn)['Tags']
+        return [{'key': tag['Key'], 'value': tag['Value']} for tag in tags]
+    except (BotoCoreError, ClientError) as error:
+        logging.error(f"Error fetching tags for policy {policy_arn}: {error}")
+        return []
+
+def get_policy_details(policy_arn):
+    """Get details of a customer-managed IAM policy by its ARN, including description and tags."""
+    iam_client = boto3.client('iam')
+    try:
+        policy = iam_client.get_policy(PolicyArn=policy_arn)['Policy']
         policy_version = iam_client.get_policy_version(
             PolicyArn=policy_arn,
-            VersionId=iam_client.get_policy(PolicyArn=policy_arn)['Policy']['DefaultVersionId']
-        )
-        return policy_version['PolicyVersion']['Document']
+            VersionId=policy['DefaultVersionId']
+        )['PolicyVersion']['Document']
+        
+        tags = get_policy_tags(policy_arn)
+        
+        return {
+            'PolicyName': policy['PolicyName'],
+            'Description': policy.get('Description'),
+            'Path': policy.get('Path'),
+            'PolicyDocument': policy_version,
+            'Tags': tags
+        }
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error fetching IAM policy details for {policy_arn}: {error}")
         return None
@@ -111,6 +146,14 @@ def list_iam_roles(exclude_paths, exclude_role_prefixes):
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error listing IAM roles: {error}")
         return roles
+
+def filter_policies(policies, cf_policy_arns):
+    """
+    Filter out policies provisioned by CloudFormation.
+    """
+    filtered_policies = [policy for policy in policies if policy['PolicyArn'] not in cf_policy_arns]
+    logging.info(f"Total customer-managed policies after filtering CloudFormation provisioned ones: {len(filtered_policies)}")
+    return filtered_policies
 
 def list_cf_stack_roles():
     """
@@ -170,98 +213,77 @@ def get_inline_policies(role_name):
     # Return None if no inline policies are found, otherwise return the policies
     return inline_policies if inline_policies else None
 
-def create_yaml_content(roles_data):
+def create_yaml_content(policies, roles):
     """
-    Create a YAML content structure from IAM role details.
+    Create a YAML content structure for both IAM managed policies and IAM roles with proper indentation.
     """
-    yaml_content = []
+    yaml_content = {'iam_policies': [], 'iam_roles': []}
 
-    logging.info("Creating YAML content for IAM roles...")
-    iam_client = boto3.client('iam')
+    logging.info("Creating YAML content for IAM policies and roles...")
 
-    for role_data in roles_data:
-        role_name = role_data['RoleName']
-        description = role_data.get('Description')
-        session_duration = role_data.get('MaxSessionDuration')
-        iam_path = role_data.get('Path')
-        trust_policy = role_data.get('AssumeRolePolicyDocument', {})
-        tags = [{'key': tag['Key'], 'value': tag['Value']} for tag in role_data.get('Tags', [])] if 'Tags' in role_data else None
+    # Process policies
+    for policy in policies:
+        policy_dict = {
+            'policyName': policy['policyName'],
+            'deletionPolicy': 'RETAIN'
+        }
+        if policy.get('policyDocument'):
+            policy_dict['policyDocument'] = policy['policyDocument']
+        if policy.get('description'):
+            policy_dict['description'] = policy['description']
+        if policy.get('path'):
+            policy_dict['path'] = policy['path']
+        if policy.get('tags'):
+            policy_dict['tags'] = policy['tags']
 
-        # Get attached managed policies
-        attached_policies = iam_client.list_attached_role_policies(RoleName=role_name)['AttachedPolicies']
-        managed_policies = [policy['PolicyArn'] for policy in attached_policies] if attached_policies else None
+        yaml_content['iam_policies'].append(policy_dict)
 
-        # Get inline policies
-        inline_policies = get_inline_policies(role_name)
-
-        # Get permission boundary
-        permission_boundary = role_data.get('PermissionsBoundary', {}).get('PermissionsBoundaryArn') if role_data.get('PermissionsBoundary') else None
-
-        # Create YAML structure using dict to maintain order
+    # Process roles
+    for role in roles:
         role_dict = {
-            'roleName': role_name
+            'roleName': role['RoleName'],
+            'deletionPolicy': 'RETAIN'
         }
 
-        if description:
-            role_dict['description'] = description
-        if session_duration:
-            role_dict['sessionDuration'] = session_duration
-        if iam_path:
-            role_dict['iamPath'] = iam_path
-        if trust_policy:
-            trust_policy_statements = []
-            for statement in trust_policy.get('Statement', []):
-                statement_dict = {
-                    'Effect': statement['Effect'],
-                    'Principal': {k: (v if isinstance(v, list) else [v]) for k, v in statement['Principal'].items()},
-                    'Action': statement['Action']
-                }
-                # Only add Condition if it exists and is not empty
-                if 'Condition' in statement and statement['Condition']:
-                    statement_dict['Condition'] = statement['Condition']
-                trust_policy_statements.append(statement_dict)
+        if role.get('Description'):
+            role_dict['description'] = role['Description']
+        if role.get('MaxSessionDuration'):
+            role_dict['sessionDuration'] = role['MaxSessionDuration']
+        if role.get('Path'):
+            role_dict['iamPath'] = role['Path']
+        if role.get('AssumeRolePolicyDocument'):
+            role_dict['trustPolicy'] = role['AssumeRolePolicyDocument']
+        if role.get('Tags'):
+            role_dict['tags'] = [{'key': tag['Key'], 'value': tag['Value']} for tag in role.get('Tags', [])]
+        if role.get('ManagedPolicies'):
+            role_dict['managedPolicies'] = role['ManagedPolicies']
+        if role.get('InlinePolicies'):
+            role_dict['inlinePolicies'] = role['InlinePolicies']
+        if role.get('PermissionsBoundary'):
+            role_dict['permissionBoundary'] = role['PermissionsBoundary']
 
-            role_dict['trustPolicy'] = {
-                'Version': trust_policy.get('Version', '2012-10-17'),
-                'Statement': trust_policy_statements
-            }
-        if managed_policies:
-            role_dict['managedPolicies'] = managed_policies
-        if inline_policies:
-            # Process inline policies to remove empty conditions
-            processed_inline_policies = {}
-            for policy_name, policy_document in inline_policies.items():
-                for statement in policy_document.get('Statement', []):
-                    if 'Condition' in statement and not statement['Condition']:
-                        del statement['Condition']
-                processed_inline_policies[policy_name] = policy_document
-            role_dict['inlinePolicies'] = processed_inline_policies
-        if permission_boundary:
-            role_dict['permissionBoundary'] = permission_boundary
-        if tags:
-            role_dict['tags'] = tags
-
-        role_dict['deletionPolicy'] = 'RETAIN'
-
-        yaml_content.append(role_dict)
+        yaml_content['iam_roles'].append(role_dict)
 
     return yaml_content
+
 
 def build_full_yaml_structure(account_id, region, roles_data, policies_data):
     """
     Build a complete ordered YAML structure including account and policy information.
     """
-    roles_content = create_yaml_content(roles_data)
+    # Pass both policies and roles to create_yaml_content
+    yaml_content = create_yaml_content(policies_data, roles_data)
     
     yaml_structure = {
         'account_id': [account_id],
         'region': region,
         'stack_name': 'iampipeline-stack',
-        'roles': roles_content,
-        'iam_policies': policies_data
+        'iam_policies': yaml_content['iam_policies'],
+        'iam_roles': yaml_content['iam_roles']
     }
 
     return yaml_structure
+
 
 def append_to_yaml_file(full_yaml_structure, account_id):
     """
@@ -269,12 +291,24 @@ def append_to_yaml_file(full_yaml_structure, account_id):
     """
     yaml_file_name = f"iamrole-{account_id}.yaml"
 
+    # try:
+    #     with open(yaml_file_name, 'w') as yaml_file:
+    #         yaml.dump(full_yaml_structure, yaml_file, default_flow_style=False, sort_keys=False, indent=4)
+    #     logging.info(f"YAML file {yaml_file_name} created successfully.")
+    # except Exception as e:
+    #     logging.error(f"Error writing to YAML file: {e}")
     try:
         with open(yaml_file_name, 'w') as yaml_file:
-            yaml.dump(full_yaml_structure, yaml_file, default_flow_style=False, sort_keys=False, indent=4)
+            yaml.dump(
+                full_yaml_structure, 
+                yaml_file, 
+                default_flow_style=False,  # Ensures the output is not compacted, and follows a block style
+                sort_keys=False,           # Keeps the keys in the same order as provided
+                indent=4                   # Ensures proper indentation for nested structures
+            )
         logging.info(f"YAML file {yaml_file_name} created successfully.")
     except Exception as e:
-        logging.error(f"Error writing to YAML file: {e}")
+        logging.error(f"Error writing to YAML file: {e}")    
 
 def get_account_id():
     """
