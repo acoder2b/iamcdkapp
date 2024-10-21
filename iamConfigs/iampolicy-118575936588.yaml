@@ -3,18 +3,18 @@ account_id:
 region: us-east-1
 stack_name: iampipeline-iampolicies-stack
 iam_policies:
--   policyName: testcdkimportpolicy
+-   policyName: testec2policy
     deletionPolicy: RETAIN
     policyDocument:
         Version: '2012-10-17'
         Statement:
         -   Sid: VisualEditor0
             Effect: Allow
-            Action: lambda:*
+            Action: ec2:*
             Resource: '*'
-    description: testcdkimportpolicy for testing
+    description: test policy ece2
     path: /
--   policyName: testautoscalingpolicy
+-   policyName: testautopolicy
     deletionPolicy: RETAIN
     policyDocument:
         Version: '2012-10-17'
@@ -23,5 +23,5 @@ iam_policies:
             Effect: Allow
             Action: autoscaling-plans:*
             Resource: '*'
-    description: testing policy to import
+    description: test policy
     path: /

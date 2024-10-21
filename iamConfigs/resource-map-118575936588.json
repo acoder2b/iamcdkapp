@@ -1,8 +1,8 @@
 {
-  "ManagedPolicy91f92a25": {
-    "PolicyArn": "arn:aws:iam::118575936588:policy/testcdkimportpolicy"
+  "ManagedPolicy50138989": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/testec2policy"
   },
-  "ManagedPolicy749e48e4": {
-    "PolicyArn": "arn:aws:iam::118575936588:policy/testautoscalingpolicy"
+  "ManagedPolicy7f3f0d37": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/testautopolicy"
   }
 }
