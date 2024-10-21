@@ -136,10 +136,19 @@ class TestIamRoleConfigStack(unittest.TestCase):
         stack = IamRoleConfigStack(self.app, "TestStackWithRetain", file_path=None, resources=resources, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
-        # Assert that the role has the DeletionPolicy RETAIN
-        role_resource = template.find_resources("AWS::IAM::Role")
-        self.assertIn("TestRoleWithRetain", role_resource)
-        self.assertEqual(role_resource["TestRoleWithRetain"]["DeletionPolicy"], "Retain")
+        # Find the IAM Role resource
+        role_resources = template.find_resources("AWS::IAM::Role")
+        
+        # Check that at least one role has the expected roleName
+        role_found = False
+        for role_logical_id, role in role_resources.items():
+            if role['Properties']['RoleName'] == "TestRoleWithRetain":
+                role_found = True
+                # Assert that the DeletionPolicy is set to RETAIN
+                self.assertEqual(role.get('DeletionPolicy'), 'Retain')
+        
+        self.assertTrue(role_found, "The IAM role 'TestRoleWithRetain' was not found.")
+
 
     def test_invalid_inline_policy(self):
         resources = {
