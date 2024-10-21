@@ -16,6 +16,9 @@ iam_policies:
     path: /
 -   policyName: testautopolicy
     deletionPolicy: RETAIN
+    tag:
+        - Key: test1
+          Value: test1
     policyDocument:
         Version: '2012-10-17'
         Statement:
