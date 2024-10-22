@@ -51,9 +51,8 @@ def generate_resource_map(file_name):
                 role_arn = f"arn:aws:iam::{account_id}:role/{role_name}"
 
                 # Add to the resource map using the logical resource name
-                resource_map[role_name] = {
-                # resource_map[resource_name] = {
-                    "RoleArn": role_arn
+                resource_map[resource_name] = {
+                    "RoleName": role_name
                 }
 
     # Write the resource map to a JSON file

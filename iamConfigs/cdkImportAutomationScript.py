@@ -50,6 +50,36 @@ def list_cf_stack_policies(account_id):
         logging.error(f"Error listing CloudFormation managed policies: {error}")
         return []
 
+# def list_customer_managed_policies(exclude_policy_arns):
+#     """
+#     List all customer-managed IAM policies, excluding those with /service-role/ path.
+#     """
+#     iam_client = boto3.client('iam', region_name='us-east-1')
+#     paginator = iam_client.get_paginator('list_policies')
+#     policies = []
+
+#     logging.info("Listing IAM customer-managed policies...")
+#     try:
+#         for page in paginator.paginate(Scope='Local'):
+#             for policy in page['Policies']:
+#                 # Exclude policies with '/service-role/' path
+#                 if '/service-role/' in policy.get('Path', ''):
+#                     logging.info(f"Skipping policy '{policy['PolicyName']}' with path '{policy['Path']}'")
+#                     continue
+
+#                 policies.append({
+#                     'PolicyName': policy['PolicyName'],
+#                     'PolicyArn': policy['Arn'],
+#                     'PolicyId': policy['PolicyId'],
+#                     'Path': policy.get('Path')  # Include path in case it's useful later
+#                 })
+#         logging.info(f"Total customer-managed policies found: {len(policies)}")
+#         return policies
+
+#     except (BotoCoreError, ClientError) as error:
+#         logging.error(f"Error listing IAM policies: {error}")
+#         return []
+    
 def list_customer_managed_policies(exclude_policy_arns):
     """
     List all customer-managed IAM policies, excluding those provisioned by CloudFormation.
@@ -88,7 +118,10 @@ def get_policy_tags(policy_arn):
         return []
 
 def get_policy_details(policy_arn):
-    """Get details of a customer-managed IAM policy by its ARN, including description and tags."""
+    """
+    Get details of a customer-managed IAM policy by its ARN, including description and tags.
+    """
+
     iam_client = boto3.client('iam')
     try:
         policy = iam_client.get_policy(PolicyArn=policy_arn)['Policy']
@@ -97,7 +130,7 @@ def get_policy_details(policy_arn):
             VersionId=policy['DefaultVersionId']
         )['PolicyVersion']['Document']
         
-        tags = get_policy_tags(policy_arn)
+        tags = iam_client.list_policy_tags(PolicyArn=policy_arn).get('Tags', [])
         
         return {
             'PolicyName': policy['PolicyName'],
@@ -224,17 +257,21 @@ def create_yaml_content(policies, roles):
     # Process policies
     for policy in policies:
         policy_dict = {
-            'policyName': policy['policyName'],
+            'policyName': policy['PolicyName'],
             'deletionPolicy': 'RETAIN'
         }
-        if policy.get('policyDocument'):
-            policy_dict['policyDocument'] = policy['policyDocument']
-        if policy.get('description'):
-            policy_dict['description'] = policy['description']
-        if policy.get('path'):
-            policy_dict['path'] = policy['path']
-        if policy.get('tags'):
-            policy_dict['tags'] = policy['tags']
+        if policy.get('PolicyDocument'):
+            policy_dict['policyDocument'] = policy['PolicyDocument']
+
+        if policy.get('Description'):
+            policy_dict['description'] = policy['Description']
+
+        if policy.get('Path'):
+            policy_dict['path'] = policy['Path']
+ 
+        if policy.get('Tags'):
+            # More explicit key-value structure for tags
+            policy_dict['tags'] = [{'Key': tag['Key'], 'Value': tag['Value']} for tag in policy['Tags']]
 
         yaml_content['iam_policies'].append(policy_dict)
 
@@ -279,7 +316,7 @@ def build_full_yaml_structure(account_id, region, roles_data, policies_data):
         'region': region,
         'stack_name': 'iam-role-policies-pipeline-stack',
         'iam_policies': yaml_content['iam_policies'],
-        'iam_roles': yaml_content['iam_roles']
+        'roles': yaml_content['iam_roles']
     }
 
     return yaml_structure
@@ -366,15 +403,22 @@ def main():
     # Step 6: List all customer-managed policies excluding CloudFormation-managed ones
     customer_managed_policies = list_customer_managed_policies(cf_stack_policy_arns)
 
-    # Step 7: Only include the policy name and document (removing the ARN)
+    # # Step 7: Only include the policy name and document (removing the ARN)
+    # policies_data = []
+    # for policy in customer_managed_policies:
+    #     policy_details = get_policy_details(policy['PolicyArn'])
+    #     if policy_details:
+    #         policies_data.append({
+    #             'policyName': policy['PolicyName'],  
+    #             'policyDocument': policy_details     
+    #         })
+
+    # Step 7: Include all policy details
     policies_data = []
     for policy in customer_managed_policies:
         policy_details = get_policy_details(policy['PolicyArn'])
         if policy_details:
-            policies_data.append({
-                'policyName': policy['PolicyName'],  
-                'policyDocument': policy_details     
-            })
+            policies_data.append(policy_details)  # Store all details returned by get_policy_details
 
     # Step 8: Build full YAML structure
     full_yaml_structure = build_full_yaml_structure(account_id, region, roles_data, policies_data)

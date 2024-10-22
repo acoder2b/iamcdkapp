@@ -1,8 +1,0 @@
-{
-  "ManagedPolicy108c0c1e": {
-    "PolicyArn": "arn:aws:iam::118575936588:policy/testrds"
-  },
-  "ManagedPolicyf5190575": {
-    "PolicyArn": "arn:aws:iam::118575936588:policy/testauto"
-  }
-}

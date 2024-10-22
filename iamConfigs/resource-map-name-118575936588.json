@@ -1,0 +1,122 @@
+{
+  "Role124c20ec": {
+    "RoleName": "AccessAnalyzerTrustedService"
+  },
+  "Role3a0eba65": {
+    "RoleName": "Admin"
+  },
+  "Role4fda5c60": {
+    "RoleName": "AVMContainersUserRole"
+  },
+  "Rolecd792517": {
+    "RoleName": "awslogs.prod.kelex.molecule.toppatterns"
+  },
+  "Role0c2d6dd2": {
+    "RoleName": "AwsSecurityAudit"
+  },
+  "Role8875d48e": {
+    "RoleName": "AwsSecurityNacundaAudit"
+  },
+  "Role78f07d50": {
+    "RoleName": "AWSVAPTAudit"
+  },
+  "Role47b6a958": {
+    "RoleName": "CloudSecAuditRole"
+  },
+  "Role8b45f09e": {
+    "RoleName": "CloudSeerTrustedServiceRole"
+  },
+  "Role756c7f56": {
+    "RoleName": "CodeGuruProfilerForwardToAmazonProfiler"
+  },
+  "Role9d7691dc": {
+    "RoleName": "DiscoveryAnalyzerTrustedService-DO-NOT-DELETE"
+  },
+  "Roleeeb2f766": {
+    "RoleName": "EC2CapacityReservationService"
+  },
+  "Role08004b8e": {
+    "RoleName": "GatedGardenAudit"
+  },
+  "Roleb008733c": {
+    "RoleName": "GatedGardenInternalAudit"
+  },
+  "Role2bf3bab9": {
+    "RoleName": "IibsAdminAccess-DO-NOT-DELETE"
+  },
+  "Roleda65d5e9": {
+    "RoleName": "IMDSv2-automigrator"
+  },
+  "Role6fb3cdf9": {
+    "RoleName": "importtestrole"
+  },
+  "Roleb3656bea": {
+    "RoleName": "InternalAuditInternal"
+  },
+  "Role44aad2e4": {
+    "RoleName": "IsengardAuditorRole-DO-NOT-DELETE"
+  },
+  "Rolebfc181d6": {
+    "RoleName": "IsengardCloudTrailRole"
+  },
+  "Role6ee88f23": {
+    "RoleName": "IsengardConfigRole"
+  },
+  "Rolefbfe9d5c": {
+    "RoleName": "IsengardRole-DO-NOT-DELETE"
+  },
+  "Rolea506ba37": {
+    "RoleName": "IsengardRoleForDependencyAssuranceIamAnalyzer"
+  },
+  "Roledc68f75a": {
+    "RoleName": "IsengardRoleForOptInComputeOptimizer"
+  },
+  "Role8594d5b3": {
+    "RoleName": "NawsApplicationMetrics-DO-NOT-DELETE"
+  },
+  "Role89b67aba": {
+    "RoleName": "OrthancRole"
+  },
+  "Rolec06e2f9a": {
+    "RoleName": "PipelineStack-TelusShSecurityAcmProvisioningStackte-3GgllA1czIHr"
+  },
+  "Role35d623f8": {
+    "RoleName": "ResourceConfigurationCollector-DO-NOT-DELETE"
+  },
+  "Role5392f2f8": {
+    "RoleName": "SaltyTrustedService"
+  },
+  "Roleee6b8040": {
+    "RoleName": "ShadowTrooperRole"
+  },
+  "Role21a03896": {
+    "RoleName": "telus-security-audit-prowler-ecstaskrole"
+  },
+  "Roleb90c96b5": {
+    "RoleName": "telus-security-audit-prowler-ecstaskrole1"
+  },
+  "Role026406bf": {
+    "RoleName": "telus-sh-security-iam-publicResourceLambdaExecutionRole"
+  },
+  "Role29a82cca": {
+    "RoleName": "telus-sh-security-iamrole-lambda_kms_quicksight_execution_role"
+  },
+  "Role335cda96": {
+    "RoleName": "testcrossaccountrole"
+  },
+  "Role805337f2": {
+    "RoleName": "testcrossaccountrole112212"
+  },
+  "Role9ad80f2c": {
+    "RoleName": "TurtleRoleManagement"
+  },
+  "Role0072492a": {
+    "RoleName": "XenaAuditorRole-DO-NOT-DELETE"
+  },
+  "ManagedPolicy7f3f0d37": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/testautopolicy"
+  },
+  "ManagedPolicy18cd2ada": {
+    "PolicyArn": "arn:aws:iam::118575936588:policy/testlambdapolicy"
+  }
+}
