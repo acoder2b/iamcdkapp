@@ -24,7 +24,7 @@ def generate_resource_map(file_name):
     account_id = get_aws_account_id()
 
     # Construct the output file name using the account ID
-    output_file = f"resource-map-{account_id}.json"
+    output_file = f"allresource-map-{account_id}.json"
 
     # Initialize the resource map
     resource_map = {}

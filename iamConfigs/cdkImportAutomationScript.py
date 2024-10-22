@@ -277,7 +277,7 @@ def build_full_yaml_structure(account_id, region, roles_data, policies_data):
     yaml_structure = {
         'account_id': [account_id],
         'region': region,
-        'stack_name': 'iampipeline-stack',
+        'stack_name': 'iam-role-policies-pipeline-stack',
         'iam_policies': yaml_content['iam_policies'],
         'iam_roles': yaml_content['iam_roles']
     }
@@ -289,7 +289,7 @@ def append_to_yaml_file(full_yaml_structure, account_id):
     """
     Write the ordered YAML content to a file.
     """
-    yaml_file_name = f"iamrole-{account_id}.yaml"
+    yaml_file_name = f"iamrole-policies-{account_id}.yaml"
 
     # try:
     #     with open(yaml_file_name, 'w') as yaml_file:

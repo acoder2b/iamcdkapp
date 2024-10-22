@@ -1,116 +1,116 @@
 {
-  "Role124c20ec": {
+  "AccessAnalyzerTrustedService": {
     "RoleArn": "arn:aws:iam::118575936588:role/AccessAnalyzerTrustedService"
   },
-  "Role3a0eba65": {
+  "Admin": {
     "RoleArn": "arn:aws:iam::118575936588:role/Admin"
   },
-  "Role4fda5c60": {
+  "AVMContainersUserRole": {
     "RoleArn": "arn:aws:iam::118575936588:role/AVMContainersUserRole"
   },
-  "Rolecd792517": {
+  "awslogs.prod.kelex.molecule.toppatterns": {
     "RoleArn": "arn:aws:iam::118575936588:role/awslogs.prod.kelex.molecule.toppatterns"
   },
-  "Role0c2d6dd2": {
+  "AwsSecurityAudit": {
     "RoleArn": "arn:aws:iam::118575936588:role/AwsSecurityAudit"
   },
-  "Role8875d48e": {
+  "AwsSecurityNacundaAudit": {
     "RoleArn": "arn:aws:iam::118575936588:role/AwsSecurityNacundaAudit"
   },
-  "Role78f07d50": {
+  "AWSVAPTAudit": {
     "RoleArn": "arn:aws:iam::118575936588:role/AWSVAPTAudit"
   },
-  "Role47b6a958": {
+  "CloudSecAuditRole": {
     "RoleArn": "arn:aws:iam::118575936588:role/CloudSecAuditRole"
   },
-  "Role8b45f09e": {
+  "CloudSeerTrustedServiceRole": {
     "RoleArn": "arn:aws:iam::118575936588:role/CloudSeerTrustedServiceRole"
   },
-  "Role756c7f56": {
+  "CodeGuruProfilerForwardToAmazonProfiler": {
     "RoleArn": "arn:aws:iam::118575936588:role/CodeGuruProfilerForwardToAmazonProfiler"
   },
-  "Role9d7691dc": {
+  "DiscoveryAnalyzerTrustedService-DO-NOT-DELETE": {
     "RoleArn": "arn:aws:iam::118575936588:role/DiscoveryAnalyzerTrustedService-DO-NOT-DELETE"
   },
-  "Roleeeb2f766": {
+  "EC2CapacityReservationService": {
     "RoleArn": "arn:aws:iam::118575936588:role/EC2CapacityReservationService"
   },
-  "Role08004b8e": {
+  "GatedGardenAudit": {
     "RoleArn": "arn:aws:iam::118575936588:role/GatedGardenAudit"
   },
-  "Roleb008733c": {
+  "GatedGardenInternalAudit": {
     "RoleArn": "arn:aws:iam::118575936588:role/GatedGardenInternalAudit"
   },
-  "Role2bf3bab9": {
+  "IibsAdminAccess-DO-NOT-DELETE": {
     "RoleArn": "arn:aws:iam::118575936588:role/IibsAdminAccess-DO-NOT-DELETE"
   },
-  "Roleda65d5e9": {
+  "IMDSv2-automigrator": {
     "RoleArn": "arn:aws:iam::118575936588:role/IMDSv2-automigrator"
   },
-  "Role6fb3cdf9": {
+  "importtestrole": {
     "RoleArn": "arn:aws:iam::118575936588:role/importtestrole"
   },
-  "Roleb3656bea": {
+  "InternalAuditInternal": {
     "RoleArn": "arn:aws:iam::118575936588:role/InternalAuditInternal"
   },
-  "Role44aad2e4": {
+  "IsengardAuditorRole-DO-NOT-DELETE": {
     "RoleArn": "arn:aws:iam::118575936588:role/IsengardAuditorRole-DO-NOT-DELETE"
   },
-  "Rolebfc181d6": {
+  "IsengardCloudTrailRole": {
     "RoleArn": "arn:aws:iam::118575936588:role/IsengardCloudTrailRole"
   },
-  "Role6ee88f23": {
+  "IsengardConfigRole": {
     "RoleArn": "arn:aws:iam::118575936588:role/IsengardConfigRole"
   },
-  "Rolefbfe9d5c": {
+  "IsengardRole-DO-NOT-DELETE": {
     "RoleArn": "arn:aws:iam::118575936588:role/IsengardRole-DO-NOT-DELETE"
   },
-  "Rolea506ba37": {
+  "IsengardRoleForDependencyAssuranceIamAnalyzer": {
     "RoleArn": "arn:aws:iam::118575936588:role/IsengardRoleForDependencyAssuranceIamAnalyzer"
   },
-  "Roledc68f75a": {
+  "IsengardRoleForOptInComputeOptimizer": {
     "RoleArn": "arn:aws:iam::118575936588:role/IsengardRoleForOptInComputeOptimizer"
   },
-  "Role8594d5b3": {
+  "NawsApplicationMetrics-DO-NOT-DELETE": {
     "RoleArn": "arn:aws:iam::118575936588:role/NawsApplicationMetrics-DO-NOT-DELETE"
   },
-  "Role89b67aba": {
+  "OrthancRole": {
     "RoleArn": "arn:aws:iam::118575936588:role/OrthancRole"
   },
-  "Rolec06e2f9a": {
+  "PipelineStack-TelusShSecurityAcmProvisioningStackte-3GgllA1czIHr": {
     "RoleArn": "arn:aws:iam::118575936588:role/PipelineStack-TelusShSecurityAcmProvisioningStackte-3GgllA1czIHr"
   },
-  "Role35d623f8": {
+  "ResourceConfigurationCollector-DO-NOT-DELETE": {
     "RoleArn": "arn:aws:iam::118575936588:role/ResourceConfigurationCollector-DO-NOT-DELETE"
   },
-  "Role5392f2f8": {
+  "SaltyTrustedService": {
     "RoleArn": "arn:aws:iam::118575936588:role/SaltyTrustedService"
   },
-  "Roleee6b8040": {
+  "ShadowTrooperRole": {
     "RoleArn": "arn:aws:iam::118575936588:role/ShadowTrooperRole"
   },
-  "Role21a03896": {
+  "telus-security-audit-prowler-ecstaskrole": {
     "RoleArn": "arn:aws:iam::118575936588:role/telus-security-audit-prowler-ecstaskrole"
   },
-  "Roleb90c96b5": {
+  "telus-security-audit-prowler-ecstaskrole1": {
     "RoleArn": "arn:aws:iam::118575936588:role/telus-security-audit-prowler-ecstaskrole1"
   },
-  "Role026406bf": {
+  "telus-sh-security-iam-publicResourceLambdaExecutionRole": {
     "RoleArn": "arn:aws:iam::118575936588:role/telus-sh-security-iam-publicResourceLambdaExecutionRole"
   },
-  "Role29a82cca": {
+  "telus-sh-security-iamrole-lambda_kms_quicksight_execution_role": {
     "RoleArn": "arn:aws:iam::118575936588:role/telus-sh-security-iamrole-lambda_kms_quicksight_execution_role"
   },
-  "Role335cda96": {
+  "testcrossaccountrole": {
     "RoleArn": "arn:aws:iam::118575936588:role/testcrossaccountrole"
   },
-  "Role805337f2": {
+  "testcrossaccountrole112212": {
     "RoleArn": "arn:aws:iam::118575936588:role/testcrossaccountrole112212"
   },
-  "Role9ad80f2c": {
+  "TurtleRoleManagement": {
     "RoleArn": "arn:aws:iam::118575936588:role/TurtleRoleManagement"
   },
-  "Role0072492a": {
+  "XenaAuditorRole-DO-NOT-DELETE": {
     "RoleArn": "arn:aws:iam::118575936588:role/XenaAuditorRole-DO-NOT-DELETE"
   },
   "ManagedPolicy108c0c1e": {

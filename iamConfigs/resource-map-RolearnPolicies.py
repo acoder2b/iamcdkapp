@@ -24,7 +24,7 @@ def generate_resource_map(file_name):
     account_id = get_aws_account_id()
 
     # Construct the output file name using the account ID
-    output_file = f"resource-map-{account_id}.json"
+    output_file = f"resource-map-arn-{account_id}.json"
 
     # Initialize the resource map
     resource_map = {}
@@ -51,6 +51,7 @@ def generate_resource_map(file_name):
                 role_arn = f"arn:aws:iam::{account_id}:role/{role_name}"
 
                 # Add to the resource map using the logical resource name
+                # resource_map[role_name] = {
                 resource_map[resource_name] = {
                     "RoleArn": role_arn
                 }
