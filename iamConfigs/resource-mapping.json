@@ -1,0 +1,8 @@
+ {
+       "SecurityConfigStack-118575936588-iampipeline-stack/ManagedPolicy93c3c312/Resource": {
+         "PolicyArn": "arn:aws:iam::118575936588:policy/Environment-Developer-Teffff"
+       },
+       "SecurityConfigStack-118575936588-iampipeline-stack/ManagedPolicyf7133b17/Resource": {
+         "PolicyArn": "arn:aws:iam::118575936588:policy/ConfigAccessPolicy"
+       }
+    }

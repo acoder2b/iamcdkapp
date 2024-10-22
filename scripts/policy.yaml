@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation template to create an IAM Managed Policy'
+
+Resources:
+  MyManagedPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      ManagedPolicyName: 'MyCustomManagedPolicy'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:ListBucket'
+            Resource:
+              - 'arn:aws:s3:::my-example-bucket'
+              - 'arn:aws:s3:::my-example-bucket/*'
+      Description: 'A custom managed policy that allows read access to a specific S3 bucket'
+
+Outputs:
+  PolicyArn:
+    Description: 'ARN of the created IAM Managed Policy'
+    Value: !Ref MyManagedPolicy

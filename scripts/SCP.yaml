@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation template to create a Service Control Policy (SCP)'
+
+Resources:
+  MySCP:
+    Type: 'AWS::Organizations::Policy'
+    Properties:
+      Content: 
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyAccessToSpecificRegions
+            Effect: Deny
+            Action: '*'
+            Resource: '*'
+            Condition:
+              StringNotEquals:
+                'aws:RequestedRegion':
+                  - us-east-1
+                  - us-west-2
+      Description: 'SCP to restrict AWS actions to specific regions'
+      Name: 'RestrictToSpecificRegions'
+      Type: SERVICE_CONTROL_POLICY
+
+Outputs:
+  SCPId:
+    Description: 'ID of the created Service Control Policy'
+    Value: !Ref MySCP
+  SCPArn:
+    Description: 'ARN of the created Service Control Policy'
+    Value: !GetAtt MySCP.Arn
