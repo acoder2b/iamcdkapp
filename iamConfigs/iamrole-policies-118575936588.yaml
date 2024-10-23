@@ -12,24 +12,29 @@ iam_policies:
             Effect: Allow
             Action: autoscaling-plans:*
             Resource: '*'
-    description: dad
+    description: jabdsa
     path: /
     tags:
-    -   Key: wd
-        Value: ecfec
-    -   Key: cscwefc
-        Value: wdccvewfc
--   policyName: testlambdapolicy
+    -   Key: asc
+        Value: sc
+    -   Key: wscwcf
+        Value: wecwef
+-   policyName: testautopoliciyr
     deletionPolicy: RETAIN
     policyDocument:
         Version: '2012-10-17'
         Statement:
         -   Sid: VisualEditor0
             Effect: Allow
-            Action: lambda:*
+            Action: autoscaling-plans:*
             Resource: '*'
-    description: hdia wd
+    description: scwcf
     path: /
+    tags:
+    -   Key: test
+        Value: tetsts
+    -   Key: qadad
+        Value: sdsd
 roles:
 -   roleName: AccessAnalyzerTrustedService
     deletionPolicy: RETAIN
@@ -163,10 +168,10 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::533267069473:root
-                - arn:aws:iam::637423399230:root
-                - arn:aws:iam::333692317655:root
                 - arn:aws:iam::381492016180:root
+                - arn:aws:iam::333692317655:root
+                - arn:aws:iam::637423399230:root
+                - arn:aws:iam::533267069473:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -212,8 +217,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                AWS: arn:aws:iam::950184135563:root
                 Service: crs.ec2.aws.internal
+                AWS: arn:aws:iam::950184135563:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -396,9 +401,9 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::089414261608:root
-                - arn:aws:iam::611447770337:root
                 - arn:aws:iam::796293252539:root
+                - arn:aws:iam::611447770337:root
+                - arn:aws:iam::089414261608:root
                 Service: depndency-insights-prod.aws.internal
             Action: sts:AssumeRole
             Condition:
@@ -445,8 +450,8 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.sentry.orthanc.epoxy.aws.internal
                 - prod.stronghold.orthanc.epoxy.aws.internal
+                - prod.sentry.orthanc.epoxy.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -474,11 +479,11 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.rcc.aws.internal
-                - ap-east-1.prod.rcc.aws.internal
                 - eu-south-1.prod.rcc.aws.internal
                 - af-south-1.prod.rcc.aws.internal
                 - me-south-1.prod.rcc.aws.internal
+                - prod.rcc.aws.internal
+                - ap-east-1.prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
