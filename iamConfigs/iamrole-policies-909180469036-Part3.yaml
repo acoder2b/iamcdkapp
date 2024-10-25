@@ -1,0 +1,303 @@
+account_id:
+- '909180469036'
+region: us-east-1
+stack_name: iam-role-policies-pipeline-stack-Part3
+iam_policies: []
+roles:
+-   roleName: IMDSv2-automigrator
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service: naws.imds.automigrator.us-east-1.aws.internal
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: IMDSv2-automigratorI16MLp77QdAk
+-   roleName: InternalAuditInternal
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service: internalaudit.aws.internal
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: InternalAuditInternalE5ON8Z0CmfDd
+-   roleName: IsengardAuditorRole-DO-NOT-DELETE
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::727820809195:root
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: IsengardAuditorExternalIdjavpNMaoYSAJ
+-   roleName: IsengardCloudTrailRole
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::086441151436:root
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: IsengardCloudTrailRoledNNIFGOrhLJK
+-   roleName: IsengardConfigRole
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service: config-setup.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: IsengardConfigRole9KtIN4G0TlRw
+-   roleName: IsengardRole-DO-NOT-DELETE
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::727820809195:root
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: IsengardExternalIdHNI9lk7EU4QC
+-   roleName: IsengardRoleForDependencyAssuranceIamAnalyzer
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service: depndency-insights-prod.aws.internal
+                AWS:
+                - arn:aws:iam::796293252539:root
+                - arn:aws:iam::611447770337:root
+                - arn:aws:iam::089414261608:root
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: DependencyAssuranceIamAnalyzerTrustedService13FnOr2EKKUS
+-   roleName: IsengardRoleForOptInComputeOptimizer
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service: compute-optimizer.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: AWSComputeOptimizerJPftZEq2uhqw
+-   roleName: lambda-role
+    deletionPolicy: RETAIN
+    description: Allows Lambda functions to call AWS services on your behalf.
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+                ArnLike:
+                    aws:SourceArn: arn:aws:lambda:us-east-1:909180469036:function:telus-sh-security-sso-permission-set-report-lambda
+-   roleName: OIDC-CDKImportRole
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                Federated: arn:aws:iam::909180469036:oidc-provider/token.actions.githubusercontent.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+                StringEquals:
+                    token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                    token.actions.githubusercontent.com:sub: repo:acoder2b/iamcdkapp:ref:refs/heads/Manual-Github-CDKImport
+-   roleName: OIDC-GitHubActionsRole
+    deletionPolicy: RETAIN
+    description: This is an Intermediate Role used for Role chaining
+    sessionDuration: 7200
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                Federated: arn:aws:iam::909180469036:oidc-provider/token.actions.githubusercontent.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+                StringEquals:
+                    token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                    token.actions.githubusercontent.com:sub: repo:acoder2b/iamcdkapp:ref:refs/heads/main
+-   roleName: OIDCRole-GitHubActionsRole
+    deletionPolicy: RETAIN
+    description: 'This IAM Role will be assumed by GitHubActions '
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                Federated: arn:aws:iam::909180469036:oidc-provider/token.actions.githubusercontent.com
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+                StringEquals:
+                    token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                    token.actions.githubusercontent.com:sub: repo:acoder2b/iamcdkapp:ref:refs/heads/main
+-   roleName: OrthancRole
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service:
+                - prod.stronghold.orthanc.epoxy.aws.internal
+                - prod.sentry.orthanc.epoxy.aws.internal
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: OrthancRolesucpsC2kBXS5
+-   roleName: ResourceConfigurationCollector-DO-NOT-DELETE
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service: prod.rcc.aws.internal
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: ResourceConfigurationCollectorTNu1qWq2g22B
+-   roleName: rtrt
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::909180469036:root
+            Action: sts:AssumeRole
+            Condition: {}
+-   roleName: SaltyTrustedService
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service: prod.salty.aws.internal
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: SaltyTrustedServiceTwIVed9Rf3s3
+-   roleName: ShadowTrooperRole
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service: prod.shadowtrooper.aws.internal
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: ShadowTrooperRolelRS5km159XDz
+-   roleName: ssmInstance
+    deletionPolicy: RETAIN
+    description: Allows EC2 instances to call AWS services on your behalf.
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+-   roleName: telus-sh-security-eventbridge-rules--ca-central-1
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /security/
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                Service: events.amazonaws.com
+            Action: sts:AssumeRole
+-   roleName: telus-sh-security-eventbridge-rules--us-east-2
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /security/
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                Service: events.amazonaws.com
+            Action: sts:AssumeRole
+    permissionBoundary:
+        PermissionsBoundaryType: Policy
+        PermissionsBoundaryArn: arn:aws:iam::aws:policy/AdministratorAccess

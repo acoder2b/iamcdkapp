@@ -114,9 +114,10 @@ def get_policy_details(policy_arn):
         logging.error(f"Error fetching IAM policy details for {policy_arn}: {error}")
         return None
 
-def list_iam_roles(exclude_paths, exclude_role_prefixes):
+def list_iam_roles(exclude_paths, exclude_role_prefixes, exclude_roles):
     """
-    List IAM roles in the account, excluding those with specified paths and prefixes.
+    List IAM roles in the account, excluding those with specified paths, prefixes,
+    and specific role names in `exclude_roles`.
     """
     iam_client = boto3.client('iam', region_name='us-east-1')
     paginator = iam_client.get_paginator('list_roles')
@@ -129,13 +130,17 @@ def list_iam_roles(exclude_paths, exclude_role_prefixes):
                 role_path = role['Path']
                 role_name = role['RoleName']
                 
-                # Exclude roles based on paths and prefixes
+                # Exclude roles by path, prefix, and exact name match
                 if any(role_path.startswith(path) for path in exclude_paths):
                     logging.debug(f"Excluded role by path: {role_name} with path: {role_path}")
                     continue
                 
                 if any(role_name.startswith(prefix) for prefix in exclude_role_prefixes):
                     logging.debug(f"Excluded role by prefix: {role_name}")
+                    continue
+                
+                if role_name in exclude_roles:
+                    logging.debug(f"Excluded role by name: {role_name}")
                     continue
 
                 # Add valid roles
@@ -151,6 +156,7 @@ def list_iam_roles(exclude_paths, exclude_role_prefixes):
         logging.error(f"Error listing IAM roles: {error}")
         return roles
 
+
 def filter_policies(policies, cf_policy_arns):
     """
     Filter out policies provisioned by CloudFormation.
@@ -159,7 +165,7 @@ def filter_policies(policies, cf_policy_arns):
     logging.info(f"Total customer-managed policies after filtering CloudFormation provisioned ones: {len(filtered_policies)}")
     return filtered_policies
 
-def list_cf_stack_roles():
+def list_cf_stack_roles(account_id):
     """
     List IAM roles provisioned by CloudFormation stacks and log their stack names.
     """
@@ -175,8 +181,9 @@ def list_cf_stack_roles():
                 resources = cf_client.describe_stack_resources(StackName=stack_name)['StackResources']
                 for resource in resources:
                     if resource['ResourceType'] == 'AWS::IAM::Role':
-                        roles.append(resource['PhysicalResourceId'])
-                        logging.info(f"Role '{resource['PhysicalResourceId']}' is provisioned by CloudFormation stack '{stack_name}'.")
+                        role_name = resource['PhysicalResourceId']
+                        roles.append(role_name)
+                        logging.info(f"Role '{role_name}' is provisioned by CloudFormation stack '{stack_name}'.")
 
         logging.info(f"Total IAM roles in CloudFormation stacks found: {len(roles)}")
         return roles
@@ -184,7 +191,18 @@ def list_cf_stack_roles():
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error listing CloudFormation stack roles: {error}")
         return []
-    
+
+
+ # Main function where filtering takes place
+def filter_roles(roles, cf_role_physical_ids):
+    """
+    Filter out roles that are part of CloudFormation stacks by checking `RoleName` against `PhysicalResourceId`.
+    """
+    filtered_roles = [role for role in roles if role['RoleName'] not in cf_role_physical_ids]
+    logging.info(f"Roles after filtering out CloudFormation-provisioned ones: {len(filtered_roles)}")
+    return filtered_roles
+
+
 def get_iam_role_state(role_name):
     """
     Get details of an IAM role by its name.
@@ -308,7 +326,7 @@ def get_account_id():
 def split_yaml_content(full_yaml_structure, account_id, max_resources_per_file=20):
     """
     Split the YAML content into multiple files if resources exceed the specified limit.
-    Each file will have a unique suffix added to the 'stack_name'.
+    The first file will have the original name, while subsequent files will have a suffix like Part1, Part2, etc.
     """
     iam_policies = full_yaml_structure.get('iam_policies', [])
     roles = full_yaml_structure.get('roles', [])
@@ -320,27 +338,36 @@ def split_yaml_content(full_yaml_structure, account_id, max_resources_per_file=2
     # Split the combined resources into chunks of max_resources_per_file
     chunks = [all_resources[i:i + max_resources_per_file] for i in range(0, total_resources, max_resources_per_file)]
 
-    file_count = 1
-    for chunk in chunks:
+    # For the first chunk, keep the original file and stack_name without suffix
+    for file_count, chunk in enumerate(chunks, start=1):
         # Separate policies and roles for each chunk
         iam_policies_in_chunk = [resource for resource in chunk if 'policyName' in resource]
         roles_in_chunk = [resource for resource in chunk if 'roleName' in resource]
 
-        # Create new YAML structure for this chunk
-        chunked_yaml_structure = {
-            'account_id': full_yaml_structure['account_id'],
-            'region': full_yaml_structure['region'],
-            'stack_name': f"{full_yaml_structure['stack_name']}-part{file_count}",
-            'iam_policies': iam_policies_in_chunk,
-            'roles': roles_in_chunk
-        }
+        if file_count == 1:
+            # First file: keep original names
+            chunked_yaml_structure = {
+                'account_id': full_yaml_structure['account_id'],
+                'region': full_yaml_structure['region'],
+                'stack_name': full_yaml_structure['stack_name'],  # Original stack_name
+                'iam_policies': iam_policies_in_chunk,
+                'roles': roles_in_chunk
+            }
+            # Write to the original YAML file
+            append_to_yaml_file(chunked_yaml_structure, account_id)
+        else:
+            # Subsequent files: add Part1, Part2, etc.
+            chunked_yaml_structure = {
+                'account_id': full_yaml_structure['account_id'],
+                'region': full_yaml_structure['region'],
+                'stack_name': f"{full_yaml_structure['stack_name']}-Part{file_count-1}",  # Add Part1, Part2, etc.
+                'iam_policies': iam_policies_in_chunk,
+                'roles': roles_in_chunk
+            }
+            # Write to a new file with PartX suffix
+            append_to_yaml_file(chunked_yaml_structure, account_id, file_suffix=f"-Part{file_count-1}")
 
-        # Write to a new file with suffix
-        append_to_yaml_file(chunked_yaml_structure, account_id, file_suffix=f"-part{file_count}")
-        file_count += 1
-
-
-
+            
 def append_to_yaml_file(full_yaml_structure, account_id, file_suffix=""):
     """
     Write the ordered YAML content to a file. Adds a suffix if the file is split.
@@ -366,6 +393,7 @@ def main():
 
     exclude_paths = ['/aws-reserved/', '/aws-service-role/', '/service-role/', '/cdk-hnb']
     exclude_role_prefixes = ['cdk-hnb659fds', 'StackSet', 'stackset', 'AWSControlTower']
+    exclude_roles = ['HubdetectiveStack-DetectiveControlsLambdaFunctionS-P4IYV4VCDBYD', 'RoleToExclude2']
     account_id = get_account_id()
     region = 'us-east-1'
 
@@ -374,22 +402,30 @@ def main():
         return
 
     # Step 1: List all roles in the account
-    roles = list_iam_roles(exclude_paths, exclude_role_prefixes)
+    roles = list_iam_roles(exclude_paths, exclude_role_prefixes, exclude_roles)
 
     # Step 2: List roles in CloudFormation stacks
-    cf_stack_roles = list_cf_stack_roles()
+    cf_stack_roles = list_cf_stack_roles(account_id)
 
-    # Handle case where `cf_stack_roles` may not be in expected format
-    if isinstance(cf_stack_roles, list) and all(isinstance(role, dict) and 'PhysicalID' in role for role in cf_stack_roles):
-        cf_stack_role_names = {role['PhysicalID'] for role in cf_stack_roles}
-    else:
-        cf_stack_role_names = set(cf_stack_roles)  # Assuming it may just be a list of role names
+    # # Handle case where `cf_stack_roles` may not be in expected format
+    # if isinstance(cf_stack_roles, list) and all(isinstance(role, dict) and 'PhysicalID' in role for role in cf_stack_roles):
+    #     cf_stack_role_names = {role['PhysicalID'] for role in cf_stack_roles}
+    # else:
+    #     cf_stack_role_names = set(cf_stack_roles)  # Assuming it may just be a list of role names
 
-    logging.info(f"Roles provisioned by CloudFormation stacks: {cf_stack_role_names}")
+    # logging.info(f"Roles provisioned by CloudFormation stacks: {cf_stack_role_names}")
+
+    # # Step 3: Exclude roles that are part of CloudFormation stacks
+    # filtered_roles = [role for role in roles if role['RoleName'] not in cf_stack_role_names]
+    # logging.info(f"Roles after filtering out CloudFormation provisioned roles: {len(filtered_roles)}")
 
     # Step 3: Exclude roles that are part of CloudFormation stacks
-    filtered_roles = [role for role in roles if role['RoleName'] not in cf_stack_role_names]
+    filtered_roles = filter_roles(roles, cf_stack_roles)
+
     logging.info(f"Roles after filtering out CloudFormation provisioned roles: {len(filtered_roles)}")
+
+    # Proceed with fetching details for filtered roles
+    roles_data = [get_iam_role_state(role['RoleName']) for role in filtered_roles if get_iam_role_state(role['RoleName'])]
 
     # Step 4: Fetch role details for each filtered role
     roles_data = []

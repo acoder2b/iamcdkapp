@@ -1,0 +1,62 @@
+{
+  "Role124c20ec": {
+    "RoleName": "AccessAnalyzerTrustedService"
+  },
+  "Rolebcd1d392": {
+    "RoleName": "admin"
+  },
+  "Roled4bc8f7c": {
+    "RoleName": "Administrator"
+  },
+  "Roleb1cae0ce": {
+    "RoleName": "AmazonApiGwPushToCloudWatchLogGroup"
+  },
+  "Role4fda5c60": {
+    "RoleName": "AVMContainersUserRole"
+  },
+  "Role06d4ce48": {
+    "RoleName": "AWS-QuickSetup-SSM-RoleForEnablingExplorer"
+  },
+  "ManagedPolicya8fa2027": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/Tef-Permission-Environment-Admin"
+  },
+  "ManagedPolicyf7133b17": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/ConfigAccessPolicy"
+  },
+  "ManagedPolicy90a929e0": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/GitHubActions-CDKAssume"
+  },
+  "ManagedPolicy1f4a1a6c": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/Boundary"
+  },
+  "ManagedPolicy46aeae96": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/GitHubActionsPolicy"
+  },
+  "ManagedPolicydbafdd05": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/GitHubActions-ACMProvisioning-CDKRoleASsume"
+  },
+  "ManagedPolicy52828788": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/Tef-Environment-DeveloperLite"
+  },
+  "ManagedPolicy6697b611": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/Tef-Permission-Environment-AdminDelegation"
+  },
+  "ManagedPolicy2b99a855": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/Tef-Permission-Environment-Developer"
+  },
+  "ManagedPolicy69982a14": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/telus-devops-iam-permission-boundary"
+  },
+  "ManagedPolicy60266f9b": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/EC2CapacityReservationService"
+  },
+  "ManagedPolicy55c09a35": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/ResourceConfigurationCollectorPolicy"
+  },
+  "ManagedPolicy881f1463": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/IAMNotinAction"
+  },
+  "ManagedPolicy22624c05": {
+    "PolicyArn": "arn:aws:iam::909180469036:policy/Tef-Permission-Environment-DeveloperDelegated"
+  }
+}

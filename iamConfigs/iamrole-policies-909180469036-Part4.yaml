@@ -1,0 +1,106 @@
+account_id:
+- '909180469036'
+region: us-east-1
+stack_name: iam-role-policies-pipeline-stack-Part4
+iam_policies: []
+roles:
+-   roleName: telus-test-thong-multipleconditionsrole-codedeploy
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: Statement1
+            Effect: Allow
+            Principal:
+                AWS: '*'
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    aws:PrincipalTag/OUID: o-v0c5kg9lej
+                    sts:ExternalId: '1234566776'
+                    aws:PrincipalOrgID: o-v0c5kg9lej
+-   roleName: tenant-iam-acmdnsvalidationrole
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: Statement1
+            Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::909180469036:role/AcmProvisioningAppStack-ACMProvisonFunctionServiceR-9wLIA8LHDlCJ
+            Action: sts:AssumeRole
+-   roleName: testrole
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::909180469036:root
+            Action: sts:AssumeRole
+            Condition: {}
+-   roleName: testroleassume
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::909180469036:root
+            Action: sts:AssumeRole
+            Condition: {}
+    permissionBoundary:
+        PermissionsBoundaryType: Policy
+        PermissionsBoundaryArn: arn:aws:iam::aws:policy/AdministratorAccess
+-   roleName: TurtleRoleManagement
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service: prod.webui.turtle.aws.internal
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: TurtleRoleManagementn5S4SYe9aRVy
+-   roleName: workspaces_DefaultRole
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2008-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                Service: workspaces.amazonaws.com
+            Action: sts:AssumeRole
+    permissionBoundary:
+        PermissionsBoundaryType: Policy
+        PermissionsBoundaryArn: arn:aws:iam::aws:policy/AdministratorAccess
+-   roleName: XenaAuditorRole-DO-NOT-DELETE
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::691002153696:root
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: XenaAuditorRole7RyuNyeKbDjL
