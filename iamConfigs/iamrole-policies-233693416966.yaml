@@ -1403,6 +1403,7 @@ roles:
 -   roleName: testroledad
     deletionPolicy: RETAIN
     sessionDuration: 3600
+    description: test role
     iamPath: /
     trustPolicy:
         Version: '2012-10-17'
