@@ -272,8 +272,8 @@ iam_policies:
             NotAction: s3:GetObject
     path: /
     tags:
-    -   Key: TAGS
-        Value: Manual
+    -   Key: TAGS1
+        Value: Manual11
 roles:
 -   roleName: AccessAnalyzerTrustedService
     deletionPolicy: RETAIN
