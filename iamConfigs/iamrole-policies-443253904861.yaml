@@ -302,6 +302,25 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: AccessAnalyzerTrustedServicepOj1GJg2Plya
+    inlinePolicies:
+        AccessAnalyzerTrustedServicePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Sid: A2CreateAnalyzer
+                Effect: Allow
+                Action:
+                - access-analyzer:ListAnalyzers
+                - access-analyzer:GetAnalyzer
+                - access-analyzer:CreateAnalyzer
+                - ec2:DescribeRegions
+                Resource: '*'
+            -   Sid: CreateSLR
+                Effect: Allow
+                Action: iam:CreateServiceLinkedRole
+                Condition:
+                    StringEquals:
+                        iam:AWSServiceName: access-analyzer.amazonaws.com
+                Resource: '*'
 -   roleName: Admin
     deletionPolicy: RETAIN
     sessionDuration: 43200
@@ -317,6 +336,8 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: IsengardExternalIdvmj8QDBfWiVF
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AdministratorAccess
 -   roleName: AVMContainersUserRole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -332,6 +353,29 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: InspectorEnablementRoleYKeeID68tiiE
+    inlinePolicies:
+        AWSContainerAssessmentPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Sid: AVMContainersUserPolicyForStandaloneAccounts
+                Effect: Allow
+                Action:
+                - inspector2:BatchGetAccountStatus
+                - inspector2:ListCoverage
+                - inspector2:ListCoverageStatistics
+                - inspector2:ListFindingAggregations
+                - inspector2:ListFindings
+                - inspector2:UpdateConfiguration
+                - inspector2:Enable
+                - ecr:PutRegistryScanningConfiguration
+                - ecr:GetRegistryScanningConfiguration
+                Resource: '*'
+            -   Effect: Allow
+                Action: iam:CreateServiceLinkedRole
+                Resource: arn:*:iam::*:role/aws-service-role/inspector2.amazonaws.com/AWSServiceRoleForAmazonInspector2
+                Condition:
+                    StringEquals:
+                        iam:AWSServiceName: inspector2.amazonaws.com
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_ap-northeast-1
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -350,6 +394,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-ap-northeast-1-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_ap-northeast-2
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -368,6 +489,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-ap-northeast-2-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_ap-south-1
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -386,6 +584,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-ap-south-1-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_ap-southeast-1
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -404,6 +679,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-ap-southeast-1-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_ap-southeast-2
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -422,6 +774,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-ap-southeast-2-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_ca-central-1
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -440,6 +869,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-ca-central-1-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_eu-central-1
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -458,6 +964,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-eu-central-1-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_eu-north-1
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -476,6 +1059,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-eu-north-1-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_eu-west-1
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -494,6 +1154,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-eu-west-1-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_eu-west-2
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -512,6 +1249,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-eu-west-2-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_eu-west-3
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -530,6 +1344,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-eu-west-3-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_sa-east-1
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -548,6 +1439,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-sa-east-1-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_us-east-2
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -566,6 +1534,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-us-east-2-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_us-west-1
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -584,6 +1629,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-us-west-1-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: AWS-QuickSetup-EnableCRecording-62d8q_us-west-2
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -602,6 +1724,83 @@ roles:
         value: Config Recording
     -   key: QuickSetupID
         value: 62d8q
+    inlinePolicies:
+        AWS-QuickSetup-CFGRecording-PolicyForAutomation-us-west-2-62d8q:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - s3:CreateBucket
+                - s3:PutBucketPublicAccessBlock
+                - s3:ListBucket
+                - s3:PutBucketPolicy
+                - s3:PutEncryptionConfiguration
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-443253904861-62d8q
+                Effect: Allow
+            -   Action:
+                - sns:ListTopics
+                - sns:CreateTopic
+                Resource: arn:aws:sns:*:*:*
+                Effect: Allow
+            -   Action:
+                - config:DescribeConfigurationRecorders
+                - config:DescribeDeliveryChannels
+                - config:PutConfigurationRecorder
+                - config:PutDeliveryChannel
+                - config:StartConfigurationRecorder
+                - kms:CreateAlias
+                - kms:CreateKey
+                - kms:Encrypt
+                - kms:Decrypt
+                - kms:DescribeKey
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+                - sns:ListTopics
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - iam:GetRole
+                - iam:PassRole
+                Resource:
+                - arn:aws:iam::*:role/AWSServiceRoleForConfig
+                - arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: config.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+                Effect: Allow
+        SSMQuickSetupEnableExplorerInlinePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:ListRoles
+                - config:DescribeConfigurationRecorders
+                - compute-optimizer:GetEnrollmentStatus
+                - support:DescribeTrustedAdvisorChecks
+                Resource: '*'
+                Effect: Allow
+            -   Action:
+                - ssm:UpdateServiceSetting
+                - ssm:GetServiceSetting
+                Resource:
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor
+                - arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase
+                Effect: Allow
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: ssm.amazonaws.com
+                Action:
+                - iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM
+                Effect: Allow
 -   roleName: awslogs.prod.kelex.molecule.toppatterns
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -617,6 +1816,19 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: KelexDataFetcherZfDlUNv6SfKU
+    inlinePolicies:
+        AWSLogsOptimizerPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action:
+                - cloudwatch:GetMetricData
+                Resource: '*'
+            -   Effect: Allow
+                Action:
+                - logs:GetQueryResults
+                - logs:StartQuery
+                Resource: arn:aws:logs:*:443253904861:log-group:*
 -   roleName: AwsSecurityAudit
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -633,6 +1845,8 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: AwsSecurityAuditMzoFEeHMzruJ
+    managedPolicies:
+    - arn:aws:iam::aws:policy/SecurityAudit
 -   roleName: AwsSecurityNacundaAudit
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -648,6 +1862,48 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: AwsSecurityNacundaAuditwOgfbzwiOas7
+    inlinePolicies:
+        AwsSecurityNacundaAuditPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action: guardduty:*
+                Resource: '*'
+            -   Effect: Allow
+                Action: iam:CreateServiceLinkedRole
+                Resource: '*'
+                Condition:
+                    StringLike:
+                        iam:AWSServiceName:
+                        - guardduty.amazonaws.com
+                        - malware-protection.guardduty.amazonaws.com
+            -   Effect: Allow
+                Action:
+                - organizations:EnableAWSServiceAccess
+                - organizations:RegisterDelegatedAdministrator
+                - organizations:ListDelegatedAdministrators
+                - organizations:ListAWSServiceAccessForOrganization
+                - organizations:DescribeOrganizationalUnit
+                - organizations:DescribeAccount
+                - organizations:DescribeOrganization
+                Resource: '*'
+            -   Effect: Allow
+                Action: iam:GetRole
+                Resource: arn:aws:iam::*:role/*AWSServiceRoleForAmazonGuardDutyMalwareProtection
+            -   Effect: Allow
+                Action:
+                - events:PutRule
+                Resource: '*'
+            -   Effect: Allow
+                Action:
+                - events:DeleteRule
+                - events:DescribeRule
+                - events:DisableRule
+                - events:EnableRule
+                - events:ListTargetsByRule
+                - events:PutTargets
+                - events:RemoveTargets
+                Resource: arn:aws:events:*:*:rule/AwsSecurityNacundaAuditFindings-DO-NOT-DELETE
 -   roleName: AWSVAPTAudit
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -663,6 +1919,8 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: AWSVAPTAuditvZJdiZGpKNL0
+    managedPolicies:
+    - arn:aws:iam::aws:policy/SecurityAudit
 -   roleName: CloudSecAuditRole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -678,6 +1936,64 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: CloudSecAuditRoleVBZHW3TU3hod
+    managedPolicies:
+    - arn:aws:iam::aws:policy/SecurityAudit
+    inlinePolicies:
+        CloudSecAuditPolicy-prod:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action:
+                - cloudwatch:DescribeInsightRules
+                - cloudwatch:GetMetricStream
+                - cloudwatch:ListManagedInsightRules
+                - logs:StartQuery
+                - logs:StopQuery
+                - glue:CreateTable
+                - glue:CreateDatabase
+                - athena:ListWorkGroups
+                - athena:CreateWorkGroup
+                - athena:StartQueryExecution
+                - glue:GetDatabase
+                - glue:GetDatabases
+                - glue:GetPartitions
+                - glue:GetSchema
+                - glue:GetSchemaByDefinition
+                - glue:GetSchemaVersion
+                - glue:GetTable
+                - glue:GetTables
+                - glue:GetTableVersion
+                - glue:GetTableVersions
+                - ec2:CreateSnapshot
+                - ec2:CreateSnapshots
+                - logs:GetLogGroupFields
+                Resource: '*'
+            -   Effect: Allow
+                Action:
+                - ec2:CreateTags
+                Resource: arn:aws:ec2:*:*:snapshot/*
+            -   Effect: Allow
+                Action:
+                - s3:CreateBucket
+                - s3:PutObject
+                - s3:PutObjectAcl
+                - s3:AbortMultipartUpload
+                - s3:GetObject
+                Resource: arn:aws:s3:::aws-athena-query-results-*
+            -   Effect: Allow
+                Action:
+                - s3:ListMultipartUploadParts
+                - s3:GetObject
+                - s3:GetBucketLocation
+                - s3:ListBucket
+                Resource: arn:aws:s3:::cloudtrail-awslogs-*
+            -   Effect: Allow
+                Action:
+                - athena:StopQueryExecution
+                - athena:GetQueryExecution
+                - athena:GetWorkGroup
+                - athena:GetQueryResults
+                Resource: arn:aws:athena:*:*:workgroup/cloudsec
 -   roleName: CloudSeerTrustedServiceRole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -689,14 +2005,202 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::381492016180:root
                 - arn:aws:iam::333692317655:root
-                - arn:aws:iam::637423399230:root
+                - arn:aws:iam::381492016180:root
                 - arn:aws:iam::533267069473:root
+                - arn:aws:iam::637423399230:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
                     sts:ExternalId: CloudSeerTrustedServiceRoleNwfKEY7SzuWR
+    inlinePolicies:
+        CloudSeerTrustedServicePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - ec2:Describe*
+                - ec2:StartNetworkInsightsAccessScopeAnalysis
+                - ec2:DescribeNetworkInsightsAccessScopeAnalyses
+                - ec2:GetNetworkInsightsAccessScopeAnalysisFindings
+                - ssm:DescribeInstanceInformation
+                - ssm:ListAssociations
+                - ssm:ListCommands
+                - ssm:DescribeAssociationExecutions
+                - ssm:DescribeAssociationExecutionTargets
+                - s3:ListAllMyBuckets
+                - s3:GetBucket*
+                - s3:GetEncryptionConfiguration
+                - s3:GetLifecycleConfiguration
+                - s3:GetAccountPublicAccessBlock
+                - elasticmapreduce:ListClusters
+                - elasticmapreduce:DescribeCluster
+                - elasticmapreduce:ListSecurityConfigurations
+                - elasticmapreduce:DescribeSecurityConfiguration
+                - iam:GetAccountAuthorizationDetails
+                - iam:GetAccountPasswordPolicy
+                - iam:ListAccessKeys
+                - iam:ListSamlProviders
+                - iam:GetSamlProvider
+                - iam:ListOpenIdConnectProviders
+                - iam:GetOpenIdConnectProvider
+                - iam:ListPolicies
+                - iam:GetPolicyVersion
+                - iam:GetServiceLastAccessedDetails
+                - iam:GenerateServiceLastAccessedDetails
+                - redshift:DescribeCluster*
+                - redshift:DescribeReservedNodes
+                - workspaces:DescribeWorkspaces
+                - workspaces:DescribeWorkspaceDirectories
+                - elasticache:DescribeCacheClusters
+                - elasticache:DescribeCacheSubnetGroups
+                - elasticache:ListTagsForResource
+                - es:ListDomainNames
+                - es:DescribeElasticsearchDomain
+                - es:ListTags
+                - lambda:ListFunctions
+                - lambda:GetFunction
+                - lambda:ListTags
+                - lambda:ListAliases
+                - lambda:GetPolicy
+                - lambda:GetFunctionUrlConfig
+                - dynamodb:ListTables
+                - dynamodb:DescribeTable
+                - dynamodb:DescribeContinuousBackups
+                - dynamodb:ListTagsOfResource
+                - dynamodb:DescribeTimeToLive
+                - route53:ListHostedZones
+                - route53:ListResourceRecordSets
+                - route53:GetTrafficPolicy*
+                - route53:ListTrafficPolic*
+                - route53domains:ListDomains
+                - wafv2:ListWebACLs
+                - wafv2:ListLoggingConfigurations
+                - bedrock:ListCustomModels
+                - bedrock:ListModelCustomizationJobs
+                - bedrock:GetCustomModel
+                - bedrock:GetModelCustomizationJob
+                - kms:ListKeys
+                - kms:ListKeyPolicies
+                - kms:GetKeyRotationStatus
+                - kms:DescribeKey
+                - elasticfilesystem:DescribeFileSystems
+                - elasticbeanstalk:DescribeEnvironments
+                - kinesis:ListStreams
+                - kinesis:DescribeStreamSummary
+                - kinesis:ListTagsForStream
+                - rds:DescribeDbInstances
+                - rds:DescribeDbSnapshot*
+                - rds:DescribeDbCluster*
+                - rds:DescribeReservedDbInstances
+                - rds:ListTagsForResource
+                - sns:ListTopics
+                - sns:ListSubscriptionsByTopic
+                - sns:GetTopicAttributes
+                - sns:ListTagsForResource
+                - sns:GetSubscriptionAttributes
+                - elasticloadbalancing:DescribeLoadBalancer*
+                - elasticloadbalancing:DescribeTarget*
+                - elasticloadbalancing:DescribeListeners
+                - ecs:List*
+                - ecs:Describe*
+                - eks:ListClusters
+                - eks:DescribeCluster
+                - eks:ListNodegroups
+                - eks:DescribeNodegroup
+                - eks:ListFargateProfiles
+                - eks:DescribeFargateProfile
+                - cloudsearch:DescribeDomains
+                - cloudsearch:DescribeServiceAccessPolicies
+                - cloudtrail:DescribeTrails
+                - codedeploy:ListDeployments
+                - codedeploy:GetDeployment
+                - codepipeline:ListPipelines
+                - codepipeline:GetPipeline
+                - datapipeline:ListPipelines
+                - datapipeline:GetPipelineDefinition
+                - directconnect:DescribeConnections
+                - sqs:ListQueues
+                - sqs:GetQueueAttributes
+                - sqs:ListQueueTags
+                - cloudformation:ListStacks
+                - cloudformation:DescribeStacks
+                - cloudformation:GetTemplate*
+                - cloudformation:ListStackResources
+                - cloudformation:GetStackPolicy
+                - acm:ListCertificates
+                - acm:DescribeCertificate
+                - logs:DescribeLogGroups
+                - access-analyzer:ListAnalyzers
+                - access-analyzer:ListFindings
+                - sagemaker:ListNotebookInstances
+                - sagemaker:DescribeNotebookInstance
+                - sagemaker:ListNotebookInstanceLifecycleConfigs
+                - sagemaker:DescribeNotebookInstanceLifecycleConfig
+                - sagemaker:ListEndpoints
+                - sagemaker:DescribeEndpoint
+                - sagemaker:ListEndpointConfigs
+                - sagemaker:DescribeEndpointConfig
+                - sagemaker:ListLabelingJobs
+                - sagemaker:DescribeLabelingJob
+                - sagemaker:ListModels
+                - sagemaker:DescribeModel
+                - sagemaker:ListTrainingJobs
+                - sagemaker:DescribeTrainingJob
+                - organizations:DescribeOrganization
+                - organizations:ListAccounts
+                - organizations:ListPolicies
+                - organizations:DescribePolicy
+                - organizations:ListTargetsForPolicy
+                - ram:ListPrincipals
+                - ram:ListResources
+                - ram:GetResourceShares
+                - support:DescribeTrustedAdvisor*
+                - support:RefreshTrustedAdvisorCheck
+                - dax:DescribeClusters
+                - dynamodb:ListStreams
+                - dynamodb:DescribeStream
+                - cloudfront:ListDistributions
+                - cloudfront:ListStreamingDistributions
+                - cloudfront:ListCachePolicies
+                - cloudfront:ListFieldLevelEncryptionConfigs
+                - cloudfront:ListFieldLevelEncryptionProfiles
+                - cloudfront:ListOriginRequestPolicies
+                - cloudfront:ListPublicKeys
+                - cognito-identity:ListIdentityPools
+                - cognito-identity:ListIdentities
+                - cognito-identity:DescribeIdentity*
+                - cognito-identity:GetIdentityPoolRoles
+                - cognito-identity:GetPrincipalTagAttributeMap
+                - cognito-idp:ListUserPool*
+                - cognito-idp:ListIdentityProviders
+                - cognito-idp:ListResourceServers
+                - cognito-idp:DescribeUserPool*
+                - cognito-idp:DescribeIdentityProvider
+                - cognito-idp:DescribeResourceServer
+                - backup:ListBackup*
+                - backup:GetBackupPlan
+                - backup:GetBackupSelection
+                - backup:ListProtectedResources
+                - inspector:ListFindings
+                - inspector:DescribeFindings
+                - inspector2:ListFindings
+                - ecr:DescribeRepositories
+                - ecr:ListImages
+                - ecr:DescribeImages
+                - glue:GetDatabases
+                - glue:GetTables
+                - glue:GetSecurityConfigurations
+                - transcribe:ListTranscriptionJobs
+                - cloudwatch:DescribeAlarms
+                - secretsmanager:ListSecrets
+                - secretsmanager:GetResourcePolicy
+                - redshift-serverless:ListWorkgroups
+                - apigateway:GET
+                - guardduty:ListDetectors
+                - guardduty:GetDetector
+                Effect: Allow
+                Resource:
+                - '*'
 -   roleName: CodeGuruProfilerForwardToAmazonProfiler
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -707,12 +2211,20 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: codeguru-profiler-publisher.aws.internal
                 AWS: arn:aws:iam::054693081941:root
+                Service: codeguru-profiler-publisher.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
                     sts:ExternalId: CodeGuruProfilerPublishercT8ViV7RXsvw
+    inlinePolicies:
+        CodeGuruProfilerPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action:
+                - codeguru-profiler:GetProfile
+                Resource: arn:aws:codeguru-profiler:*:443253904861:profilingGroup/*
 -   roleName: DiscoveryAnalyzerTrustedService-DO-NOT-DELETE
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -728,6 +2240,20 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: DiscoveryAnalyzerTrustedService-DO-NOT-DELETEawLTlrpwUoxW
+    inlinePolicies:
+        DiscoveryAnalyzer:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action:
+                - codecommit:BatchGet*
+                - codecommit:BatchDescribe*
+                - codecommit:Describe*
+                - codecommit:EvaluatePullRequestApprovalRules
+                - codecommit:Get*
+                - codecommit:List*
+                - codecommit:GitPull
+                Resource: '*'
 -   roleName: EC2CapacityReservationService
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -755,6 +2281,8 @@ roles:
             Principal:
                 Service: ssm.amazonaws.com
             Action: sts:AssumeRole
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
 -   roleName: EpoxyChronicleInstanceRole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -766,6 +2294,8 @@ roles:
             Principal:
                 Service: ec2.amazonaws.com
             Action: sts:AssumeRole
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
 -   roleName: GatedGardenAudit
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -781,6 +2311,31 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: GatedGardenAuditjly8kJp6NLpS
+    inlinePolicies:
+        GatedGardenPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Sid: Stmt1464749381022
+                Action:
+                - codedeploy:BatchGetApplications
+                - codedeploy:BatchGetDeployments
+                - codedeploy:BatchGetOnPremisesInstances
+                - codedeploy:GetApplication
+                - codedeploy:GetApplicationRevision
+                - codedeploy:GetDeployment
+                - codedeploy:GetDeploymentConfig
+                - codedeploy:GetDeploymentGroup
+                - codedeploy:GetDeploymentInstance
+                - codedeploy:GetOnPremisesInstance
+                - codedeploy:ListApplicationRevisions
+                - codedeploy:ListApplications
+                - codedeploy:ListDeploymentConfigs
+                - codedeploy:ListDeploymentGroups
+                - codedeploy:ListDeploymentInstances
+                - codedeploy:ListDeployments
+                - codedeploy:ListOnPremisesInstances
+                Effect: Allow
+                Resource: '*'
 -   roleName: GatedGardenInternalAudit
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -796,6 +2351,164 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: GatedGardenInternalAuditi0VSUDn0T7Yq
+    inlinePolicies:
+        GatedGardenInternalAuditPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Sid: VerifyCloudTrailsExistAndAreMultiRegion
+                Action:
+                - cloudtrail:DescribeTrails
+                - cloudtrail:GetTrailStatus
+                - cloudtrail:GetEventSelectors
+                Effect: Allow
+                Resource: '*'
+            -   Sid: CreateCloudTrailIfMissing
+                Action:
+                - cloudtrail:CreateTrail
+                - cloudtrail:StartLogging
+                - cloudtrail:DeleteTrail
+                Effect: Allow
+                Resource: arn:aws:cloudtrail:*:*:trail/DO-NOT-DELETE-GatedGarden-Audit*
+            -   Sid: VerifyCWEAuditRulesExists
+                Action:
+                - events:ListRuleNamesByTarget
+                - events:ListRules
+                - events:ListTargetsByRule
+                Effect: Allow
+                Resource: '*'
+            -   Sid: VerifyCWESingleAuditRule
+                Action:
+                - events:DescribeRule
+                Effect: Allow
+                Resource: arn:aws:events:*:*:rule/DO-NOT-DELETE-GatedGarden-Audit*
+            -   Sid: CreateCodeDeployAndLambdaCWERules
+                Action:
+                - events:PutRule
+                Effect: Allow
+                Resource: arn:aws:events:*:*:rule/DO-NOT-DELETE-GatedGarden-Audit*
+                Condition:
+                    StringEquals:
+                        events:source:
+                        - aws.codedeploy
+                        - aws.lambda
+                        - aws.codecommit
+                        - aws.codebuild
+                        - aws.ecs
+                        - aws.codeartifact
+            -   Sid: DeliverCWEEventsToGatedGardenBus
+                Action:
+                - events:PutTargets
+                Effect: Allow
+                Resource: arn:aws:events:*:*:rule/DO-NOT-DELETE-GatedGarden-Audit*
+                Condition:
+                    ArnLike:
+                        events:TargetArn:
+                        - arn:aws:events:*:222385417670:event-bus/default
+            -   Sid: CreateCloudTrailBucketIfMissing
+                Action:
+                - s3:CreateBucket
+                - s3:PutLifecycleConfiguration
+                - s3:PutBucketPolicy
+                - s3:GetBucketAcl
+                - s3:GetBucketLogging
+                - s3:GetBucketPolicy
+                - s3:GetLifecycleConfiguration
+                - s3:PutBucketAcl
+                - s3:PutBucketLogging
+                Effect: Allow
+                Resource: arn:aws:s3:::cloudtrail-awslogs-gatedgardenaudit-*
+            -   Sid: CreateCodeBuildTrackingInfoBucketIfMissing
+                Effect: Allow
+                Action:
+                - s3:CreateBucket
+                - s3:PutBucketPolicy
+                - s3:PutLifecycleConfiguration
+                - s3:ListBucket
+                - s3:GetObject
+                - s3:GetBucketAcl
+                - s3:GetBucketLogging
+                - s3:GetBucketPolicy
+                - s3:GetLifecycleConfiguration
+                - s3:PutBucketAcl
+                - s3:PutBucketLogging
+                Resource: arn:aws:s3:::do-not-delete-gatedgarden-audit-*
+            -   Sid: AntiEntropyListOfLambdaAndValidatingLatest
+                Action:
+                - lambda:GetFunctionConfiguration
+                - lambda:ListFunctions
+                - lambda:ListVersionsByFunction
+                Effect: Allow
+                Resource: '*'
+            -   Sid: GetFunctionMetadata
+                Action:
+                - lambda:GetFunction
+                Effect: Allow
+                Resource: '*'
+            -   Sid: CodeDeployAudit
+                Action:
+                - codedeploy:BatchGetApplications
+                - codedeploy:BatchGetDeployments
+                - codedeploy:BatchGetOnPremisesInstances
+                - codedeploy:GetApplication
+                - codedeploy:GetApplicationRevision
+                - codedeploy:GetDeployment
+                - codedeploy:GetDeploymentConfig
+                - codedeploy:GetDeploymentGroup
+                - codedeploy:GetDeploymentInstance
+                - codedeploy:GetOnPremisesInstance
+                - codedeploy:ListApplicationRevisions
+                - codedeploy:ListApplications
+                - codedeploy:ListDeploymentConfigs
+                - codedeploy:ListDeploymentGroups
+                - codedeploy:ListDeploymentInstances
+                - codedeploy:ListDeployments
+                - codedeploy:ListOnPremisesInstances
+                Effect: Allow
+                Resource: '*'
+            -   Sid: CodeArtifactAudit
+                Action:
+                - codeartifact:DescribeRepository
+                - codeartifact:DescribePackageVersion
+                - codeartifact:ListDomains
+                - codeartifact:ListRepositories
+                - codeartifact:ListPackages
+                - codeartifact:ListPackageVersions
+                Effect: Allow
+                Resource: '*'
+            -   Sid: CodeArtifactModify
+                Action:
+                - codeartifact:UpdatePackageVersionsStatus
+                Effect: Allow
+                Resource: '*'
+            -   Sid: CodeBuildBuildHistoryAndDetailsReadAccess
+                Effect: Allow
+                Action:
+                - codebuild:BatchGetBuilds
+                - codebuild:ListBuilds
+                Resource: arn:aws:codebuild:*:*:*
+            -   Sid: DescribeAndListECSTasks
+                Action:
+                - ecs:DescribeTasks
+                - ecs:ListTasks
+                Effect: Allow
+                Resource: '*'
+            -   Sid: ConfigureS3AuditBuckets
+                Effect: Allow
+                Action:
+                - s3:PutEncryptionConfiguration
+                - s3:GetEncryptionConfiguration
+                - s3:GetBucketPublicAccessBlock
+                - s3:PutBucketPublicAccessBlock
+                Resource:
+                - arn:aws:s3:::cloudtrail-awslogs-gatedgardenaudit-*
+                - arn:aws:s3:::do-not-delete-gatedgarden-audit-*
+            -   Sid: ECRAudit
+                Effect: Allow
+                Action:
+                - ecr:BatchGetImage
+                - ecr:GetDownloadUrlForLayer
+                - ecr:DescribeRepositories
+                Resource: '*'
 -   roleName: IibsAdminAccess-DO-NOT-DELETE
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -822,6 +2535,95 @@ roles:
             Action:
             - sts:SetSourceIdentity
             - sts:TagSession
+    inlinePolicies:
+        IIBSPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action:
+                - iam:GetLoginProfile
+                - iam:DeleteLoginProfile
+                - iam:DeleteAccessKey
+                - iam:GetAccessKeyLastUsed
+                - iam:ListAccessKeys
+                - iam:UpdateAccessKey
+                - iam:PutUserPolicy
+                Resource: '*'
+            -   Action: iam:AttachRolePolicy
+                Condition:
+                    ArnEquals:
+                        iam:PolicyARN: arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - iam:CreateInstance*
+                - iam:CreateRole
+                - iam:DeleteRolePolicy
+                - iam:DeleteRolePermissions*
+                - iam:DetachRolePolicy
+                - iam:ListAttachedRole*
+                - iam:ListRoleP*
+                - iam:PassRole
+                - iam:RemoveRoleFrom*
+                - iam:UpdateAssumeRolePolicy
+                - ssm:CreateAssociation
+                - ssm:CreateDocument
+                - ssm:GetDocument
+                - ssm:GetService*
+                - ssm:UpdateAssociation
+                - ssm:UpdateDocument*
+                - ssm:UpdateService*
+                Effect: Allow
+                Resource:
+                - arn:aws:iam::*:instance-profile/Epoxy*
+                - arn:aws:iam::*:role/Epoxy*
+                - arn:aws:ssm:*:*:association/*
+                - arn:aws:ssm:*:*:document/Epoxy*
+                - arn:aws:ssm:*:*:servicesetting/ssm/managed-instance/default-ec2*
+            -   Action:
+                - ec2:AssociateIamInstanceProfile
+                - ec2:DescribeInstances
+                - iam:AddRoleToInstance*
+                - iam:GetInstance*
+                - iam:GetRole
+                - ssm:DescribeAssociation
+                - ssm:ListA*
+                Effect: Allow
+                Resource: '*'
+            -   Effect: Allow
+                Action:
+                - cloudfront:GetDistributionConfig
+                - cloudfront:UpdateDistribution
+                Resource: '*'
+            -   Effect: Allow
+                Action:
+                - lightsail:GetInstance
+                - lightsail:PutInstancePublicPorts
+                - lightsail:StopInstance
+                Resource: '*'
+            -   Effect: Allow
+                Action:
+                - workspaces:StopWorkspaces
+                - workspaces:ModifyWorkspaceProperties
+                - workspaces:DescribeWorkspaces
+                - ec2:AuthorizeSecurityGroupEgress
+                - ec2:DescribeNetworkInterfaces
+                - ec2:DescribeNetworkInterfaceAttribute
+                - ec2:DescribeSecurityGroups
+                - ec2:DescribeSubnets
+                - ec2:CreateSecurityGroup
+                - ec2:RevokeSecurityGroupEgress
+                - ec2:RevokeSecurityGroupIngress
+                - ec2:ModifyNetworkInterfaceAttribute
+                Resource: '*'
+        LoginProfileAccessPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action:
+                - iam:GetLoginProfile
+                - iam:DeleteLoginProfile
+                Resource: '*'
 -   roleName: IMDSv2-automigrator
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -837,6 +2639,24 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: IMDSv2-automigratorUbPmp7zqgYXf
+    inlinePolicies:
+        IMDSv2-automigrator:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action:
+                - cloudwatch:PutMetricAlarm
+                - cloudwatch:DescribeAlarmHistory
+                - cloudwatch:DeleteAlarms
+                - cloudwatch:DescribeAlarms
+                Resource: arn:aws:cloudwatch:*:*:alarm:NawsIMDSv2MigratorAlarm
+            -   Effect: Allow
+                Action:
+                - ec2:ModifyInstanceMetadataOptions
+                - ec2:DescribeInstances
+                - cloudwatch:GetMetricData
+                - cloudwatch:ListMetrics
+                Resource: '*'
 -   roleName: InternalAuditInternal
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -852,6 +2672,8 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: InternalAuditInternalrfynFNNwwk47
+    managedPolicies:
+    - arn:aws:iam::aws:policy/SecurityAudit
 -   roleName: IsengardAuditorRole-DO-NOT-DELETE
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -867,6 +2689,272 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: IsengardAuditorExternalIdsBeCY8HKLbci
+    inlinePolicies:
+        IsengardAuditorPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - autoscaling:DescribeAdjustmentTypes
+                - autoscaling:DescribeAutoScalingGroups
+                - autoscaling:DescribeAutoScalingInstances
+                - autoscaling:DescribeAutoScalingNotificationTypes
+                - autoscaling:DescribeLaunchConfigurations
+                - autoscaling:DescribeMetricCollectionTypes
+                - autoscaling:DescribeNotificationConfigurations
+                - autoscaling:DescribePolicies
+                - autoscaling:DescribeScalingActivities
+                - autoscaling:DescribeScalingProcessTypes
+                - autoscaling:DescribeScheduledActions
+                - autoscaling:DescribeTags
+                - autoscaling:DescribeTriggers
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - cloudformation:DescribeStackEvents
+                - cloudformation:DescribeStackResource
+                - cloudformation:DescribeStackResources
+                - cloudformation:DescribeStacks
+                - cloudformation:GetTemplate
+                - cloudformation:ListStacks
+                - cloudformation:ListStackResources
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - cloudfront:GetCloudFrontOriginAccessIdentity
+                - cloudfront:GetCloudFrontOriginAccessIdentityConfig
+                - cloudfront:GetDistribution
+                - cloudfront:GetDistributionConfig
+                - cloudfront:GetInvalidation
+                - cloudfront:GetStreamingDistribution
+                - cloudfront:GetStreamingDistributionConfig
+                - cloudfront:ListCloudFrontOriginAccessIdentities
+                - cloudfront:ListDistributions
+                - cloudfront:ListInvalidations
+                - cloudfront:ListStreamingDistributions
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - cloudtrail:DescribeTrails
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - cloudwatch:DescribeAlarms
+                - cloudwatch:DescribeAlarmsForMetric
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - directconnect:DescribeConnectionDetail
+                - directconnect:DescribeConnections
+                - directconnect:DescribeOfferingDetail
+                - directconnect:DescribeOfferings
+                - directconnect:DescribeVirtualGateways
+                - directconnect:DescribeVirtualInterfaces
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - dynamodb:ListTables
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - ec2:DescribeAccountAttributes
+                - ec2:DescribeAddresses
+                - ec2:DescribeAvailabilityZones
+                - ec2:DescribeBundleTasks
+                - ec2:DescribeConversionTasks
+                - ec2:DescribeCustomerGateways
+                - ec2:DescribeDhcpOptions
+                - ec2:DescribeExportTasks
+                - ec2:DescribeImageAttribute
+                - ec2:DescribeImages
+                - ec2:DescribeInstanceAttribute
+                - ec2:DescribeInstanceStatus
+                - ec2:DescribeInstances
+                - ec2:DescribeInternetGateways
+                - ec2:DescribeKeyPairs
+                - ec2:DescribeLicenses
+                - ec2:DescribeNetworkAcls
+                - ec2:DescribeNetworkInterfaceAttribute
+                - ec2:DescribeNetworkInterfaces
+                - ec2:DescribePlacementGroups
+                - ec2:DescribeRegions
+                - ec2:DescribeReservedInstances
+                - ec2:DescribeReservedInstancesOfferings
+                - ec2:DescribeRouteTables
+                - ec2:DescribeSecurityGroups
+                - ec2:DescribeSnapshotAttribute
+                - ec2:DescribeSnapshots
+                - ec2:DescribeSpotDatafeedSubscription
+                - ec2:DescribeSpotInstanceRequests
+                - ec2:DescribeSpotPriceHistory
+                - ec2:DescribeSubnets
+                - ec2:DescribeTags
+                - ec2:DescribeVolumeAttribute
+                - ec2:DescribeVolumeStatus
+                - ec2:DescribeVolumes
+                - ec2:DescribeVpcPeeringConnection
+                - ec2:DescribeVpcs
+                - ec2:DescribeVpnConnections
+                - ec2:DescribeVpnGateways
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - elasticbeanstalk:DescribeApplicationVersions
+                - elasticbeanstalk:DescribeApplications
+                - elasticbeanstalk:DescribeConfigurationOptions
+                - elasticbeanstalk:DescribeConfigurationSettings
+                - elasticbeanstalk:DescribeEnvironmentResources
+                - elasticbeanstalk:DescribeEnvironments
+                - elasticbeanstalk:DescribeEvents
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - elasticache:DescribeCacheClusters
+                - elasticache:DescribeCacheParameterGroups
+                - elasticache:DescribeCacheParameters
+                - elasticache:DescribeCacheSecurityGroups
+                - elasticache:DescribeEngineDefaultParameters
+                - elasticache:DescribeEvents
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - elasticloadbalancing:DescribeInstanceHealth
+                - elasticloadbalancing:DescribeLoadBalancers
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - elasticmapreduce:DescribeJobFlows
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - glacier:ListVaults
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - iam:GenerateCredentialReport
+                - iam:GetAccountPasswordPolicy
+                - iam:GetAccountSummary
+                - iam:GetGroup
+                - iam:GetGroupPolicy
+                - iam:GetInstanceProfile
+                - iam:GetLoginProfile
+                - iam:GetRole
+                - iam:GetRolePolicy
+                - iam:GetServerCertificate
+                - iam:GetUser
+                - iam:GetUserPolicy
+                - iam:ListAccessKeys
+                - iam:ListAccountAliases
+                - iam:ListGroupPolicies
+                - iam:ListGroups
+                - iam:ListGroupsForUser
+                - iam:ListInstanceProfiles
+                - iam:ListInstanceProfilesForRole
+                - iam:ListMFADevices
+                - iam:ListRolePolicies
+                - iam:ListRoles
+                - iam:ListServerCertificates
+                - iam:ListSigningCertificates
+                - iam:ListUserPolicies
+                - iam:ListUsers
+                - iam:ListVirtualMFADevices
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - rds:DescribeEngineDefaultParameters
+                - rds:DescribeDBInstances
+                - rds:DescribeDBLogFiles
+                - rds:DescribeDBParameterGroups
+                - rds:DescribeDBParameters
+                - rds:DescribeDBSecurityGroups
+                - rds:DescribeDBSnapshots
+                - rds:DescribeDBEngineVersions
+                - rds:DescribeDBSubnetGroups
+                - rds:DescribeEventCategories
+                - rds:DescribeEvents
+                - rds:DescribeEventSubscriptions
+                - rds:DescribeOptionGroups
+                - rds:DescribeOptionGroupOptions
+                - rds:DescribeOrderableDBInstanceOptions
+                - rds:DescribeReservedDBInstances
+                - rds:DescribeReservedDBInstancesOfferings
+                - rds:DownloadDBLogFilePortion
+                - rds:ListTagsForResource
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - redshift:DescribeClusterParameterGroups
+                - redshift:DescribeClusterParameters
+                - redshift:DescribeClusterSecurityGroups
+                - redshift:DescribeClusterSnapshots
+                - redshift:DescribeClusterSubnetGroups
+                - redshift:DescribeClusterVersions
+                - redshift:DescribeClusters
+                - redshift:DescribeDefaultClusterParameters
+                - redshift:DescribeEvents
+                - redshift:DescribeOrderableClusterOptions
+                - redshift:DescribeReservedNodeOfferings
+                - redshift:DescribeReservedNodes
+                - redshift:DescribeResize
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - route53:GetHostedZone
+                - route53:ListHostedZones
+                - route53:ListResourceRecordSets
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - s3:GetBucketAcl
+                - s3:GetBucketLocation
+                - s3:GetBucketLogging
+                - s3:GetBucketNotification
+                - s3:GetBucketPolicy
+                - s3:GetBucketRequestPayment
+                - s3:GetBucketVersioning
+                - s3:GetBucketWebsite
+                - s3:GetLifecycleConfiguration
+                - s3:GetObjectAcl
+                - s3:GetObjectVersionAcl
+                - s3:ListAllMyBuckets
+                - s3:ListBucket
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - sdb:DomainMetadata
+                - sdb:ListDomains
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - sns:GetTopicAttributes
+                - sns:ListTopics
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - sqs:GetQueueAttributes
+                - sqs:ListQueues
+                Effect: Allow
+                Resource: '*'
+            -   Action:
+                - kms:Describe*
+                - kms:Get*
+                - kms:List*
+                Effect: Allow
+                Resource:
+                - '*'
+            -   Action:
+                - ds:Check*
+                - ds:Describe*
+                - ds:Get*
+                - ds:List*
+                Effect: Allow
+                Resource:
+                - '*'
+            -   Action:
+                - codedeploy:Get*
+                - codedeploy:List*
+                Effect: Allow
+                Resource:
+                - '*'
 -   roleName: IsengardCloudTrailRole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -882,6 +2970,27 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: IsengardCloudTrailRoleO1NleQGwIKOS
+    inlinePolicies:
+        AWSCloudTrailAccessPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action:
+                - s3:CreateBucket
+                - s3:PutBucketPolicy
+                - s3:PutLifecycleConfiguration
+                - s3:PutEncryptionConfiguration
+                - s3:GetBucketAcl
+                Resource: arn:aws:s3:::cloudtrail-awslogs-*
+            -   Effect: Allow
+                Action:
+                - s3:ListAllMyBuckets
+                Resource: arn:aws:s3:::*
+            -   Effect: Allow
+                Action:
+                - cloudtrail:CreateTrail
+                - cloudtrail:StartLogging
+                Resource: '*'
 -   roleName: IsengardConfigRole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -912,6 +3021,13 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: IsengardExternalIdKnFr5tuESOX4
+    inlinePolicies:
+        IsengardControllerPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action: '*'
+                Resource: '*'
 -   roleName: IsengardRoleForDependencyAssuranceIamAnalyzer
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -923,14 +3039,23 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
+                - arn:aws:iam::089414261608:root
                 - arn:aws:iam::611447770337:root
                 - arn:aws:iam::796293252539:root
-                - arn:aws:iam::089414261608:root
                 Service: depndency-insights-prod.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
                     sts:ExternalId: DependencyAssuranceIamAnalyzerTrustedServicehscPi4HblpM7
+    inlinePolicies:
+        DependencyAssuranceIamAnalyzerTrustedServicePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Sid: DependencyAssuranceIAMAnalyzer
+                Effect: Allow
+                Action:
+                - iam:GetAccountAuthorizationDetails
+                Resource: '*'
 -   roleName: IsengardRoleForOptInComputeOptimizer
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -946,6 +3071,22 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: AWSComputeOptimizerLfcfYPicUlq8
+    inlinePolicies:
+        AWSComputeOptimizerAccessPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action: iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/compute-optimizer.amazonaws.com/AWSServiceRoleForComputeOptimizer*
+                Condition:
+                    StringLike:
+                        iam:AWSServiceName: compute-optimizer.amazonaws.com
+            -   Effect: Allow
+                Action: iam:PutRolePolicy
+                Resource: arn:aws:iam::*:role/aws-service-role/compute-optimizer.amazonaws.com/AWSServiceRoleForComputeOptimizer
+            -   Effect: Allow
+                Action: compute-optimizer:UpdateEnrollmentStatus
+                Resource: '*'
 -   roleName: modernatestrole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -973,6 +3114,68 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: NawsApplicationMetrics-DO-NOT-DELETElf43Enc5nz3L
+    inlinePolicies:
+        NAWSApplicationMetricsPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action: apigateway:GET
+                Resource:
+                - arn:aws:apigateway:*::/apis
+                - arn:aws:apigateway:*::/apis/*
+                - arn:aws:apigateway:*::/apis/*/integrations/*
+                - arn:aws:apigateway:*::/restapis
+                - arn:aws:apigateway:*::/restapis/*
+                - arn:aws:apigateway:*::/restapis/*/resources
+                - arn:aws:apigateway:*::/restapis/*/resources/*
+                - arn:aws:apigateway:*::/restapis/*/resources/*/methods/*/integration
+                - arn:aws:apigateway:*::/restapis/*/stages
+            -   Effect: Allow
+                Action:
+                - acm:DescribeCertificate
+                - acm:ListCertificates
+                - autoscaling:DescribeAutoScalingGroups
+                - autoscaling:DescribeLaunchConfigurations
+                - cloudformation:ListStackResources
+                - cloudwatch:DescribeAlarms
+                - cloudwatch:ListDashboards
+                - codedeploy:GetApplication
+                - codedeploy:GetDeploymentConfig
+                - codedeploy:GetDeploymentGroup
+                - codedeploy:ListApplications
+                - codedeploy:ListDeploymentGroups
+                - ec2:DescribeFleets
+                - ec2:DescribeImages
+                - ec2:DescribeInstances
+                - ec2:DescribeVpcAttribute
+                - ec2:DescribeVpcEndpointConnections
+                - ec2:DescribeVpcEndpointServices
+                - ec2:DescribeVpcEndpoints
+                - ec2:DescribeVpcPeeringConnections
+                - ec2:DescribeVpcs
+                - ecs:DescribeClusters
+                - ecs:DescribeContainerInstances
+                - ecs:DescribeServices
+                - ecs:DescribeTaskDefinition
+                - ecs:DescribeTasks
+                - ecs:ListClusters
+                - ecs:ListContainerInstances
+                - ecs:ListServices
+                - eks:DescribeCluster
+                - eks:DescribeFargateProfile
+                - eks:DescribeNodegroup
+                - eks:ListClusters
+                - eks:ListFargateProfiles
+                - eks:ListNodegroups
+                - elasticloadbalancing:DescribeLoadBalancers
+                - elasticloadbalancing:DescribeTargetGroups
+                - iam:GetServerCertificate
+                - iam:ListServerCertificates
+                - lambda:GetEventSourceMapping
+                - lambda:GetFunctionConfiguration
+                - lambda:ListEventSourceMappings
+                - logs:DescribeLogGroups
+                Resource: '*'
 -   roleName: OrthancRole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -984,12 +3187,27 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.sentry.orthanc.epoxy.aws.internal
                 - prod.stronghold.orthanc.epoxy.aws.internal
+                - prod.sentry.orthanc.epoxy.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
                     sts:ExternalId: OrthancRoleO3qpN2GVr82k
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AmazonGuardDutyFullAccess
+    inlinePolicies:
+        AmazonGuardDutyFullAccess:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action:
+                - ec2:DescribeRegions
+                Resource: '*'
+            -   Effect: Allow
+                Action:
+                - events:DescribeRule
+                - events:ListTargetsByRule
+                Resource: arn:aws:events:*:*:rule/AwsSecurityNacundaAuditFindings-DO-NOT-DELETE
 -   roleName: ResourceConfigurationCollector-DO-NOT-DELETE
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -1001,11 +3219,11 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - af-south-1.prod.rcc.aws.internal
                 - eu-south-1.prod.rcc.aws.internal
                 - me-south-1.prod.rcc.aws.internal
-                - ap-east-1.prod.rcc.aws.internal
+                - af-south-1.prod.rcc.aws.internal
                 - prod.rcc.aws.internal
+                - ap-east-1.prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -1025,6 +3243,14 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: SaltyTrustedServiceCpWnXLkI6DrH
+    inlinePolicies:
+        SaltyTrustedServicePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - ec2:DescribeInstances
+                Effect: Allow
+                Resource: '*'
 -   roleName: ShadowTrooperRole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -1040,6 +3266,89 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: ShadowTrooperRoleqc61YHiXiWoH
+    inlinePolicies:
+        ShadowTrooperPolicy-prod:
+            Version: '2012-10-17'
+            Statement:
+            -   Effect: Allow
+                Action:
+                - cloudtrail:Get*
+                - cloudtrail:Describe*
+                - cloudtrail:List*
+                - cloudtrail:LookupEvents
+                - autoscaling:Describe*
+                - cloudwatch:Describe*
+                - cloudwatch:Get*
+                - cloudwatch:List*
+                - ec2:AuthorizeSecurityGroupEgress
+                - ec2:AuthorizeSecurityGroupIngress
+                - ec2:CreateSecurityGroup
+                - ec2:DeleteNatGateway
+                - ec2:DescribeIamInstanceProfileAssociations
+                - ec2:DescribeImages
+                - ec2:DescribeInstances
+                - ec2:DescribeNetworkInterfaceAttribute
+                - ec2:DescribeNetworkInterfaces
+                - ec2:DescribeRegions
+                - ec2:DescribeSecurityGroups
+                - ec2:DescribeSubnets
+                - ec2:DescribeTaskDefinition
+                - ec2:DescribeTasks
+                - ec2:ModifyInstanceAttribute
+                - ec2:ModifyNetworkInterfaceAttribute
+                - ec2:RevokeSecurityGroupEgress
+                - ec2:RevokeSecurityGroupIngress
+                - ec2:StopInstances
+                - ecs:DescribeTaskDefinition
+                - ecs:DescribeTasks
+                - ecs:ListClusters
+                - ecs:ListTaskDefinitions
+                - ecs:ListTasks
+                - ecs:StopTask
+                - ecs:UpdateService
+                - elasticmapreduce:DescribeCluster
+                - elasticmapreduce:GetManagedScalingPolicy
+                - elasticmapreduce:ListClusters
+                - elasticmapreduce:ListInstances
+                - elasticmapreduce:RemoveAutoScalingPolicy
+                - elasticmapreduce:RemoveAutoTerminationPolicy
+                - elasticmapreduce:RemoveManagedScalingPolicy
+                - iam:GetInstanceProfile
+                - iam:GetRole
+                - iam:ListAccessKeys
+                - iam:ListUsers
+                - iam:PutRolePolicy
+                - iam:PutUserPolicy
+                - iam:UpdateAccessKey
+                - iam:UpdateAssumeRolePolicy
+                - lightsail:CloseInstancePublicPorts
+                - lightsail:GetInstance
+                - lightsail:StopInstance
+                - logs:Get*
+                - logs:List*
+                - logs:StartQuery
+                - logs:StopQuery
+                - logs:Describe*
+                - logs:TestMetricFilter
+                - logs:FilterLogEvents
+                - logs:StartLiveTail
+                - logs:StopLiveTail
+                - oam:ListSinks
+                - rds:DescribeDBInstances
+                - rds:ModifyDBInstance
+                - s3:PutAccountPublicAccessBlock
+                - s3:PutBucketPublicAccessBlock
+                - secretsmanager:GetResourcePolicy
+                - secretsmanager:PutResourcePolicy
+                - ses:DescribeReceiptRuleSet
+                - ses:UpdateReceiptRule
+                - sns:Get*
+                - sns:List*
+                - workspaces:DescribeWorkspaces
+                - workspaces:ModifyWorkspaceProperties
+                - workspaces:ModifyWorkspaceState
+                - workspaces:StopWorkspaces
+                Resource: '*'
 -   roleName: Testmodernademorole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -1079,6 +3388,8 @@ roles:
                 AWS: arn:aws:iam::443253904861:root
             Action: sts:AssumeRole
             Condition: {}
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AdministratorAccess
 -   roleName: TurtleRoleManagement
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -1096,6 +3407,16 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: TurtleRoleManagementKC9XF0qBY40R
+    inlinePolicies:
+        TurtleRoleManagementPolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - iam:GetRole
+                - iam:GenerateServiceLastAccessedDetails
+                - iam:GetServiceLastAccessedDetails
+                Effect: Allow
+                Resource: '*'
 -   roleName: XenaAuditorRole-DO-NOT-DELETE
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -1111,3 +3432,5 @@ roles:
             Condition:
                 StringEquals:
                     sts:ExternalId: XenaAuditorRolejCMU1Es9C0aj
+    managedPolicies:
+    - arn:aws:iam::aws:policy/SecurityAudit

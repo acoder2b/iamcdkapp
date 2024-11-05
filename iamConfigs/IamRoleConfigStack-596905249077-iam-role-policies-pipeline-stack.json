@@ -106,8 +106,5 @@
   },
   "Role0072492a": {
     "RoleName": "XenaAuditorRole-DO-NOT-DELETE"
-  },
-  "ManagedPolicy518ee748": {
-    "PolicyArn": "arn:aws:iam::596905249077:policy/TestPolicy"
   }
 }
