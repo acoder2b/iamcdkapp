@@ -67,7 +67,7 @@ for account_id, stacks in combined_configs.items():
 
     #print(f"config_data {account_id} role_count={len(config_data['roles'])}")
     for stack_name, resources  in stacks.items():
-        cdk_stack_name = f"IamRoleConfigStack-{account_id}-{stack_name}"
+        cdk_stack_name = f"SecurityConfigStack-{account_id}-{stack_name}"
         print(f"Creating stack {stack_name} for account {account_id}")
     
     # Pass the account_id explicitly to the stack
