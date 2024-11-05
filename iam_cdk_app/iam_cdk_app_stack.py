@@ -45,7 +45,7 @@ class IamRoleConfigStack(Stack):
             id=f"ManagedPolicy-{unique_id}",  # Unique id for CDK, won't affect the resource name in AWS
             managed_policy_name=policy_name,  # Use the provided policy_name unchanged
             policy_document=policy_document,
-            description=policy_description
+            description=policy_description,
         )
 
         # Add tags after the policy is created using CDK's tagging mechanism
@@ -54,6 +54,7 @@ class IamRoleConfigStack(Stack):
                 Tags.of(iam_policy).add(tag['Key'], tag['Value'])
 
         logger.info(f"Imported IAM managed policy {policy_name}")
+
 
 
 
