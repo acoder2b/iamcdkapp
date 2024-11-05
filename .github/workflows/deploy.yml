@@ -96,7 +96,7 @@ jobs:
             stack_name=$(basename $stack_template .template.json)
 
           # Extract the account ID from the stack name (assuming stack names have account IDs)
-          account_id=$(echo $stack_name | grep -oP '(?<=SecurityConfigStack-)\d+')
+          account_id=$(echo $stack_name | grep -oP '(?<=IamRoleConfigStack-)\d+')
 
           if [ -n "$account_id" ]; then
             role_arn="arn:aws:iam::$account_id:role/GitHubActionsRole"
