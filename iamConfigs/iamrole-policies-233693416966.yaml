@@ -276,6 +276,87 @@ iam_policies:
         Value: Manual11
     -   Key: TAGS1234
         Value: Manual112323
+-   policyName: aws2-moderna-cloudexec-managed11
+    deletionPolicy: RETAIN
+    policyDocument:
+        Version: '2012-10-17'
+        Statement:
+        -   Action:
+            - iam:GetAccessKeyLastUsed
+            - iam:GetGroup*
+            - iam:GetInstanceProfile
+            - iam:GetLoginProfile
+            - iam:GetOpenIDConnectProvider
+            - iam:GetPolicy*
+            - iam:GetRole*
+            - iam:GetSAMLProvider
+            - iam:GetSSHPublicKey
+            - iam:GetServerCertificate
+            - iam:GetServiceLastAccessed*
+            - iam:GetUser*
+            - iam:ListAccessKeys
+            - iam:ListAttached*
+            - iam:ListEntitiesForPolicy
+            - iam:ListGroupPolicies
+            - iam:ListGroupsForUser
+            - iam:ListInstanceProfiles*
+            - iam:ListMFADevices
+            - iam:ListPolicyVersions
+            - iam:ListRolePolicies
+            - iam:ListSSHPublicKeys
+            - iam:ListSigningCertificates
+            - iam:ListUserPolicies
+            - iam:Upload*
+            - iam:CreateRole
+            - iam:CreatePolicy
+            - iam:CreatePolicyVersion
+            - elasticfilesystem:Describe*
+            - elasticfilesystem:ClientMount
+            - elasticfilesystem:Create*
+            - elasticfilesystem:ListTagsForResource
+            - appstream:ListEntitledApplications
+            - appstream:Describe*
+            - appstream:Create*
+            - redshift:Describe*
+            - redshift:List*
+            - redshift:View*
+            - redshift:Get*
+            - redshift:Create*
+            - redshift:ResizeCluster
+            Resource:
+            - '*'
+            Effect: Allow
+        -   Action:
+            - iam:PassRole
+            Resource:
+            - '*'
+            Effect: Allow
+        -   Action:
+            - iam:GetRole
+            - iam:ListRoles
+            - iam:PassRole
+            Resource:
+            - arn:aws:iam::*:role/rds-monitoring-role
+            - arn:aws:iam::*:role/ec2-sysadmin-*
+            - arn:aws:iam::*:role/ecr-sysadmin-*
+            - arn:aws:iam::*:role/lambda-sysadmin-*
+            Effect: Allow
+        -   Action:
+            - s3:GetObject
+            Resource:
+            - arn:aws:s3:::moderna-cfn-templates/ssm/*
+            Effect: Allow
+            Sid: AllowSpecificObject
+        -   Resource: '*'
+            Effect: Allow
+            NotAction: s3:GetObject
+    path: /
+    tags:
+    -   Key: TAGS1
+        Value: Manual11
+    -   Key: TAGS1234
+        Value: Manual112323
+
 roles:
 -   roleName: AccessAnalyzerTrustedService
     deletionPolicy: RETAIN
