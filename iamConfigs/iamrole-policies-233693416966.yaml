@@ -282,7 +282,6 @@ iam_policies:
         Version: '2012-10-17'
         Statement:
         -   Action:
-            - iam:GetAccessKeyLastUsed
             - iam:GetGroup*
             - iam:GetInstanceProfile
             - iam:GetLoginProfile
