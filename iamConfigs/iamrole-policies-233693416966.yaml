@@ -274,6 +274,8 @@ iam_policies:
     tags:
     -   Key: TAGS1
         Value: Manual11
+    -   Key: TAGS1234
+        Value: Manual112323
 roles:
 -   roleName: AccessAnalyzerTrustedService
     deletionPolicy: RETAIN
