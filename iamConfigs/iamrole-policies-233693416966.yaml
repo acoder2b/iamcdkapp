@@ -9,7 +9,6 @@ iam_policies:
         Version: '2012-10-17'
         Statement:
         -   Action:
-            - cloudtrail:Describe*
             - cloudtrail:GetT*
             - cloudtrail:List*
             - cloudtrail:LookupEvents
