@@ -3378,7 +3378,7 @@ roles:
             Condition: {}
 -   roleName: TestToDelete
     deletionPolicy: RETAIN
-    sessionDuration: 3600
+    sessionDuration: 7200
     iamPath: /
     trustPolicy:
         Version: '2012-10-17'
