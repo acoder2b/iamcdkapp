@@ -2,92 +2,7 @@ account_id:
 - '482205423380'
 region: us-east-1
 stack_name: iam-role-policies-pipeline-stack
-iam_policies:
--   policyName: EC2CapacityReservationService
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Effect: Allow
-            Action:
-            - ec2:DescribeReservedInstances
-            - ec2:ModifyReservedInstances
-            - ec2:PurchaseReservedInstancesOffering
-            - ec2:DescribeInstances
-            - ec2:DescribeAvailabilityZones
-            - ec2:DescribeReservedInstancesOfferings
-            Resource: '*'
-    path: /
--   policyName: ConfigAccessPolicy
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Effect: Allow
-            Action:
-            - s3:CreateBucket
-            - s3:DeleteBucket
-            - s3:PutBucketPolicy
-            - s3:PutPublicAccessBlock
-            - s3:GetPublicAccessBlock
-            Resource: arn:aws:s3:::config-bucket-trustedservice-do-not-delete-*
-        -   Effect: Allow
-            Action:
-            - s3:ListAllMyBuckets
-            Resource: arn:aws:s3:::*
-        -   Effect: Allow
-            Action:
-            - config:*
-            Resource: '*'
-        -   Effect: Allow
-            Action:
-            - iam:GetRole
-            - iam:PassRole
-            - iam:CreateServiceLinkedRole
-            - iam:DeleteServiceLinkedRole
-            - iam:GetServiceLinkedRoleDeletionStatus
-            Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/*
-    path: /
--   policyName: ResourceConfigurationCollectorPolicy
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Effect: Allow
-            Action:
-            - s3:CreateBucket
-            - s3:PutBucketPolicy
-            Resource: arn:aws:s3:::rcc-bucket-trustedservice-do-not-delete-*
-        -   Effect: Allow
-            Action:
-            - s3:ListAllMyBuckets
-            - s3:GetBucketPolicyStatus
-            - s3:GetBucketPublicAccessBlock
-            - s3:PutBucketPublicAccessBlock
-            Resource: arn:aws:s3:::*
-        -   Effect: Allow
-            Action:
-            - config:DescribeConfigurationRecorders
-            - config:DescribeConfigurationRecorderStatus
-            - config:PutConfigurationRecorder
-            - config:StartConfigurationRecorder
-            - config:DescribeDeliveryChannels
-            - config:DescribeDeliveryChannelStatus
-            - config:PutDeliveryChannel
-            - config:DescribeAggregationAuthorizations
-            - config:PutAggregationAuthorization
-            - config:ListDiscoveredResources
-            - config:BatchGetResourceConfig
-            Resource: '*'
-        -   Effect: Allow
-            Action:
-            - iam:GetRole
-            - iam:PassRole
-            - iam:CreateServiceLinkedRole
-            - iam:DeleteServiceLinkedRole
-            - iam:GetServiceLinkedRoleDeletionStatus
-            Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/*
-    path: /
+iam_policies: []
 roles:
 -   roleName: AccessAnalyzerTrustedService
     deletionPolicy: RETAIN
@@ -195,8 +110,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                AWS: arn:aws:iam::877377650033:root
                 Service: palisade.amazonaws.com
+                AWS: arn:aws:iam::877377650033:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -257,10 +172,10 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::533267069473:root
-                - arn:aws:iam::637423399230:root
                 - arn:aws:iam::333692317655:root
                 - arn:aws:iam::381492016180:root
+                - arn:aws:iam::533267069473:root
+                - arn:aws:iam::637423399230:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -306,8 +221,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: crs.ec2.aws.internal
                 AWS: arn:aws:iam::950184135563:root
+                Service: crs.ec2.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -353,8 +268,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::621463273587:role/BrokerService-Prod
                 - arn:aws:iam::048851363556:role/BrokerService-Prod
+                - arn:aws:iam::621463273587:role/BrokerService-Prod
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -363,8 +278,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::621463273587:role/BrokerService-Prod
                 - arn:aws:iam::048851363556:role/BrokerService-Prod
+                - arn:aws:iam::621463273587:role/BrokerService-Prod
             Action:
             - sts:SetSourceIdentity
             - sts:TagSession
@@ -470,9 +385,9 @@ roles:
             Principal:
                 Service: depndency-insights-prod.aws.internal
                 AWS:
-                - arn:aws:iam::089414261608:root
-                - arn:aws:iam::611447770337:root
                 - arn:aws:iam::796293252539:root
+                - arn:aws:iam::611447770337:root
+                - arn:aws:iam::089414261608:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -535,11 +450,11 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.rcc.aws.internal
+                - eu-south-1.prod.rcc.aws.internal
                 - af-south-1.prod.rcc.aws.internal
                 - me-south-1.prod.rcc.aws.internal
+                - prod.rcc.aws.internal
                 - ap-east-1.prod.rcc.aws.internal
-                - eu-south-1.prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -600,8 +515,8 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.webui.turtle.aws.internal
                 - in-amazon-1.prod.webui.turtle.aws.internal
+                - prod.webui.turtle.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:

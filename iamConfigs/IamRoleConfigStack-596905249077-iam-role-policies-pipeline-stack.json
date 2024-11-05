@@ -14,6 +14,12 @@
   "Role0d7a709c": {
     "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_us-west-2"
   },
+  "Role7071fd5c": {
+    "RoleName": "AWS-QuickSetup-StackSet-Local-AdministrationRole"
+  },
+  "Role07e5c119": {
+    "RoleName": "AWS-QuickSetup-StackSet-Local-ExecutionRole"
+  },
   "Rolecd792517": {
     "RoleName": "awslogs.prod.kelex.molecule.toppatterns"
   },
@@ -77,6 +83,9 @@
   "Role8594d5b3": {
     "RoleName": "NawsApplicationMetrics-DO-NOT-DELETE"
   },
+  "Rolec0093f47": {
+    "RoleName": "OrganizationsReadOnlyAccess"
+  },
   "Role89b67aba": {
     "RoleName": "OrthancRole"
   },
@@ -89,22 +98,13 @@
   "Roleee6b8040": {
     "RoleName": "ShadowTrooperRole"
   },
-  "Rolefad7a943": {
-    "RoleName": "testrole111"
+  "Role6067574e": {
+    "RoleName": "TestPowerUser"
   },
   "Role9ad80f2c": {
     "RoleName": "TurtleRoleManagement"
   },
   "Role0072492a": {
     "RoleName": "XenaAuditorRole-DO-NOT-DELETE"
-  },
-  "ManagedPolicy60266f9b": {
-    "PolicyArn": "arn:aws:iam::482205423380:policy/EC2CapacityReservationService"
-  },
-  "ManagedPolicyf7133b17": {
-    "PolicyArn": "arn:aws:iam::482205423380:policy/ConfigAccessPolicy"
-  },
-  "ManagedPolicy55c09a35": {
-    "PolicyArn": "arn:aws:iam::482205423380:policy/ResourceConfigurationCollectorPolicy"
   }
 }

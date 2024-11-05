@@ -2,304 +2,7 @@ account_id:
 - '596905249077'
 region: us-east-1
 stack_name: iam-role-policies-pipeline-stack
-iam_policies:
--   policyName: EC2CapacityReservationService
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Effect: Allow
-            Action:
-            - ec2:DescribeReservedInstances
-            - ec2:ModifyReservedInstances
-            - ec2:PurchaseReservedInstancesOffering
-            - ec2:DescribeInstances
-            - ec2:DescribeAvailabilityZones
-            - ec2:DescribeReservedInstancesOfferings
-            Resource: '*'
-    path: /
--   policyName: TELUS-DevOps-policy
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Sid: PowerUserRole
-            Effect: Allow
-            NotAction:
-            - iam:*
-            - organizations:*
-            - account:*
-            Resource: '*'
-        -   Sid: CustomIAMPermissions
-            Effect: Allow
-            Action:
-            - iam:CreateInstanceProfile
-            - iam:UpdateAssumeRolePolicy
-            - iam:GetPolicyVersion
-            - iam:ListRoles
-            - iam:ListRoleTags
-            - iam:UntagRole
-            - iam:PutRolePermissionsBoundary
-            - iam:ListPoliciesGrantingServiceAccess
-            - iam:RemoveRoleFromInstanceProfile
-            - iam:DeletePolicy
-            - iam:CreateRole
-            - iam:AttachRolePolicy
-            - iam:ListInstanceProfileTags
-            - iam:ListServiceSpecificCredentials
-            - iam:PutRolePolicy
-            - iam:DeleteRolePermissionsBoundary
-            - iam:AddRoleToInstanceProfile
-            - iam:ListInstanceProfilesForRole
-            - iam:PassRole
-            - iam:ListSSHPublicKeys
-            - iam:DetachRolePolicy
-            - iam:SimulatePrincipalPolicy
-            - iam:DeleteRolePolicy
-            - iam:ListAttachedRolePolicies
-            - iam:ListPolicyTags
-            - iam:ListRolePolicies
-            - iam:CreatePolicyVersion
-            - iam:DeleteInstanceProfile
-            - iam:GetRole
-            - iam:GetInstanceProfile
-            - iam:GetPolicy
-            - iam:ListEntitiesForPolicy
-            - iam:DeleteRole
-            - iam:UpdateRoleDescription
-            - iam:ListInstanceProfiles
-            - iam:TagPolicy
-            - iam:CreatePolicy
-            - iam:CreateServiceLinkedRole
-            - iam:ListPolicyVersions
-            - iam:UntagPolicy
-            - iam:UpdateRole
-            - iam:DeleteServiceLinkedRole
-            - iam:UntagInstanceProfile
-            - iam:GetRolePolicy
-            - iam:DeletePolicyVersion
-            - iam:TagInstanceProfile
-            - iam:SetDefaultPolicyVersion
-            Resource:
-            - arn:aws:iam::*:user/*
-            - arn:aws:iam::*:saml-provider/*
-            - arn:aws:iam::*:instance-profile/*
-            - arn:aws:iam::*:mfa/*
-            - arn:aws:iam::*:policy/*
-            - arn:aws:iam::*:access-report/*
-            - arn:aws:iam::*:role/*
-            - arn:aws:iam::*:oidc-provider/*
-            - arn:aws:iam::*:group/*
-            - arn:aws:iam::*:server-certificate/*
-        -   Sid: ListIAMAPIActions
-            Effect: Allow
-            Action:
-            - iam:ListPolicies
-            - iam:SimulateCustomPolicy
-            - iam:ListRoles
-            - iam:ListSTSRegionalEndpointsStatus
-            - iam:GetAccountSummary
-            - organizations:DescribeOrganization
-            - account:ListRegions
-            Resource: '*'
-    path: /
--   policyName: CustomIAMPolicyDeveloper
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Sid: VisualEditor0
-            Effect: Allow
-            Action:
-            - iam:CreateInstanceProfile
-            - iam:UpdateAssumeRolePolicy
-            - iam:GetPolicyVersion
-            - iam:ListRoleTags
-            - iam:UntagRole
-            - iam:PutRolePermissionsBoundary
-            - iam:ListPoliciesGrantingServiceAccess
-            - iam:RemoveRoleFromInstanceProfile
-            - iam:DeletePolicy
-            - iam:CreateRole
-            - iam:AttachRolePolicy
-            - iam:ListInstanceProfileTags
-            - iam:ListServiceSpecificCredentials
-            - iam:PutRolePolicy
-            - iam:DeleteRolePermissionsBoundary
-            - iam:AddRoleToInstanceProfile
-            - iam:ListInstanceProfilesForRole
-            - iam:PassRole
-            - iam:ListSSHPublicKeys
-            - iam:DetachRolePolicy
-            - iam:SimulatePrincipalPolicy
-            - iam:DeleteRolePolicy
-            - iam:ListAttachedRolePolicies
-            - iam:ListPolicyTags
-            - iam:ListRolePolicies
-            - iam:CreatePolicyVersion
-            - iam:DeleteInstanceProfile
-            - iam:GetRole
-            - iam:GetInstanceProfile
-            - iam:GetPolicy
-            - iam:ListEntitiesForPolicy
-            - iam:DeleteRole
-            - iam:UpdateRoleDescription
-            - iam:ListInstanceProfiles
-            - iam:TagPolicy
-            - iam:CreatePolicy
-            - iam:CreateServiceLinkedRole
-            - iam:ListPolicyVersions
-            - iam:UntagPolicy
-            - iam:UpdateRole
-            - iam:DeleteServiceLinkedRole
-            - iam:UntagInstanceProfile
-            - iam:GetRolePolicy
-            - iam:DeletePolicyVersion
-            - iam:TagInstanceProfile
-            - iam:SetDefaultPolicyVersion
-            Resource:
-            - arn:aws:iam::596905249077:user/*
-            - arn:aws:iam::596905249077:saml-provider/*
-            - arn:aws:iam::596905249077:instance-profile/*
-            - arn:aws:iam::596905249077:mfa/*
-            - arn:aws:iam::596905249077:policy/*
-            - arn:aws:iam::596905249077:access-report/*
-            - arn:aws:iam::596905249077:role/*
-            - arn:aws:iam::596905249077:oidc-provider/*
-            - arn:aws:iam::596905249077:group/*
-            - arn:aws:iam::596905249077:server-certificate/*
-        -   Sid: VisualEditor1
-            Effect: Allow
-            Action:
-            - iam:ListPolicies
-            - iam:SimulateCustomPolicy
-            - iam:ListRoles
-            - iam:ListSTSRegionalEndpointsStatus
-            - iam:GetAccountSummary
-            Resource: '*'
-    path: /
--   policyName: ConfigAccessPolicy
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Effect: Allow
-            Action:
-            - s3:CreateBucket
-            - s3:DeleteBucket
-            - s3:PutBucketPolicy
-            - s3:PutPublicAccessBlock
-            - s3:GetPublicAccessBlock
-            Resource: arn:aws:s3:::config-bucket-trustedservice-do-not-delete-*
-        -   Effect: Allow
-            Action:
-            - s3:ListAllMyBuckets
-            Resource: arn:aws:s3:::*
-        -   Effect: Allow
-            Action:
-            - config:*
-            Resource: '*'
-        -   Effect: Allow
-            Action:
-            - iam:GetRole
-            - iam:PassRole
-            - iam:CreateServiceLinkedRole
-            - iam:DeleteServiceLinkedRole
-            - iam:GetServiceLinkedRoleDeletionStatus
-            Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/*
-    path: /
--   policyName: ResourceConfigurationCollectorPolicy
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Effect: Allow
-            Action:
-            - s3:CreateBucket
-            - s3:PutBucketPolicy
-            Resource: arn:aws:s3:::rcc-bucket-trustedservice-do-not-delete-*
-        -   Effect: Allow
-            Action:
-            - s3:ListAllMyBuckets
-            - s3:GetBucketPolicyStatus
-            - s3:GetBucketPublicAccessBlock
-            - s3:PutBucketPublicAccessBlock
-            Resource: arn:aws:s3:::*
-        -   Effect: Allow
-            Action:
-            - config:DescribeConfigurationRecorders
-            - config:DescribeConfigurationRecorderStatus
-            - config:PutConfigurationRecorder
-            - config:StartConfigurationRecorder
-            - config:DescribeDeliveryChannels
-            - config:DescribeDeliveryChannelStatus
-            - config:PutDeliveryChannel
-            - config:DescribeAggregationAuthorizations
-            - config:PutAggregationAuthorization
-            - config:ListDiscoveredResources
-            - config:BatchGetResourceConfig
-            Resource: '*'
-        -   Effect: Allow
-            Action:
-            - iam:GetRole
-            - iam:PassRole
-            - iam:CreateServiceLinkedRole
-            - iam:DeleteServiceLinkedRole
-            - iam:GetServiceLinkedRoleDeletionStatus
-            Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/*
-    path: /
--   policyName: DevIAM
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Sid: VisualEditor0
-            Effect: Allow
-            Action:
-            - iam:CreateInstanceProfile
-            - iam:GetPolicyVersion
-            - iam:ListRoleTags
-            - iam:ListPoliciesGrantingServiceAccess
-            - iam:RemoveRoleFromInstanceProfile
-            - iam:ListInstanceProfileTags
-            - iam:AddRoleToInstanceProfile
-            - iam:ListInstanceProfilesForRole
-            - iam:SimulatePrincipalPolicy
-            - iam:ListAttachedRolePolicies
-            - iam:ListPolicyTags
-            - iam:ListRolePolicies
-            - iam:CreatePolicyVersion
-            - iam:DeleteInstanceProfile
-            - iam:GetRole
-            - iam:GetInstanceProfile
-            - iam:GetPolicy
-            - iam:ListEntitiesForPolicy
-            - iam:ListInstanceProfiles
-            - iam:CreatePolicy
-            - iam:CreateServiceLinkedRole
-            - iam:ListPolicyVersions
-            - iam:DeleteServiceLinkedRole
-            - iam:UntagInstanceProfile
-            - iam:GetRolePolicy
-            - iam:DeletePolicyVersion
-            - iam:TagInstanceProfile
-            - iam:SetDefaultPolicyVersion
-            Resource:
-            - arn:aws:iam::*:policy/*
-            - arn:aws:iam::*:instance-profile/*
-            - arn:aws:iam::*:role/*
-            - arn:aws:iam::*:mfa/*
-            - arn:aws:iam::*:group/*
-        -   Sid: VisualEditor1
-            Effect: Allow
-            Action:
-            - iam:ListPolicies
-            - iam:SimulateCustomPolicy
-            - iam:ListRoles
-            - iam:ListSTSRegionalEndpointsStatus
-            - iam:GetAccountSummary
-            Resource: '*'
-    path: /
+iam_policies: []
 roles:
 -   roleName: AccessAnalyzerTrustedService
     deletionPolicy: RETAIN
@@ -491,10 +194,10 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
+                - arn:aws:iam::637423399230:root
+                - arn:aws:iam::381492016180:root
                 - arn:aws:iam::333692317655:root
                 - arn:aws:iam::533267069473:root
-                - arn:aws:iam::381492016180:root
-                - arn:aws:iam::637423399230:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -702,11 +405,11 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: depndency-insights-prod.aws.internal
                 AWS:
+                - arn:aws:iam::089414261608:root
                 - arn:aws:iam::611447770337:root
                 - arn:aws:iam::796293252539:root
-                - arn:aws:iam::089414261608:root
+                Service: depndency-insights-prod.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -764,8 +467,8 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.stronghold.orthanc.epoxy.aws.internal
                 - prod.sentry.orthanc.epoxy.aws.internal
+                - prod.stronghold.orthanc.epoxy.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -781,11 +484,11 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.rcc.aws.internal
-                - me-south-1.prod.rcc.aws.internal
-                - af-south-1.prod.rcc.aws.internal
-                - ap-east-1.prod.rcc.aws.internal
                 - eu-south-1.prod.rcc.aws.internal
+                - af-south-1.prod.rcc.aws.internal
+                - me-south-1.prod.rcc.aws.internal
+                - ap-east-1.prod.rcc.aws.internal
+                - prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -829,8 +532,8 @@ roles:
         Statement:
         -   Effect: Allow
             Principal:
-                AWS: arn:aws:iam::596905249077:root
                 Service: glue.amazonaws.com
+                AWS: arn:aws:iam::596905249077:root
             Action: sts:AssumeRole
             Condition: {}
 -   roleName: TurtleRoleManagement
@@ -844,8 +547,8 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.webui.turtle.aws.internal
                 - in-amazon-1.prod.webui.turtle.aws.internal
+                - prod.webui.turtle.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:

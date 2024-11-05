@@ -8,47 +8,8 @@
   "Role4fda5c60": {
     "RoleName": "AVMContainersUserRole"
   },
-  "Rolef0e77190": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_ap-northeast-1"
-  },
-  "Role5d967158": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_ap-northeast-2"
-  },
-  "Role2633535b": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_ap-south-1"
-  },
-  "Role3abc6aec": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_ap-southeast-1"
-  },
-  "Rolec652ab6d": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_ap-southeast-2"
-  },
-  "Role6dfe42e2": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_ca-central-1"
-  },
-  "Roleddcc852f": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_eu-central-1"
-  },
-  "Roledf2cd9dc": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_eu-north-1"
-  },
-  "Roleb5463b60": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_eu-west-1"
-  },
-  "Role4f5b1f70": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_eu-west-2"
-  },
-  "Role04c3bf05": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_eu-west-3"
-  },
-  "Role925168fc": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_sa-east-1"
-  },
   "Role07a16725": {
     "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_us-east-2"
-  },
-  "Rolef7bcb20e": {
-    "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_us-west-1"
   },
   "Role0d7a709c": {
     "RoleName": "AWS-QuickSetup-EnableCRecording-62d8q_us-west-2"
@@ -79,12 +40,6 @@
   },
   "Roleeeb2f766": {
     "RoleName": "EC2CapacityReservationService"
-  },
-  "Role7973f02f": {
-    "RoleName": "EpoxyAWSSystemsManagerDefaultEC2InstanceManagementRole"
-  },
-  "Role33fa6af7": {
-    "RoleName": "EpoxyChronicleInstanceRole"
   },
   "Role08004b8e": {
     "RoleName": "GatedGardenAudit"
@@ -119,9 +74,6 @@
   "Roledc68f75a": {
     "RoleName": "IsengardRoleForOptInComputeOptimizer"
   },
-  "Roleabb6e651": {
-    "RoleName": "modernatestrole"
-  },
   "Role8594d5b3": {
     "RoleName": "NawsApplicationMetrics-DO-NOT-DELETE"
   },
@@ -137,37 +89,13 @@
   "Roleee6b8040": {
     "RoleName": "ShadowTrooperRole"
   },
-  "Role3a2cbb34": {
-    "RoleName": "Testmodernademorole"
-  },
-  "Role8eb28266": {
-    "RoleName": "testrolemodernademo"
-  },
-  "Role3341bdc2": {
-    "RoleName": "TestToDelete"
+  "Rolefad7a943": {
+    "RoleName": "testrole111"
   },
   "Role9ad80f2c": {
     "RoleName": "TurtleRoleManagement"
   },
   "Role0072492a": {
     "RoleName": "XenaAuditorRole-DO-NOT-DELETE"
-  },
-  "ManagedPolicy2e2a15fb": {
-    "PolicyArn": "arn:aws:iam::443253904861:policy/CDKDeploy"
-  },
-  "ManagedPolicy55c09a35": {
-    "PolicyArn": "arn:aws:iam::443253904861:policy/ResourceConfigurationCollectorPolicy"
-  },
-  "ManagedPolicyf7133b17": {
-    "PolicyArn": "arn:aws:iam::443253904861:policy/ConfigAccessPolicy"
-  },
-  "ManagedPolicy2e436269": {
-    "PolicyArn": "arn:aws:iam::443253904861:policy/Boundary-Test1"
-  },
-  "ManagedPolicy60266f9b": {
-    "PolicyArn": "arn:aws:iam::443253904861:policy/EC2CapacityReservationService"
-  },
-  "ManagedPolicy9c55177c": {
-    "PolicyArn": "arn:aws:iam::443253904861:policy/aws2-moderna-cloudexec-managed"
   }
 }

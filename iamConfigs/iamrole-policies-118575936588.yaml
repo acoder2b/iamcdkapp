@@ -2,39 +2,7 @@ account_id:
 - '118575936588'
 region: us-east-1
 stack_name: iam-role-policies-pipeline-stack
-iam_policies:
--   policyName: testautopolicy
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Sid: VisualEditor0
-            Effect: Allow
-            Action: autoscaling-plans:*
-            Resource: '*'
-    description: jabdsa
-    path: /
-    tags:
-    -   Key: asc
-        Value: sc
-    -   Key: wscwcf
-        Value: wecwef
--   policyName: testautopoliciyr
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Sid: VisualEditor0
-            Effect: Allow
-            Action: autoscaling-plans:*
-            Resource: '*'
-    description: scwcf
-    path: /
-    tags:
-    -   Key: test
-        Value: tetsts
-    -   Key: qadad
-        Value: sdsd
+iam_policies: []
 roles:
 -   roleName: AccessAnalyzerTrustedService
     deletionPolicy: RETAIN
@@ -106,8 +74,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: palisade.amazonaws.com
                 AWS: arn:aws:iam::877377650033:root
+                Service: palisade.amazonaws.com
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -168,9 +136,9 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
+                - arn:aws:iam::637423399230:root
                 - arn:aws:iam::381492016180:root
                 - arn:aws:iam::333692317655:root
-                - arn:aws:iam::637423399230:root
                 - arn:aws:iam::533267069473:root
             Action: sts:AssumeRole
             Condition:
@@ -217,8 +185,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: crs.ec2.aws.internal
                 AWS: arn:aws:iam::950184135563:root
+                Service: crs.ec2.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -264,8 +232,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::048851363556:role/BrokerService-Prod
                 - arn:aws:iam::621463273587:role/BrokerService-Prod
+                - arn:aws:iam::048851363556:role/BrokerService-Prod
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -274,8 +242,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::048851363556:role/BrokerService-Prod
                 - arn:aws:iam::621463273587:role/BrokerService-Prod
+                - arn:aws:iam::048851363556:role/BrokerService-Prod
             Action:
             - sts:SetSourceIdentity
             - sts:TagSession
@@ -305,8 +273,8 @@ roles:
         -   Effect: Allow
             Principal:
                 Service:
-                - sns.amazonaws.com
                 - lambda.amazonaws.com
+                - sns.amazonaws.com
             Action: sts:AssumeRole
     tags:
     -   key: Application
@@ -401,8 +369,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::796293252539:root
                 - arn:aws:iam::611447770337:root
+                - arn:aws:iam::796293252539:root
                 - arn:aws:iam::089414261608:root
                 Service: depndency-insights-prod.aws.internal
             Action: sts:AssumeRole
@@ -479,11 +447,11 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - eu-south-1.prod.rcc.aws.internal
-                - af-south-1.prod.rcc.aws.internal
                 - me-south-1.prod.rcc.aws.internal
-                - prod.rcc.aws.internal
                 - ap-east-1.prod.rcc.aws.internal
+                - af-south-1.prod.rcc.aws.internal
+                - prod.rcc.aws.internal
+                - eu-south-1.prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -609,8 +577,8 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - in-amazon-1.prod.webui.turtle.aws.internal
                 - prod.webui.turtle.aws.internal
+                - in-amazon-1.prod.webui.turtle.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:

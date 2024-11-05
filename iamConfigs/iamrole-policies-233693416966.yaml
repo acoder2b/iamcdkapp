@@ -3,110 +3,6 @@ account_id:
 region: us-east-1
 stack_name: iam-role-policies-pipeline-stack
 iam_policies:
--   policyName: telus-iot-iam-permission-boundary
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Sid: VisualEditor0
-            Effect: Allow
-            Action: '*'
-            Resource: '*'
-    path: /
--   policyName: BoundaryTest
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Sid: VisualEditor0
-            Effect: Allow
-            Action: lambda:*
-            Resource: '*'
-    path: /
--   policyName: EC2CapacityReservationService
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Effect: Allow
-            Action:
-            - ec2:DescribeReservedInstances
-            - ec2:ModifyReservedInstances
-            - ec2:PurchaseReservedInstancesOffering
-            - ec2:DescribeInstances
-            - ec2:DescribeAvailabilityZones
-            - ec2:DescribeReservedInstancesOfferings
-            Resource: '*'
-    path: /
--   policyName: ResourceConfigurationCollectorPolicy
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Effect: Allow
-            Action:
-            - s3:CreateBucket
-            - s3:PutBucketPolicy
-            Resource: arn:aws:s3:::rcc-bucket-trustedservice-do-not-delete-*
-        -   Effect: Allow
-            Action:
-            - s3:ListAllMyBuckets
-            - s3:GetBucketPolicyStatus
-            - s3:GetBucketPublicAccessBlock
-            - s3:PutBucketPublicAccessBlock
-            Resource: arn:aws:s3:::*
-        -   Effect: Allow
-            Action:
-            - config:DescribeConfigurationRecorders
-            - config:DescribeConfigurationRecorderStatus
-            - config:PutConfigurationRecorder
-            - config:StartConfigurationRecorder
-            - config:DescribeDeliveryChannels
-            - config:DescribeDeliveryChannelStatus
-            - config:PutDeliveryChannel
-            - config:DescribeAggregationAuthorizations
-            - config:PutAggregationAuthorization
-            - config:ListDiscoveredResources
-            - config:BatchGetResourceConfig
-            Resource: '*'
-        -   Effect: Allow
-            Action:
-            - iam:GetRole
-            - iam:PassRole
-            - iam:CreateServiceLinkedRole
-            - iam:DeleteServiceLinkedRole
-            - iam:GetServiceLinkedRoleDeletionStatus
-            Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/*
-    path: /
--   policyName: telus-iot-iam-permissionboundary
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Sid: VisualEditor0
-            Effect: Allow
-            Action: '*'
-            Resource: '*'
-    path: /
--   policyName: ConfigBoundary
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Sid: VisualEditor0
-            Effect: Allow
-            Action: '*'
-            Resource: '*'
-        -   Sid: VisualEditor1
-            Effect: Deny
-            Action: iam:CreateRole
-            Resource: '*'
-            Condition:
-                StringNotLike:
-                    iam:PermissionsBoundary: arn:aws:iam::233693416966:policy/ConfigBoundary*
-                StringLike:
-                    aws:PrincipalArn: arn:aws:iam::233693416966:role/testrole1
-    path: /
 -   policyName: aws2-moderna-cloudexec-managed
     deletionPolicy: RETAIN
     policyDocument:
@@ -133,40 +29,6 @@ iam_policies:
             - codecommit:Put*
             - codecommit:Test*
             - codecommit:Update*
-            - ds:DescribeDirectories
-            - ec2:Allocate*
-            - ec2:AssignPrivateIpAddresses*
-            - ec2:Associate*
-            - ec2:Allocate*
-            - ec2:AttachInternetGateway
-            - ec2:AttachNetworkInterface
-            - ec2:AttachVpnGateway
-            - ec2:Bundle*
-            - ec2:Cancel*
-            - ec2:Copy*
-            - ec2:Create*
-            - ec2:Describe*
-            - ec2:DetachNetworkInterface
-            - ec2:EnableVgwRoutePropagation
-            - ec2:EnableVolumeIO
-            - ec2:EnableVpcClassicLinkDnsSupport
-            - ec2:Get*
-            - ec2:Import*
-            - ec2:Modify*
-            - ec2:MonitorInstances
-            - ec2:MoveAddressToVpc
-            - ec2:RegisterImage
-            - ec2:Release*
-            - ec2:Replace*
-            - ec2:ReportInstanceStatus
-            - ec2:Request*
-            - ec2:Reset*
-            - ec2:RestoreAddressToClassic
-            - ec2:RunScheduledInstances
-            - ec2:UnassignPrivateIpAddresses
-            - ec2:UnmonitorInstances
-            - ec2:UpdateSecurityGroupRuleDescriptionsEgress
-            - ec2:UpdateSecurityGroupRuleDescriptionsIngress
             - elasticloadbalancing:DescribeLoadBalancers
             - elasticloadbalancing:RegisterInstancesWithLoadBalancer
             - iam:GetAccount*
@@ -282,27 +144,6 @@ iam_policies:
             Resource: '*'
             Effect: Allow
         -   Action:
-            - ec2:AcceptVpcPeeringConnection
-            - ec2:AttachClassicLinkVpc
-            - ec2:AttachVolume
-            - ec2:AuthorizeSecurityGroupEgress
-            - ec2:AuthorizeSecurityGroupIngress
-            - ec2:CreateVpcPeeringConnection
-            - ec2:EnableVpcClassicLink
-            - ec2:GetConsoleScreenshot
-            - ec2:RebootInstances
-            - ec2:RejectVpcPeeringConnection
-            - ec2:RevokeSecurityGroupEgress
-            - ec2:RevokeSecurityGroupIngress
-            - ec2:RunInstances
-            - ec2:StartInstances
-            - ec2:StopInstances
-            - ec2:TerminateInstances
-            - ec2:CopySnapshot
-            - ec2:CreateSnapshot
-            - ec2:CreateSnapshots
-            - ec2:DeleteSnapshot
-            - ec2:Deregister*
             - ses:Create*
             - ses:List*
             - ses:Describe*
@@ -379,36 +220,6 @@ iam_policies:
         -   Resource: '*'
             Effect: Allow
             NotAction: s3:GetObject
-    path: /
--   policyName: ConfigAccessPolicy
-    deletionPolicy: RETAIN
-    policyDocument:
-        Version: '2012-10-17'
-        Statement:
-        -   Effect: Allow
-            Action:
-            - s3:CreateBucket
-            - s3:DeleteBucket
-            - s3:PutBucketPolicy
-            - s3:PutPublicAccessBlock
-            - s3:GetPublicAccessBlock
-            Resource: arn:aws:s3:::config-bucket-trustedservice-do-not-delete-*
-        -   Effect: Allow
-            Action:
-            - s3:ListAllMyBuckets
-            Resource: arn:aws:s3:::*
-        -   Effect: Allow
-            Action:
-            - config:*
-            Resource: '*'
-        -   Effect: Allow
-            Action:
-            - iam:GetRole
-            - iam:PassRole
-            - iam:CreateServiceLinkedRole
-            - iam:DeleteServiceLinkedRole
-            - iam:GetServiceLinkedRoleDeletionStatus
-            Resource: arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/*
     path: /
 roles:
 -   roleName: AccessAnalyzerTrustedService
@@ -785,8 +596,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                AWS: arn:aws:iam::877377650033:root
                 Service: palisade.amazonaws.com
+                AWS: arn:aws:iam::877377650033:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -847,9 +658,9 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::637423399230:root
                 - arn:aws:iam::333692317655:root
                 - arn:aws:iam::381492016180:root
+                - arn:aws:iam::637423399230:root
                 - arn:aws:iam::533267069473:root
             Action: sts:AssumeRole
             Condition:
@@ -865,8 +676,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: codeguru-profiler-publisher.aws.internal
                 AWS: arn:aws:iam::054693081941:root
+                Service: codeguru-profiler-publisher.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -996,8 +807,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::048851363556:role/BrokerService-Prod
                 - arn:aws:iam::621463273587:role/BrokerService-Prod
+                - arn:aws:iam::048851363556:role/BrokerService-Prod
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -1006,8 +817,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::048851363556:role/BrokerService-Prod
                 - arn:aws:iam::621463273587:role/BrokerService-Prod
+                - arn:aws:iam::048851363556:role/BrokerService-Prod
             Action:
             - sts:SetSourceIdentity
             - sts:TagSession
@@ -1112,9 +923,9 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
+                - arn:aws:iam::611447770337:root
                 - arn:aws:iam::089414261608:root
                 - arn:aws:iam::796293252539:root
-                - arn:aws:iam::611447770337:root
                 Service: depndency-insights-prod.aws.internal
             Action: sts:AssumeRole
             Condition:
@@ -1189,11 +1000,11 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - me-south-1.prod.rcc.aws.internal
                 - af-south-1.prod.rcc.aws.internal
-                - ap-east-1.prod.rcc.aws.internal
                 - eu-south-1.prod.rcc.aws.internal
+                - ap-east-1.prod.rcc.aws.internal
                 - prod.rcc.aws.internal
+                - me-south-1.prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:

@@ -218,28 +218,7 @@
   "Role0072492a": {
     "RoleName": "XenaAuditorRole-DO-NOT-DELETE"
   },
-  "ManagedPolicy33e4ed7c": {
-    "PolicyArn": "arn:aws:iam::233693416966:policy/telus-iot-iam-permission-boundary"
-  },
-  "ManagedPolicy0b8f0bf7": {
-    "PolicyArn": "arn:aws:iam::233693416966:policy/BoundaryTest"
-  },
-  "ManagedPolicy60266f9b": {
-    "PolicyArn": "arn:aws:iam::233693416966:policy/EC2CapacityReservationService"
-  },
-  "ManagedPolicy55c09a35": {
-    "PolicyArn": "arn:aws:iam::233693416966:policy/ResourceConfigurationCollectorPolicy"
-  },
-  "ManagedPolicy989fa06c": {
-    "PolicyArn": "arn:aws:iam::233693416966:policy/telus-iot-iam-permissionboundary"
-  },
-  "ManagedPolicy7d6f688d": {
-    "PolicyArn": "arn:aws:iam::233693416966:policy/ConfigBoundary"
-  },
   "ManagedPolicy9c55177c": {
     "PolicyArn": "arn:aws:iam::233693416966:policy/aws2-moderna-cloudexec-managed"
-  },
-  "ManagedPolicyf7133b17": {
-    "PolicyArn": "arn:aws:iam::233693416966:policy/ConfigAccessPolicy"
   }
 }

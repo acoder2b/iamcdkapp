@@ -23,10 +23,10 @@ done
 
 # Configuration
 CURRENT_DIR=$(pwd)
-IMPORT_SCRIPT="cdkImportAutomationScript.py"
+IMPORT_SCRIPT="newCdkImportAutomationScript.py"
 RESOURCE_MAP_SCRIPT="resource-map-RolenamePolicies.py"
 CHECK_INTERVAL=10  # Time (in seconds) between status checks
-MAX_RETRIES=5    # Maximum number of retries for drift detection status
+MAX_RETRIES=30     # Maximum number of retries for drift detection status
 
 # Step 1: Check current working directory
 log "Step 1: Checking current working directory..."

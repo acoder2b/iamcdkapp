@@ -56,7 +56,7 @@ echo "CDK synth completed successfully."
 
 # Collect all stack names from cdk.out for the current account
 echo "Collecting stack names from cdk.out for account $ACCOUNT_ID..."
-STACK_TEMPLATE_FILES=$(find "$MAIN_APP_DIR/cdk.out" -name "SecurityConfigStack-$ACCOUNT_ID-*.template.json")
+STACK_TEMPLATE_FILES=$(find "$MAIN_APP_DIR/cdk.out" -name "IamRoleConfigStack-$ACCOUNT_ID-*.template.json")
 if [ -z "$STACK_TEMPLATE_FILES" ]; then
     echo "Error: No stack templates found for account $ACCOUNT_ID."
     exit 1
@@ -160,15 +160,23 @@ for i in "${!STACK_NAMES_ARRAY[@]}"; do
     echo "Checking drift status for stack $STACK_NAME with detection ID $STACK_DRIFT_DETECTION_ID..."
 
     while true; do
-        # Run command to get the drift detection status in JSON format
-        DRIFT_STATUS_OUTPUT=$(aws cloudformation describe-stack-drift-detection-status --stack-drift-detection-id "$STACK_DRIFT_DETECTION_ID")
+        # Run command to get the drift detection status
+        DRIFT_STATUS_OUTPUT=$(aws cloudformation describe-stack-drift-detection-status --stack-drift-detection-id "$STACK_DRIFT_DETECTION_ID" --output json)
+
+        # Check if the output is valid JSON
+        if ! echo "$DRIFT_STATUS_OUTPUT" | jq empty > /dev/null 2>&1; then
+            echo "Error: Invalid JSON output from AWS CLI"
+            echo "Raw output:"
+            echo "$DRIFT_STATUS_OUTPUT"
+            break
+        fi
 
         # Extract the detection status and stack drift status using jq
         DETECTION_STATUS=$(echo "$DRIFT_STATUS_OUTPUT" | jq -r '.DetectionStatus')
         STACK_DRIFT_STATUS=$(echo "$DRIFT_STATUS_OUTPUT" | jq -r '.StackDriftStatus')
 
         echo "Drift detection status for $STACK_NAME (detection ID: $STACK_DRIFT_DETECTION_ID):"
-        echo "$DRIFT_STATUS_OUTPUT"  # Output the full JSON for detailed debugging
+        echo "$DRIFT_STATUS_OUTPUT"
 
         # Check for completion and print the final drift status
         if [[ "$DETECTION_STATUS" == "DETECTION_COMPLETE" ]]; then

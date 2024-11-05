@@ -41,7 +41,7 @@ echo "cdk synth completed successfully."
 
 # Step 5: Extract stack template files from cdk.out for the current account
 echo "Step 5: Extracting stack template files from cdk.out for account $ACCOUNT_ID..."
-STACK_TEMPLATE_FILES=$(find "$(pwd)/cdk.out" -name "SecurityConfigStack-$ACCOUNT_ID-*.template.json")
+STACK_TEMPLATE_FILES=$(find "$(pwd)/cdk.out" -name "IamRoleConfigStack-$ACCOUNT_ID-*.template.json")
 
 if [ -z "$STACK_TEMPLATE_FILES" ]; then
     echo "Error: No stack template files found for account $ACCOUNT_ID."
