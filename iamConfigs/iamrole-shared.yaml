@@ -39,7 +39,7 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                AWS: arn:aws:iam::121925031476:root
+                AWS: arn:aws:iam::482205423380:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
