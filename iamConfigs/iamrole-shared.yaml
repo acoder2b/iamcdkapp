@@ -1,0 +1,62 @@
+account_id:
+- '780258025701'
+- '118575936588'
+region: us-east-1
+stack_name: iam-role-demo
+iam_policies: 
+-   policyName: Boundary-Test1
+    deletionPolicy: RETAIN
+    policyDocument:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: VisualEditor0
+            Effect: Allow
+            Action: ec2:*
+            Resource: '*'
+    path: /
+roles:
+-   roleName: AccessAnalyzerTrustedService11
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AdministratorAccess
+    permissionBoundary:
+     - arn:aws:iam::aws:policy/AdministratorAccess
+    tags:
+        -   key: stack-name
+            value: iam-role-demo
+        -   key: stack-environment
+            value: dev
+        -   key: stack-owner
+            value: '780258025701'
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::121925031476:root
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: AccessAnalyzerTrustedServicey7yfM3aaua7H
+    inlinePolicies:
+        AccessAnalyzerTrustedServicePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Sid: A2CreateAnalyzer
+                Effect: Allow
+                Action:
+                - access-analyzer:ListAnalyzers
+                - access-analyzer:GetAnalyzer
+                - access-analyzer:CreateAnalyzer
+                - ec2:DescribeRegions
+                Resource: '*'
+            -   Sid: CreateSLR
+                Effect: Allow
+                Action: iam:CreateServiceLinkedRole
+                Condition:
+                    StringEquals:
+                        iam:AWSServiceName: access-analyzer.amazonaws.com
+                Resource: '*'
