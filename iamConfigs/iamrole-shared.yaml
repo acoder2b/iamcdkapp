@@ -21,7 +21,7 @@ roles:
     iamPath: /
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
-    permissionBoundary:
+    permissionsBoundary:
     - arn:aws:iam::aws:policy/AdministratorAccess
     tags:
         -   key: stack-name
