@@ -22,6 +22,7 @@ roles:
     iamPath: /
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
+    - arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
     permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
     tags:
         -   key: stack-name
