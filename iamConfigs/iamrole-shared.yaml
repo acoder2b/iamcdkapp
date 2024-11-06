@@ -4,7 +4,7 @@ account_id:
 region: us-east-1
 stack_name: iam-role-demo
 iam_policies: 
--   policyName: Boundary-Test1
+-   policyName: Boundary-Test11
     deletionPolicy: RETAIN
     policyDocument:
         Version: '2012-10-17'
@@ -15,7 +15,7 @@ iam_policies:
             Resource: '*'
     path: /
 roles:
--   roleName: AccessAnalyzerTrustedService11
+-   roleName: AccessAnalyzerTrustedService12
     deletionPolicy: RETAIN
     sessionDuration: 3600
     iamPath: /
