@@ -287,7 +287,7 @@ def create_yaml_content(policies, roles):
         if role.get('InlinePolicies'):
             role_dict['inlinePolicies'] = role['InlinePolicies']
         if role.get('PermissionsBoundary'):
-            role_dict['permissionBoundary'] = role['PermissionsBoundary']
+            role_dict['permissionBoundary'] = [policy['PolicyArn'] for policy in role['PermissionsBoundary']]
 
         yaml_content['iam_roles'].append(role_dict)
 

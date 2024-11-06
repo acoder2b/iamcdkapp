@@ -3362,8 +3362,7 @@ roles:
             Action: sts:AssumeRole
             Condition: {}
     permissionBoundary:
-        PermissionsBoundaryType: Policy
-        PermissionsBoundaryArn: arn:aws:iam::443253904861:policy/Boundary-Test1
+    - arn:aws:iam::443253904861:policy/Boundary-Test1
 -   roleName: testrolemodernademo
     deletionPolicy: RETAIN
     sessionDuration: 3600
