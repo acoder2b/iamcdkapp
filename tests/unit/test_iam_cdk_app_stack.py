@@ -88,7 +88,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 {
                     "roleName": "TestRoleWithSession",
                     "sessionDuration": 7200,
-                    "permissionsBoundary": "arn:aws:iam::aws:policy/AdministratorAccess"
+                    "permissionBoundary": "arn:aws:iam::aws:policy/AdministratorAccess"
                 }
             ]
         }
@@ -149,22 +149,21 @@ class TestIamRoleConfigStack(unittest.TestCase):
         
         self.assertTrue(role_found, "The IAM role 'TestRoleWithRetain' was not found.")
 
-
     def test_invalid_inline_policy(self):
         resources = {
             "roles": [
                 {
                     "roleName": "TestRoleWithInvalidInlinePolicy",
-                    "inlinePolicies": [
-                        {"policyName": "InvalidPolicy", "policyDocument": None}  # Invalid document
-                    ]
+                    "inlinePolicies": {
+                        "InvalidPolicy": None  # Invalid document
+                    }
                 }
             ]
         }
         stack = IamRoleConfigStack(self.app, "TestStackWithInvalidPolicy", file_path=None, resources=resources, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
 
-        # Assert that no inline policies are attached
+        # Assert that no inline policies are attached due to invalid configuration
         template.has_resource_properties("AWS::IAM::Role", {
             "RoleName": "TestRoleWithInvalidInlinePolicy",
             "Policies": assertions.Match.absent()
@@ -213,10 +212,11 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 }]
             }
         })
+
     def test_managed_policy_creation(self):
         resources = {
             "roles": [],  # Empty roles for this test case
-            "iam_policies": [  # Corrected key to match the stack's implementation
+            "iam_policies": [
                 {
                     "policyName": "TestManagedPolicy",
                     "policyDocument": {
@@ -233,11 +233,8 @@ class TestIamRoleConfigStack(unittest.TestCase):
             ]
         }
 
-        stack = IamRoleConfigStack(self.app, "TestStack", file_path=None, resources=resources, account_id="123456789012")
+        stack = IamRoleConfigStack(self.app, "TestStackManagedPolicy", file_path=None, resources=resources, account_id="123456789012")
         template = assertions.Template.from_stack(stack)
-
-        # Debug: print the synthesized template to inspect the actual output
-        print(template.to_json())
 
         # Verify that a managed policy is created with the expected properties
         template.resource_count_is("AWS::IAM::ManagedPolicy", 1)
@@ -254,8 +251,6 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 ]
             }
         })
-
-
 
 
 if __name__ == '__main__':
