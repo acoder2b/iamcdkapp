@@ -18,6 +18,7 @@ roles:
 -   roleName: AccessAnalyzerTrustedService12
     deletionPolicy: RETAIN
     sessionDuration: 3600
+    description: Access Analyzer Trusted Service Role
     iamPath: /
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
@@ -29,6 +30,8 @@ roles:
             value: dev
         -   key: stack-owner
             value: '780258025701'
+        -   key: stack-owner11
+            value: '780258025701111'            
     trustPolicy:
         Version: '2012-10-17'
         Statement:
