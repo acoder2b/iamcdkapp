@@ -2,6 +2,9 @@
   "Role124c20ec": {
     "RoleName": "AccessAnalyzerTrustedService"
   },
+  "Role3196edf7": {
+    "RoleName": "AccessAnalyzerTrustedService11"
+  },
   "Role3a0eba65": {
     "RoleName": "Admin"
   },

@@ -204,14 +204,34 @@ def list_cf_stack_roles():
 #         logging.error(f"Error fetching IAM role state for {role_name}: {error}")
 #         return None
 
+# def get_iam_role_state(role_name):
+#     """
+#     Get details of an IAM role by its name.
+#     """
+#     iam_client = boto3.client('iam')
+#     try:
+#         role = iam_client.get_role(RoleName=role_name)
+#         return role['Role']
+#     except iam_client.exceptions.NoSuchEntityException:
+#         logging.warning(f"The role {role_name} does not exist.")
+#         return None
+#     except (BotoCoreError, ClientError) as error:
+#         logging.error(f"Error fetching IAM role state for {role_name}: {error}")
+#         return None
+
 def get_iam_role_state(role_name):
     """
-    Get details of an IAM role by its name.
+    Get details of an IAM role by its name, including permission boundary if it exists.
     """
     iam_client = boto3.client('iam')
     try:
-        role = iam_client.get_role(RoleName=role_name)
-        return role['Role']
+        role = iam_client.get_role(RoleName=role_name)['Role']
+        
+        # Retrieve permission boundary if it exists
+        if 'PermissionsBoundary' in role:
+            role['PermissionBoundary'] = role['PermissionsBoundary']['PermissionsBoundaryArn']
+        
+        return role
     except iam_client.exceptions.NoSuchEntityException:
         logging.warning(f"The role {role_name} does not exist.")
         return None
@@ -280,18 +300,20 @@ def create_yaml_content(policies, roles):
         if role.get('Tags'):
             role_dict['tags'] = [{'key': tag['Key'], 'value': tag['Value']} for tag in role.get('Tags', [])]
 
-        # Transform ManagedPolicies to a list of ARNs only
+        # Include permission boundary if it exists
+        if role.get('PermissionBoundary'):
+            role_dict['permissionBoundary'] = role['PermissionBoundary']
+
+        # Attach managed policies and inline policies, if present
         if role.get('ManagedPolicies'):
             role_dict['managedPolicies'] = [policy['PolicyArn'] for policy in role['ManagedPolicies']]
-
         if role.get('InlinePolicies'):
             role_dict['inlinePolicies'] = role['InlinePolicies']
-        if role.get('PermissionsBoundary'):
-            role_dict['permissionBoundary'] = [policy['PolicyArn'] for policy in role['PermissionsBoundary']]
 
         yaml_content['iam_roles'].append(role_dict)
 
     return yaml_content
+
 
 
 def build_full_yaml_structure(account_id, region, roles_data, policies_data):

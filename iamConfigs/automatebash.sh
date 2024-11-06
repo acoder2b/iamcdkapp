@@ -55,7 +55,7 @@ for script in "$IMPORT_SCRIPT" "$RESOURCE_MAP_SCRIPT"; do
 done
 log "Required scripts found."
 
-# Run the cdkImportAutomationScript.py
+# Step 4: Run the cdkImportAutomationScript.py
 log "Running $IMPORT_SCRIPT..."
 python3 "$IMPORT_SCRIPT"
 if [ $? -ne 0 ]; then
@@ -64,7 +64,7 @@ if [ $? -ne 0 ]; then
 fi
 log "$IMPORT_SCRIPT completed successfully."
 
-# Step 4: Switch to main app directory and run CDK Synth
+# Step 5: Switch to main app directory and run CDK Synth
 log "Step 4: Switching to main app directory..."
 cd ..
 MAIN_APP_DIR=$(pwd)
@@ -78,9 +78,9 @@ if [ $? -ne 0 ]; then
 fi
 log "CDK synth completed successfully."
 
-# Collect all stack names from cdk.out for the current account
+# Step 6: Collect all stack names from cdk.out for the current account
 log "Collecting stack names from cdk.out for account $ACCOUNT_ID..."
-STACK_TEMPLATE_FILES=$(find "$MAIN_APP_DIR/cdk.out" -name "IamRoleConfigStack-$ACCOUNT_ID-*.template.json")
+STACK_TEMPLATE_FILES=$(find "$MAIN_APP_DIR/cdk.out" -name "IamRoleConfigStack-$ACCOUNT_ID-iam-role-policies-*.template.json")
 if [ -z "$STACK_TEMPLATE_FILES" ]; then
     log "Error: No stack templates found for account $ACCOUNT_ID."
     exit 1
@@ -88,7 +88,7 @@ fi
 log "Stack templates found for account $ACCOUNT_ID:"
 echo "$STACK_TEMPLATE_FILES"
 
-# Step 5: Process each stack template and run resource-map script
+# Step 7: Process each stack template and run resource-map script
 log "Step 5: Running resource-map script for each stack template..."
 cd "$CURRENT_DIR"  # Ensure we are back in the iamConfigs directory
 STACK_NAMES=()
@@ -115,7 +115,7 @@ done
 log "Resource map files created and recorded with associated stack names:"
 printf '%s\n' "${RESOURCE_MAP_FILES[@]}"
 
-# Step 6: Run CDK import for each stack with the matching resource map file
+# Step 8: Run CDK import for each stack with the matching resource map file
 log "Step 6: Running CDK import for each stack and resource map file..."
 cd "$MAIN_APP_DIR"
 

@@ -2,6 +2,9 @@
   "Role124c20ec": {
     "RoleName": "AccessAnalyzerTrustedService"
   },
+  "Role3a0eba65": {
+    "RoleName": "Admin"
+  },
   "Role4fda5c60": {
     "RoleName": "AVMContainersUserRole"
   },
@@ -85,6 +88,9 @@
   },
   "Roleee6b8040": {
     "RoleName": "ShadowTrooperRole"
+  },
+  "Rolefad7a943": {
+    "RoleName": "testrole111"
   },
   "Role9ad80f2c": {
     "RoleName": "TurtleRoleManagement"

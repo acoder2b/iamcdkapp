@@ -1,5 +1,5 @@
 account_id:
-- '780258025701'
+- '482205423380'
 region: us-east-1
 stack_name: iam-role-policies-pipeline-stack
 iam_policies: []
@@ -18,7 +18,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: AccessAnalyzerTrustedServicey7yfM3aaua7H
+                    sts:ExternalId: AccessAnalyzerTrustedServiceL6sfV33FSUkh
     inlinePolicies:
         AccessAnalyzerTrustedServicePolicy:
             Version: '2012-10-17'
@@ -38,6 +38,23 @@ roles:
                     StringEquals:
                         iam:AWSServiceName: access-analyzer.amazonaws.com
                 Resource: '*'
+-   roleName: Admin
+    deletionPolicy: RETAIN
+    sessionDuration: 43200
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::727820809195:root
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: IsengardExternalIddZasuwJ7wk5Y
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AdministratorAccess
 -   roleName: AVMContainersUserRole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -52,7 +69,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: InspectorEnablementRole087gc3qAC0yl
+                    sts:ExternalId: InspectorEnablementRolezwE5MFbH8tKI
     inlinePolicies:
         AWSContainerAssessmentPolicy:
             Version: '2012-10-17'
@@ -104,7 +121,7 @@ roles:
                 - s3:ListBucket
                 - s3:PutBucketPolicy
                 - s3:PutEncryptionConfiguration
-                Resource: arn:aws:s3:::aws-quick-setup-config-recording-780258025701-62d8q
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-482205423380-62d8q
                 Effect: Allow
             -   Action:
                 - sns:ListTopics
@@ -199,7 +216,7 @@ roles:
                 - s3:ListBucket
                 - s3:PutBucketPolicy
                 - s3:PutEncryptionConfiguration
-                Resource: arn:aws:s3:::aws-quick-setup-config-recording-780258025701-62d8q
+                Resource: arn:aws:s3:::aws-quick-setup-config-recording-482205423380-62d8q
                 Effect: Allow
             -   Action:
                 - sns:ListTopics
@@ -280,7 +297,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: KelexDataFetchermWKSx9OAyL7x
+                    sts:ExternalId: KelexDataFetcherbmnVsScLAnsA
     inlinePolicies:
         AWSLogsOptimizerPolicy:
             Version: '2012-10-17'
@@ -293,7 +310,7 @@ roles:
                 Action:
                 - logs:GetQueryResults
                 - logs:StartQuery
-                Resource: arn:aws:logs:*:780258025701:log-group:*
+                Resource: arn:aws:logs:*:482205423380:log-group:*
 -   roleName: AwsSecurityAudit
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -309,7 +326,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: AwsSecurityAuditliRRP4xWuSvb
+                    sts:ExternalId: AwsSecurityAuditwd5uYBiUVOFo
     managedPolicies:
     - arn:aws:iam::aws:policy/SecurityAudit
 -   roleName: AwsSecurityNacundaAudit
@@ -326,7 +343,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: AwsSecurityNacundaAudithMt0uaTYDThi
+                    sts:ExternalId: AwsSecurityNacundaAudit1BfAJ4pIyThA
     inlinePolicies:
         AwsSecurityNacundaAuditPolicy:
             Version: '2012-10-17'
@@ -383,7 +400,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: AWSVAPTAuditgn67LKzJ3Ied
+                    sts:ExternalId: AWSVAPTAuditOsvLd3Ff3dHd
     managedPolicies:
     - arn:aws:iam::aws:policy/SecurityAudit
 -   roleName: CloudSecAuditRole
@@ -400,7 +417,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: CloudSecAuditRoledTCtzpkg6h4x
+                    sts:ExternalId: CloudSecAuditRoleFRg99w8DfucA
     managedPolicies:
     - arn:aws:iam::aws:policy/SecurityAudit
     inlinePolicies:
@@ -470,14 +487,14 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::533267069473:root
-                - arn:aws:iam::637423399230:root
                 - arn:aws:iam::381492016180:root
+                - arn:aws:iam::533267069473:root
                 - arn:aws:iam::333692317655:root
+                - arn:aws:iam::637423399230:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: CloudSeerTrustedServiceRolem46WB3XB1hFa
+                    sts:ExternalId: CloudSeerTrustedServiceRoleCSruAIm6Y7Lz
     inlinePolicies:
         CloudSeerTrustedServicePolicy:
             Version: '2012-10-17'
@@ -676,12 +693,12 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                AWS: arn:aws:iam::054693081941:root
                 Service: codeguru-profiler-publisher.aws.internal
+                AWS: arn:aws:iam::054693081941:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: CodeGuruProfilerPublisherXNmI9Ids4gi9
+                    sts:ExternalId: CodeGuruProfilerPublisherXJQrjdtVAlTs
     inlinePolicies:
         CodeGuruProfilerPolicy:
             Version: '2012-10-17'
@@ -689,7 +706,7 @@ roles:
             -   Effect: Allow
                 Action:
                 - codeguru-profiler:GetProfile
-                Resource: arn:aws:codeguru-profiler:*:780258025701:profilingGroup/*
+                Resource: arn:aws:codeguru-profiler:*:482205423380:profilingGroup/*
 -   roleName: DiscoveryAnalyzerTrustedService-DO-NOT-DELETE
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -704,7 +721,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: DiscoveryAnalyzerTrustedService-DO-NOT-DELETENim0i9Z4al8Q
+                    sts:ExternalId: DiscoveryAnalyzerTrustedService-DO-NOT-DELETEbASmhNwnFGYQ
     inlinePolicies:
         DiscoveryAnalyzer:
             Version: '2012-10-17'
@@ -729,12 +746,12 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: crs.ec2.aws.internal
                 AWS: arn:aws:iam::950184135563:root
+                Service: crs.ec2.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: EC2CapacityReservationServiceWSl2d3puDfon
+                    sts:ExternalId: EC2CapacityReservationServicecIrmbEonrvmv
 -   roleName: GatedGardenAudit
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -749,7 +766,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: GatedGardenAudit9Be2qNJLHmsI
+                    sts:ExternalId: GatedGardenAudit9RBarYbOLPvy
     inlinePolicies:
         GatedGardenPolicy:
             Version: '2012-10-17'
@@ -789,7 +806,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: GatedGardenInternalAuditDqTVRs9xwNUO
+                    sts:ExternalId: GatedGardenInternalAuditwBhjkQl680cR
     inlinePolicies:
         GatedGardenInternalAuditPolicy:
             Version: '2012-10-17'
@@ -959,8 +976,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::621463273587:role/BrokerService-Prod
                 - arn:aws:iam::048851363556:role/BrokerService-Prod
+                - arn:aws:iam::621463273587:role/BrokerService-Prod
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -969,8 +986,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::621463273587:role/BrokerService-Prod
                 - arn:aws:iam::048851363556:role/BrokerService-Prod
+                - arn:aws:iam::621463273587:role/BrokerService-Prod
             Action:
             - sts:SetSourceIdentity
             - sts:TagSession
@@ -1077,7 +1094,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: IMDSv2-automigrator42SvfOTySrnl
+                    sts:ExternalId: IMDSv2-automigratorkghNSEuD6Jfj
     inlinePolicies:
         IMDSv2-automigrator:
             Version: '2012-10-17'
@@ -1110,7 +1127,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: InternalAuditInternalzeLSBVkuIbxb
+                    sts:ExternalId: InternalAuditInternalBSTZza25j0uJ
     managedPolicies:
     - arn:aws:iam::aws:policy/SecurityAudit
 -   roleName: IsengardAuditorRole-DO-NOT-DELETE
@@ -1127,7 +1144,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: IsengardAuditorExternalIdDnMo4P99FQB5
+                    sts:ExternalId: IsengardAuditorExternalIdlRjc8KpGFlTI
     inlinePolicies:
         IsengardAuditorPolicy:
             Version: '2012-10-17'
@@ -1408,7 +1425,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: IsengardCloudTrailRoleAPjnm31nNcJa
+                    sts:ExternalId: IsengardCloudTrailRoleakVnnSErkYwU
     inlinePolicies:
         AWSCloudTrailAccessPolicy:
             Version: '2012-10-17'
@@ -1444,7 +1461,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: IsengardConfigRolelN5QxEwA34T8
+                    sts:ExternalId: IsengardConfigRole2IA4j6rUGPAB
 -   roleName: IsengardRole-DO-NOT-DELETE
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -1459,7 +1476,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: IsengardExternalIdaHGzYZsR5HL5
+                    sts:ExternalId: IsengardExternalIdg9ZJ4hCOFjIt
     inlinePolicies:
         IsengardControllerPolicy:
             Version: '2012-10-17'
@@ -1477,15 +1494,15 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: depndency-insights-prod.aws.internal
                 AWS:
-                - arn:aws:iam::611447770337:root
                 - arn:aws:iam::089414261608:root
                 - arn:aws:iam::796293252539:root
+                - arn:aws:iam::611447770337:root
+                Service: depndency-insights-prod.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: DependencyAssuranceIamAnalyzerTrustedServiceW9zWkwsaX8Fg
+                    sts:ExternalId: DependencyAssuranceIamAnalyzerTrustedServiceDjKuUk4MjaAF
     inlinePolicies:
         DependencyAssuranceIamAnalyzerTrustedServicePolicy:
             Version: '2012-10-17'
@@ -1509,7 +1526,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: AWSComputeOptimizerukCVNsFJlmUh
+                    sts:ExternalId: AWSComputeOptimizerkQ59ZBzMQ1LJ
     inlinePolicies:
         AWSComputeOptimizerAccessPolicy:
             Version: '2012-10-17'
@@ -1540,7 +1557,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: NawsApplicationMetrics-DO-NOT-DELETE8LEN8ePEm3CQ
+                    sts:ExternalId: NawsApplicationMetrics-DO-NOT-DELETEk8IdI4qJd1bb
     inlinePolicies:
         NAWSApplicationMetricsPolicy:
             Version: '2012-10-17'
@@ -1614,12 +1631,12 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.sentry.orthanc.epoxy.aws.internal
                 - prod.stronghold.orthanc.epoxy.aws.internal
+                - prod.sentry.orthanc.epoxy.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: OrthancRoleMVBHPammHEYJ
+                    sts:ExternalId: OrthancRoleqhPUNreYWMEW
     managedPolicies:
     - arn:aws:iam::aws:policy/AmazonGuardDutyFullAccess
     inlinePolicies:
@@ -1646,15 +1663,15 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - me-south-1.prod.rcc.aws.internal
                 - ap-east-1.prod.rcc.aws.internal
+                - me-south-1.prod.rcc.aws.internal
                 - af-south-1.prod.rcc.aws.internal
                 - prod.rcc.aws.internal
                 - eu-south-1.prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: ResourceConfigurationCollector95SaGJwh0q5O
+                    sts:ExternalId: ResourceConfigurationCollectorlwHNslv9Zc2b
 -   roleName: SaltyTrustedService
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -1669,7 +1686,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: SaltyTrustedServiceU7RZChuBwOJN
+                    sts:ExternalId: SaltyTrustedServiceUQxe5bjxr1y1
     inlinePolicies:
         SaltyTrustedServicePolicy:
             Version: '2012-10-17'
@@ -1692,7 +1709,7 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: ShadowTrooperRolebykMjahHSmb5
+                    sts:ExternalId: ShadowTrooperRoleIEGiQe9Qj26X
     inlinePolicies:
         ShadowTrooperPolicy-prod:
             Version: '2012-10-17'
@@ -1776,6 +1793,19 @@ roles:
                 - workspaces:ModifyWorkspaceState
                 - workspaces:StopWorkspaces
                 Resource: '*'
+-   roleName: testrole111
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::482205423380:root
+            Action: sts:AssumeRole
+            Condition: {}
+    permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
 -   roleName: TurtleRoleManagement
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -1787,12 +1817,12 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - in-amazon-1.prod.webui.turtle.aws.internal
                 - prod.webui.turtle.aws.internal
+                - in-amazon-1.prod.webui.turtle.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: TurtleRoleManagementOzODSg0udKhP
+                    sts:ExternalId: TurtleRoleManagementslMWAiC1mUl7
     inlinePolicies:
         TurtleRoleManagementPolicy:
             Version: '2012-10-17'
@@ -1817,6 +1847,6 @@ roles:
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
-                    sts:ExternalId: XenaAuditorRole6WhDHzDImurb
+                    sts:ExternalId: XenaAuditorRoleK1Kn22JfukzA
     managedPolicies:
     - arn:aws:iam::aws:policy/SecurityAudit

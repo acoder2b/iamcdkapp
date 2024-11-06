@@ -1839,8 +1839,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: palisade.amazonaws.com
                 AWS: arn:aws:iam::877377650033:root
+                Service: palisade.amazonaws.com
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -2005,10 +2005,10 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::333692317655:root
                 - arn:aws:iam::381492016180:root
-                - arn:aws:iam::533267069473:root
                 - arn:aws:iam::637423399230:root
+                - arn:aws:iam::533267069473:root
+                - arn:aws:iam::333692317655:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -2211,8 +2211,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                AWS: arn:aws:iam::054693081941:root
                 Service: codeguru-profiler-publisher.aws.internal
+                AWS: arn:aws:iam::054693081941:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -2264,8 +2264,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: crs.ec2.aws.internal
                 AWS: arn:aws:iam::950184135563:root
+                Service: crs.ec2.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -2520,8 +2520,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::048851363556:role/BrokerService-Prod
                 - arn:aws:iam::621463273587:role/BrokerService-Prod
+                - arn:aws:iam::048851363556:role/BrokerService-Prod
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -2530,8 +2530,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::048851363556:role/BrokerService-Prod
                 - arn:aws:iam::621463273587:role/BrokerService-Prod
+                - arn:aws:iam::048851363556:role/BrokerService-Prod
             Action:
             - sts:SetSourceIdentity
             - sts:TagSession
@@ -3038,11 +3038,11 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
+                Service: depndency-insights-prod.aws.internal
                 AWS:
-                - arn:aws:iam::089414261608:root
                 - arn:aws:iam::611447770337:root
                 - arn:aws:iam::796293252539:root
-                Service: depndency-insights-prod.aws.internal
+                - arn:aws:iam::089414261608:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -3219,11 +3219,11 @@ roles:
             Effect: Allow
             Principal:
                 Service:
+                - prod.rcc.aws.internal
                 - eu-south-1.prod.rcc.aws.internal
                 - me-south-1.prod.rcc.aws.internal
-                - af-south-1.prod.rcc.aws.internal
-                - prod.rcc.aws.internal
                 - ap-east-1.prod.rcc.aws.internal
+                - af-south-1.prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -3361,8 +3361,7 @@ roles:
                 AWS: arn:aws:iam::443253904861:root
             Action: sts:AssumeRole
             Condition: {}
-    permissionBoundary:
-    - arn:aws:iam::443253904861:policy/Boundary-Test1
+    permissionBoundary: arn:aws:iam::443253904861:policy/Boundary-Test1
 -   roleName: testrolemodernademo
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -3387,7 +3386,12 @@ roles:
                 AWS: arn:aws:iam::443253904861:root
             Action: sts:AssumeRole
             Condition: {}
+    tags:
+    -   key: Test
+        value: Test
+    permissionBoundary: arn:aws:iam::aws:policy/AlexaForBusinessFullAccess
     managedPolicies:
+    - arn:aws:iam::443253904861:policy/3-Tef-Environment-Admin
     - arn:aws:iam::aws:policy/AdministratorAccess
 -   roleName: TurtleRoleManagement
     deletionPolicy: RETAIN
