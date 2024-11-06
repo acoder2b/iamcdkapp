@@ -85,8 +85,8 @@ class IamRoleConfigStack(Stack):
             role_properties['max_session_duration'] = role['sessionDuration']
         if 'iamPath' in role:
             role_properties['path'] = role['iamPath']
-        if 'permissionsBoundary' in role:
-            role_properties['permissions_boundary'] = role['permissionsBoundary']
+        if 'permissionBoundary' in role:
+            role_properties['permissions_boundary'] = role['permissionBoundary']
         if 'managedPolicies' in role and role['managedPolicies']:
             role_properties['managed_policy_arns'] = role['managedPolicies']
         if inline_policies:
