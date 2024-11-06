@@ -54,7 +54,6 @@ roles:
                 - access-analyzer:ListAnalyzers
                 - access-analyzer:GetAnalyzer
                 - access-analyzer:CreateAnalyzer
-                - ec2:DescribeRegions
                 Resource: '*'
             -   Sid: CreateSLR
                 Effect: Allow
