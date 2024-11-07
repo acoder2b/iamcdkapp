@@ -38,8 +38,9 @@ roles:
                     StringEquals:
                         iam:AWSServiceName: access-analyzer.amazonaws.com
                 Resource: '*'
--   roleName: AccessAnalyzerTrustedService11
+-   roleName: AccessAnalyzerTrustedService12
     deletionPolicy: RETAIN
+    description: Access Analyzer Trusted Service Role
     sessionDuration: 3600
     iamPath: /
     trustPolicy:
@@ -48,19 +49,23 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                AWS: arn:aws:iam::121925031476:root
+                AWS: arn:aws:iam::780258025701:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
                     sts:ExternalId: AccessAnalyzerTrustedServicey7yfM3aaua7H
     tags:
+    -   key: stack-owner11
+        value: '780258025701111'
     -   key: stack-environment
         value: dev
     -   key: stack-owner
         value: '780258025701'
     -   key: stack-name
         value: iam-role-demo
+    permissionsBoundary: arn:aws:iam::aws:policy/AdministratorAccess
     managedPolicies:
+    - arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
     - arn:aws:iam::aws:policy/AdministratorAccess
     inlinePolicies:
         AccessAnalyzerTrustedServicePolicy:
@@ -70,7 +75,53 @@ roles:
                 - access-analyzer:ListAnalyzers
                 - access-analyzer:GetAnalyzer
                 - access-analyzer:CreateAnalyzer
-                - ec2:DescribeRegions
+                Resource: '*'
+                Effect: Allow
+                Sid: A2CreateAnalyzer
+            -   Condition:
+                    StringEquals:
+                        iam:AWSServiceName: access-analyzer.amazonaws.com
+                Action: iam:CreateServiceLinkedRole
+                Resource: '*'
+                Effect: Allow
+                Sid: CreateSLR
+-   roleName: AccessAnalyzerTrustedService122
+    deletionPolicy: RETAIN
+    description: Access Analyzer Trusted Service Role
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::780258025701:root
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: AccessAnalyzerTrustedServicey7yfM3aaua7H
+    tags:
+    -   key: stack-environment
+        value: dev
+    -   key: stack-owner
+        value: '780258025701'
+    -   key: stack-owner11
+        value: '780258025701111'
+    -   key: stack-name
+        value: iam-role-demo
+    permissionsBoundary: arn:aws:iam::aws:policy/AdministratorAccess
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
+    - arn:aws:iam::aws:policy/AdministratorAccess
+    inlinePolicies:
+        AccessAnalyzerTrustedServicePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - access-analyzer:ListAnalyzers
+                - access-analyzer:GetAnalyzer
+                - access-analyzer:CreateAnalyzer
                 Resource: '*'
                 Effect: Allow
                 Sid: A2CreateAnalyzer
@@ -546,8 +597,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: codeguru-profiler-publisher.aws.internal
                 AWS: arn:aws:iam::054693081941:root
+                Service: codeguru-profiler-publisher.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -829,8 +880,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::048851363556:role/BrokerService-Prod
                 - arn:aws:iam::621463273587:role/BrokerService-Prod
+                - arn:aws:iam::048851363556:role/BrokerService-Prod
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -839,8 +890,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::048851363556:role/BrokerService-Prod
                 - arn:aws:iam::621463273587:role/BrokerService-Prod
+                - arn:aws:iam::048851363556:role/BrokerService-Prod
             Action:
             - sts:SetSourceIdentity
             - sts:TagSession
@@ -977,8 +1028,8 @@ roles:
         -   Effect: Allow
             Principal:
                 Service:
-                - sns.amazonaws.com
                 - lambda.amazonaws.com
+                - sns.amazonaws.com
             Action: sts:AssumeRole
     tags:
     -   key: Application
@@ -1373,11 +1424,11 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
+                Service: depndency-insights-prod.aws.internal
                 AWS:
+                - arn:aws:iam::089414261608:root
                 - arn:aws:iam::796293252539:root
                 - arn:aws:iam::611447770337:root
-                - arn:aws:iam::089414261608:root
-                Service: depndency-insights-prod.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -1510,8 +1561,8 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.sentry.orthanc.epoxy.aws.internal
                 - prod.stronghold.orthanc.epoxy.aws.internal
+                - prod.sentry.orthanc.epoxy.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -1554,11 +1605,11 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.rcc.aws.internal
-                - af-south-1.prod.rcc.aws.internal
-                - me-south-1.prod.rcc.aws.internal
-                - ap-east-1.prod.rcc.aws.internal
                 - eu-south-1.prod.rcc.aws.internal
+                - me-south-1.prod.rcc.aws.internal
+                - af-south-1.prod.rcc.aws.internal
+                - ap-east-1.prod.rcc.aws.internal
+                - prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:

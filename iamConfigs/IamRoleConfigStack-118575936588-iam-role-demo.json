@@ -1,8 +1,0 @@
-{
-  "Role3196edf7": {
-    "RoleName": "AccessAnalyzerTrustedService11"
-  },
-  "ManagedPolicy2e436269": {
-    "PolicyArn": "arn:aws:iam::118575936588:policy/Boundary-Test1"
-  }
-}

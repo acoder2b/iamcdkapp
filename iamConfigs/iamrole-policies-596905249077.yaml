@@ -354,8 +354,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: palisade.amazonaws.com
                 AWS: arn:aws:iam::877377650033:root
+                Service: palisade.amazonaws.com
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -520,10 +520,10 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::381492016180:root
-                - arn:aws:iam::333692317655:root
                 - arn:aws:iam::533267069473:root
                 - arn:aws:iam::637423399230:root
+                - arn:aws:iam::381492016180:root
+                - arn:aws:iam::333692317655:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -1530,8 +1530,8 @@ roles:
                 Service: depndency-insights-prod.aws.internal
                 AWS:
                 - arn:aws:iam::796293252539:root
-                - arn:aws:iam::611447770337:root
                 - arn:aws:iam::089414261608:root
+                - arn:aws:iam::611447770337:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -1678,8 +1678,8 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.stronghold.orthanc.epoxy.aws.internal
                 - prod.sentry.orthanc.epoxy.aws.internal
+                - prod.stronghold.orthanc.epoxy.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -1710,11 +1710,11 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.rcc.aws.internal
-                - eu-south-1.prod.rcc.aws.internal
-                - af-south-1.prod.rcc.aws.internal
                 - ap-east-1.prod.rcc.aws.internal
                 - me-south-1.prod.rcc.aws.internal
+                - eu-south-1.prod.rcc.aws.internal
+                - af-south-1.prod.rcc.aws.internal
+                - prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -1849,8 +1849,8 @@ roles:
         Statement:
         -   Effect: Allow
             Principal:
-                AWS: arn:aws:iam::596905249077:root
                 Service: glue.amazonaws.com
+                AWS: arn:aws:iam::596905249077:root
             Action: sts:AssumeRole
             Condition: {}
     managedPolicies:
@@ -1867,8 +1867,8 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - prod.webui.turtle.aws.internal
                 - in-amazon-1.prod.webui.turtle.aws.internal
+                - prod.webui.turtle.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
