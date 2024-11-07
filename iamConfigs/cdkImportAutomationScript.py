@@ -8,6 +8,10 @@ from botocore.exceptions import BotoCoreError, ClientError
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Configuration variables
+AWS_REGION = 'us-east-1'
+RESOURCE_LIMIT_PER_FILE = 25
+
 
 def list_cf_stack_policies(account_id):
     """
@@ -205,12 +209,17 @@ def filter_roles(roles, cf_role_physical_ids):
 
 def get_iam_role_state(role_name):
     """
-    Get details of an IAM role by its name.
+    Get details of an IAM role by its name, including permission boundary if it exists.
     """
     iam_client = boto3.client('iam')
     try:
-        role = iam_client.get_role(RoleName=role_name)
-        return role['Role']
+        role = iam_client.get_role(RoleName=role_name)['Role']
+        
+        # Retrieve permission boundary if it exists
+        if 'PermissionsBoundary' in role:
+            role['PermissionBoundary'] = role['PermissionsBoundary']['PermissionsBoundaryArn']
+        
+        return role
     except iam_client.exceptions.NoSuchEntityException:
         logging.warning(f"The role {role_name} does not exist.")
         return None
@@ -281,12 +290,17 @@ def create_yaml_content(policies, roles):
             role_dict['trustPolicy'] = role['AssumeRolePolicyDocument']
         if role.get('Tags'):
             role_dict['tags'] = [{'key': tag['Key'], 'value': tag['Value']} for tag in role.get('Tags', [])]
+        # Include permission boundary if it exists
+        # Extract only the PermissionsBoundaryArn if PermissionsBoundary exists
+        if role.get('PermissionsBoundary') and role['PermissionsBoundary'].get('PermissionsBoundaryArn'):
+            role_dict['permissionsBoundary'] = role['PermissionsBoundary']['PermissionsBoundaryArn']
+
+
+        # Attach managed policies and inline policies, if present
         if role.get('ManagedPolicies'):
-            role_dict['managedPolicies'] = role['ManagedPolicies']
+            role_dict['managedPolicies'] = [policy['PolicyArn'] for policy in role['ManagedPolicies']]
         if role.get('InlinePolicies'):
             role_dict['inlinePolicies'] = role['InlinePolicies']
-        if role.get('PermissionsBoundary'):
-            role_dict['permissionBoundary'] = role['PermissionsBoundary']
 
         yaml_content['iam_roles'].append(role_dict)
 
@@ -323,7 +337,7 @@ def get_account_id():
         logging.error(f"Error fetching account ID: {error}")
         return None
 
-def split_yaml_content(full_yaml_structure, account_id, max_resources_per_file=450):
+def split_yaml_content(full_yaml_structure, account_id, max_resources_per_file=RESOURCE_LIMIT_PER_FILE):
     """
     Split the YAML content into multiple files if resources exceed the specified limit.
     The first file will have the original name, while subsequent files will have a suffix like Part1, Part2, etc.
@@ -429,9 +443,17 @@ def main():
 
     # Step 4: Fetch role details for each filtered role
     roles_data = []
+    iam_client = boto3.client('iam', region_name='us-east-1')
     for role in filtered_roles:
         role_state = get_iam_role_state(role['RoleName'])
         if role_state:
+            # Fetch managed policies attached to the role
+            attached_policies = iam_client.list_attached_role_policies(RoleName=role['RoleName'])['AttachedPolicies']
+            role_state['ManagedPolicies'] = [{'PolicyName': policy['PolicyName'], 'PolicyArn': policy['PolicyArn']} for policy in attached_policies]
+
+            # Fetch inline policies
+            role_state['InlinePolicies'] = get_inline_policies(role['RoleName'])
+
             roles_data.append(role_state)
 
     # Step 5: List IAM policies provisioned by CloudFormation stacks
@@ -451,7 +473,7 @@ def main():
     full_yaml_structure = build_full_yaml_structure(account_id, region, roles_data, policies_data)
 
     # Step 9: Split the data into multiple YAML files if there are more than 450 resources
-    if len(roles_data) + len(policies_data) > 450:
+    if len(roles_data) + len(policies_data) > RESOURCE_LIMIT_PER_FILE:
         split_yaml_content(full_yaml_structure, account_id)
     else:
         append_to_yaml_file(full_yaml_structure, account_id)

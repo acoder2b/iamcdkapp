@@ -1,0 +1,47 @@
+{
+  "Roledc68f75a": {
+    "RoleName": "IsengardRoleForOptInComputeOptimizer"
+  },
+  "Role8594d5b3": {
+    "RoleName": "NawsApplicationMetrics-DO-NOT-DELETE"
+  },
+  "Role89b67aba": {
+    "RoleName": "OrthancRole"
+  },
+  "Rolec06e2f9a": {
+    "RoleName": "PipelineStack-TelusShSecurityAcmProvisioningStackte-3GgllA1czIHr"
+  },
+  "Role35d623f8": {
+    "RoleName": "ResourceConfigurationCollector-DO-NOT-DELETE"
+  },
+  "Role5392f2f8": {
+    "RoleName": "SaltyTrustedService"
+  },
+  "Roleee6b8040": {
+    "RoleName": "ShadowTrooperRole"
+  },
+  "Role21a03896": {
+    "RoleName": "telus-security-audit-prowler-ecstaskrole"
+  },
+  "Roleb90c96b5": {
+    "RoleName": "telus-security-audit-prowler-ecstaskrole1"
+  },
+  "Role026406bf": {
+    "RoleName": "telus-sh-security-iam-publicResourceLambdaExecutionRole"
+  },
+  "Role29a82cca": {
+    "RoleName": "telus-sh-security-iamrole-lambda_kms_quicksight_execution_role"
+  },
+  "Role335cda96": {
+    "RoleName": "testcrossaccountrole"
+  },
+  "Role805337f2": {
+    "RoleName": "testcrossaccountrole112212"
+  },
+  "Role9ad80f2c": {
+    "RoleName": "TurtleRoleManagement"
+  },
+  "Role0072492a": {
+    "RoleName": "XenaAuditorRole-DO-NOT-DELETE"
+  }
+}
