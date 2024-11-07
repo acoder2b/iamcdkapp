@@ -23,7 +23,7 @@ roles:
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
     - arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
-    permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
+    permissionsBoundary: arn:aws:iam::aws:policy/AdministratorAccess
     tags:
         -   key: stack-name
             value: iam-role-demo
