@@ -4,24 +4,17 @@ import logging
 from datetime import datetime
 from botocore.exceptions import BotoCoreError, ClientError
 
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Configuration variables
-EXCLUDE_ROLE_PATHS = ['/aws-reserved/', '/aws-service-role/', '/service-role/', '/cdk-hnb']
-EXCLUDE_ROLE_PREFIXES = ['cdk-hnb659fds', 'StackSet', 'stackset', 'AWSControlTower']
-EXCLUDE_POLICY_PATHS = ['/service-role/']
-AWS_REGION = 'us-east-1'
-RESOURCE_LIMIT_PER_FILE = 450
-STACK_NAME = 'iam-role-policies-pipeline-stack'
-OUTPUT_FILENAME_TEMPLATE = "iamrole-policies-{account_id}.yaml"
 
 def list_cf_stack_policies(account_id):
     """
     List IAM managed policies provisioned by CloudFormation stacks.
     Handles pagination for stack resources and fixes ARN construction.
     """
-    cf_client = boto3.client('cloudformation', region_name=AWS_REGION)
+    cf_client = boto3.client('cloudformation', region_name='us-east-1')
     paginator = cf_client.get_paginator('list_stacks')
     cf_policy_arns = []
 
@@ -70,8 +63,7 @@ def list_customer_managed_policies(exclude_policy_arns):
         for page in paginator.paginate(Scope='Local'):
             for policy in page['Policies']:
                 # Exclude policies provisioned by CloudFormation (based on ARNs in exclude_policy_arns)
-                if policy['Arn'] not in exclude_policy_arns and not any(policy['Path'].startswith(path) for path in EXCLUDE_POLICY_PATHS):
-
+                if policy['Arn'] not in exclude_policy_arns and '/service-role/' not in policy.get('Path', ''):
                     policies.append({
                         'PolicyName': policy['PolicyName'],
                         'PolicyArn': policy['Arn'],
@@ -121,11 +113,11 @@ def get_policy_details(policy_arn):
         logging.error(f"Error fetching IAM policy details for {policy_arn}: {error}")
         return None
 
-def list_iam_roles(EXCLUDE_ROLE_PATHS, EXCLUDE_ROLE_PREFIXES):
+def list_iam_roles(exclude_paths, exclude_role_prefixes):
     """
     List IAM roles in the account, excluding those with specified paths and prefixes.
     """
-    iam_client = boto3.client('iam', region_name=AWS_REGION)
+    iam_client = boto3.client('iam', region_name='us-east-1')
     paginator = iam_client.get_paginator('list_roles')
     roles = []
 
@@ -137,11 +129,11 @@ def list_iam_roles(EXCLUDE_ROLE_PATHS, EXCLUDE_ROLE_PREFIXES):
                 role_name = role['RoleName']
                 
                 # Exclude roles based on paths and prefixes
-                if any(role_path.startswith(path) for path in EXCLUDE_ROLE_PATHS):
+                if any(role_path.startswith(path) for path in exclude_paths):
                     logging.debug(f"Excluded role by path: {role_name} with path: {role_path}")
                     continue
                 
-                if any(role_name.startswith(prefix) for prefix in EXCLUDE_ROLE_PREFIXES):
+                if any(role_name.startswith(prefix) for prefix in exclude_role_prefixes):
                     logging.debug(f"Excluded role by prefix: {role_name}")
                     continue
 
@@ -192,6 +184,40 @@ def list_cf_stack_roles():
         logging.error(f"Error listing CloudFormation stack roles: {error}")
         return []
     
+# def get_iam_role_state(role_name):
+#     iam_client = boto3.client('iam')
+#     try:
+#         role = iam_client.get_role(RoleName=role_name)['Role']
+        
+#         # Fetch attached managed policies
+#         attached_policies = iam_client.list_attached_role_policies(RoleName=role_name)['AttachedPolicies']
+#         role['ManagedPolicies'] = [{'PolicyName': policy['PolicyName'], 'PolicyArn': policy['PolicyArn']} for policy in attached_policies]
+        
+#         # Fetch inline policies
+#         role['InlinePolicies'] = get_inline_policies(role_name)
+        
+#         return role
+#     except iam_client.exceptions.NoSuchEntityException:
+#         logging.warning(f"The role {role_name} does not exist.")
+#         return None
+#     except (BotoCoreError, ClientError) as error:
+#         logging.error(f"Error fetching IAM role state for {role_name}: {error}")
+#         return None
+
+# def get_iam_role_state(role_name):
+#     """
+#     Get details of an IAM role by its name.
+#     """
+#     iam_client = boto3.client('iam')
+#     try:
+#         role = iam_client.get_role(RoleName=role_name)
+#         return role['Role']
+#     except iam_client.exceptions.NoSuchEntityException:
+#         logging.warning(f"The role {role_name} does not exist.")
+#         return None
+#     except (BotoCoreError, ClientError) as error:
+#         logging.error(f"Error fetching IAM role state for {role_name}: {error}")
+#         return None
 
 def get_iam_role_state(role_name):
     """
