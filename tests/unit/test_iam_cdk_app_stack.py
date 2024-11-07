@@ -88,7 +88,7 @@ class TestIamRoleConfigStack(unittest.TestCase):
                 {
                     "roleName": "TestRoleWithSession",
                     "sessionDuration": 7200,
-                    "permissionBoundary": "arn:aws:iam::aws:policy/AdministratorAccess"
+                    "permissionsBoundary": "arn:aws:iam::aws:policy/AdministratorAccess"
                 }
             ]
         }
