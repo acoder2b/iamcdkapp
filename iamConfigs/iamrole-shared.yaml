@@ -14,6 +14,19 @@ iam_policies:
             Action: ec2:*
             Resource: '*'
     path: /
+-   policyName: Boundary-Test11test
+    deletionPolicy: RETAIN
+    policyDocument:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: VisualEditor0
+            Effect: Allow
+            Action: ec2:*
+            Resource: '*'
+    path: /testpath/
+
+
+
 roles:
 -   roleName: AccessAnalyzerTrustedService1222
     sessionDuration: 3600
@@ -61,3 +74,33 @@ roles:
                     StringEquals:
                         iam:AWSServiceName: access-analyzer.amazonaws.com
                 Resource: '*'
+
+-   roleName: AccessAnalyzerTrustedService1222efsd
+    sessionDuration: 3600
+    description: Access Analyzer Trusted Service Role
+    iamPath: /testpath/
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AdministratorAccess
+    - arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator
+    permissionsBoundary: arn:aws:iam::aws:policy/AdministratorAccess
+    tags:
+        -   key: stack-name
+            value: iam-role-demo
+        -   key: stack-environment
+            value: dev
+        -   key: stack-owner
+            value: '780258025701'
+        -   key: stack-owner11
+            value: '780258025701111'            
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::780258025701:root
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: AccessAnalyzerTrustedServicey7yfM3aaua7H
+    inlinePolicies:                
