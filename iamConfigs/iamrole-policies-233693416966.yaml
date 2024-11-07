@@ -2040,9 +2040,9 @@ roles:
             Principal:
                 AWS:
                 - arn:aws:iam::381492016180:root
-                - arn:aws:iam::333692317655:root
                 - arn:aws:iam::637423399230:root
                 - arn:aws:iam::533267069473:root
+                - arn:aws:iam::333692317655:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -2245,8 +2245,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                Service: codeguru-profiler-publisher.aws.internal
                 AWS: arn:aws:iam::054693081941:root
+                Service: codeguru-profiler-publisher.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -2590,8 +2590,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::621463273587:role/BrokerService-Prod
                 - arn:aws:iam::048851363556:role/BrokerService-Prod
+                - arn:aws:iam::621463273587:role/BrokerService-Prod
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -2600,8 +2600,8 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
-                - arn:aws:iam::621463273587:role/BrokerService-Prod
                 - arn:aws:iam::048851363556:role/BrokerService-Prod
+                - arn:aws:iam::621463273587:role/BrokerService-Prod
             Action:
             - sts:SetSourceIdentity
             - sts:TagSession
@@ -3109,9 +3109,9 @@ roles:
             Effect: Allow
             Principal:
                 AWS:
+                - arn:aws:iam::796293252539:root
                 - arn:aws:iam::611447770337:root
                 - arn:aws:iam::089414261608:root
-                - arn:aws:iam::796293252539:root
                 Service: depndency-insights-prod.aws.internal
             Action: sts:AssumeRole
             Condition:
@@ -3291,10 +3291,10 @@ roles:
             Principal:
                 Service:
                 - me-south-1.prod.rcc.aws.internal
-                - eu-south-1.prod.rcc.aws.internal
                 - ap-east-1.prod.rcc.aws.internal
                 - af-south-1.prod.rcc.aws.internal
                 - prod.rcc.aws.internal
+                - eu-south-1.prod.rcc.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -3822,7 +3822,7 @@ roles:
     tags:
     -   key: managedBy
         value: IamPipeline
-    permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
+    permissionsBoundary: arn:aws:iam::aws:policy/AdministratorAccess
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
 -   roleName: testrole1
@@ -3962,7 +3962,7 @@ roles:
     tags:
     -   key: Test
         value: TestTag
-    permissionBoundary: arn:aws:iam::aws:policy/AlexaForBusinessGatewayExecution
+    permissionsBoundary: arn:aws:iam::aws:policy/AlexaForBusinessGatewayExecution
     managedPolicies:
     - arn:aws:iam::aws:policy/AdministratorAccess
 -   roleName: TurtleRoleManagement
@@ -3976,8 +3976,8 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - in-amazon-1.prod.webui.turtle.aws.internal
                 - prod.webui.turtle.aws.internal
+                - in-amazon-1.prod.webui.turtle.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:

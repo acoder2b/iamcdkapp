@@ -301,8 +301,10 @@ def create_yaml_content(policies, roles):
             role_dict['tags'] = [{'key': tag['Key'], 'value': tag['Value']} for tag in role.get('Tags', [])]
 
         # Include permission boundary if it exists
-        if role.get('PermissionBoundary'):
-            role_dict['permissionBoundary'] = role['PermissionBoundary']
+        # Extract only the PermissionsBoundaryArn if PermissionsBoundary exists
+        if role.get('PermissionsBoundary') and role['PermissionsBoundary'].get('PermissionsBoundaryArn'):
+            role_dict['permissionsBoundary'] = role['PermissionsBoundary']['PermissionsBoundaryArn']
+
 
         # Attach managed policies and inline policies, if present
         if role.get('ManagedPolicies'):
