@@ -15,8 +15,7 @@ iam_policies:
             Resource: '*'
     path: /
 roles:
--   roleName: AccessAnalyzerTrustedService122
-    deletionPolicy: RETAIN
+-   roleName: AccessAnalyzerTrustedService1222
     sessionDuration: 3600
     description: Access Analyzer Trusted Service Role
     iamPath: /
