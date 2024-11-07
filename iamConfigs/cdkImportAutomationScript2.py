@@ -4,17 +4,24 @@ import logging
 from datetime import datetime
 from botocore.exceptions import BotoCoreError, ClientError
 
-
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Configuration variables
+EXCLUDE_ROLE_PATHS = ['/aws-reserved/', '/aws-service-role/', '/service-role/', '/cdk-hnb']
+EXCLUDE_ROLE_PREFIXES = ['cdk-hnb659fds', 'StackSet', 'stackset', 'AWSControlTower']
+EXCLUDE_POLICY_PATHS = ['/service-role/']
+AWS_REGION = 'us-east-1'
+RESOURCE_LIMIT_PER_FILE = 450
+STACK_NAME = 'iam-role-policies-pipeline-stack'
+OUTPUT_FILENAME_TEMPLATE = "iamrole-policies-{account_id}.yaml"
 
 def list_cf_stack_policies(account_id):
     """
     List IAM managed policies provisioned by CloudFormation stacks.
     Handles pagination for stack resources and fixes ARN construction.
     """
-    cf_client = boto3.client('cloudformation', region_name='us-east-1')
+    cf_client = boto3.client('cloudformation', region_name=AWS_REGION)
     paginator = cf_client.get_paginator('list_stacks')
     cf_policy_arns = []
 
@@ -49,7 +56,6 @@ def list_cf_stack_policies(account_id):
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error listing CloudFormation managed policies: {error}")
         return []
-
     
 def list_customer_managed_policies(exclude_policy_arns):
     """
@@ -64,7 +70,8 @@ def list_customer_managed_policies(exclude_policy_arns):
         for page in paginator.paginate(Scope='Local'):
             for policy in page['Policies']:
                 # Exclude policies provisioned by CloudFormation (based on ARNs in exclude_policy_arns)
-                if policy['Arn'] not in exclude_policy_arns and '/service-role/' not in policy.get('Path', ''):
+                if policy['Arn'] not in exclude_policy_arns and not any(policy['Path'].startswith(path) for path in EXCLUDE_POLICY_PATHS):
+
                     policies.append({
                         'PolicyName': policy['PolicyName'],
                         'PolicyArn': policy['Arn'],
@@ -114,12 +121,11 @@ def get_policy_details(policy_arn):
         logging.error(f"Error fetching IAM policy details for {policy_arn}: {error}")
         return None
 
-def list_iam_roles(exclude_paths, exclude_role_prefixes, exclude_roles):
+def list_iam_roles(EXCLUDE_ROLE_PATHS, EXCLUDE_ROLE_PREFIXES):
     """
-    List IAM roles in the account, excluding those with specified paths, prefixes,
-    and specific role names in `exclude_roles`.
+    List IAM roles in the account, excluding those with specified paths and prefixes.
     """
-    iam_client = boto3.client('iam', region_name='us-east-1')
+    iam_client = boto3.client('iam', region_name=AWS_REGION)
     paginator = iam_client.get_paginator('list_roles')
     roles = []
 
@@ -130,17 +136,13 @@ def list_iam_roles(exclude_paths, exclude_role_prefixes, exclude_roles):
                 role_path = role['Path']
                 role_name = role['RoleName']
                 
-                # Exclude roles by path, prefix, and exact name match
-                if any(role_path.startswith(path) for path in exclude_paths):
+                # Exclude roles based on paths and prefixes
+                if any(role_path.startswith(path) for path in EXCLUDE_ROLE_PATHS):
                     logging.debug(f"Excluded role by path: {role_name} with path: {role_path}")
                     continue
                 
-                if any(role_name.startswith(prefix) for prefix in exclude_role_prefixes):
+                if any(role_name.startswith(prefix) for prefix in EXCLUDE_ROLE_PREFIXES):
                     logging.debug(f"Excluded role by prefix: {role_name}")
-                    continue
-                
-                if role_name in exclude_roles:
-                    logging.debug(f"Excluded role by name: {role_name}")
                     continue
 
                 # Add valid roles
@@ -156,7 +158,6 @@ def list_iam_roles(exclude_paths, exclude_role_prefixes, exclude_roles):
         logging.error(f"Error listing IAM roles: {error}")
         return roles
 
-
 def filter_policies(policies, cf_policy_arns):
     """
     Filter out policies provisioned by CloudFormation.
@@ -165,7 +166,7 @@ def filter_policies(policies, cf_policy_arns):
     logging.info(f"Total customer-managed policies after filtering CloudFormation provisioned ones: {len(filtered_policies)}")
     return filtered_policies
 
-def list_cf_stack_roles(account_id):
+def list_cf_stack_roles():
     """
     List IAM roles provisioned by CloudFormation stacks and log their stack names.
     """
@@ -181,9 +182,8 @@ def list_cf_stack_roles(account_id):
                 resources = cf_client.describe_stack_resources(StackName=stack_name)['StackResources']
                 for resource in resources:
                     if resource['ResourceType'] == 'AWS::IAM::Role':
-                        role_name = resource['PhysicalResourceId']
-                        roles.append(role_name)
-                        logging.info(f"Role '{role_name}' is provisioned by CloudFormation stack '{stack_name}'.")
+                        roles.append(resource['PhysicalResourceId'])
+                        logging.info(f"Role '{resource['PhysicalResourceId']}' is provisioned by CloudFormation stack '{stack_name}'.")
 
         logging.info(f"Total IAM roles in CloudFormation stacks found: {len(roles)}")
         return roles
@@ -191,32 +191,28 @@ def list_cf_stack_roles(account_id):
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error listing CloudFormation stack roles: {error}")
         return []
-
-
- # Main function where filtering takes place
-def filter_roles(roles, cf_role_physical_ids):
-    """
-    Filter out roles that are part of CloudFormation stacks by checking `RoleName` against `PhysicalResourceId`.
-    """
-    filtered_roles = [role for role in roles if role['RoleName'] not in cf_role_physical_ids]
-    logging.info(f"Roles after filtering out CloudFormation-provisioned ones: {len(filtered_roles)}")
-    return filtered_roles
-
+    
 
 def get_iam_role_state(role_name):
     """
-    Get details of an IAM role by its name.
+    Get details of an IAM role by its name, including permission boundary if it exists.
     """
     iam_client = boto3.client('iam')
     try:
-        role = iam_client.get_role(RoleName=role_name)
-        return role['Role']
+        role = iam_client.get_role(RoleName=role_name)['Role']
+        
+        # Retrieve permission boundary if it exists
+        if 'PermissionsBoundary' in role:
+            role['PermissionBoundary'] = role['PermissionsBoundary']['PermissionsBoundaryArn']
+        
+        return role
     except iam_client.exceptions.NoSuchEntityException:
         logging.warning(f"The role {role_name} does not exist.")
         return None
     except (BotoCoreError, ClientError) as error:
         logging.error(f"Error fetching IAM role state for {role_name}: {error}")
         return None
+
 
 def get_inline_policies(role_name):
     """
@@ -251,15 +247,11 @@ def create_yaml_content(policies, roles):
         }
         if policy.get('PolicyDocument'):
             policy_dict['policyDocument'] = policy['PolicyDocument']
-
         if policy.get('Description'):
             policy_dict['description'] = policy['Description']
-
         if policy.get('Path'):
             policy_dict['path'] = policy['Path']
- 
         if policy.get('Tags'):
-            # More explicit key-value structure for tags
             policy_dict['tags'] = [{'Key': tag['Key'], 'Value': tag['Value']} for tag in policy['Tags']]
 
         yaml_content['iam_policies'].append(policy_dict)
@@ -281,16 +273,23 @@ def create_yaml_content(policies, roles):
             role_dict['trustPolicy'] = role['AssumeRolePolicyDocument']
         if role.get('Tags'):
             role_dict['tags'] = [{'key': tag['Key'], 'value': tag['Value']} for tag in role.get('Tags', [])]
+
+        # Include permission boundary if it exists
+        # Extract only the PermissionsBoundaryArn if PermissionsBoundary exists
+        if role.get('PermissionsBoundary') and role['PermissionsBoundary'].get('PermissionsBoundaryArn'):
+            role_dict['permissionsBoundary'] = role['PermissionsBoundary']['PermissionsBoundaryArn']
+
+
+        # Attach managed policies and inline policies, if present
         if role.get('ManagedPolicies'):
-            role_dict['managedPolicies'] = role['ManagedPolicies']
+            role_dict['managedPolicies'] = [policy['PolicyArn'] for policy in role['ManagedPolicies']]
         if role.get('InlinePolicies'):
             role_dict['inlinePolicies'] = role['InlinePolicies']
-        if role.get('PermissionsBoundary'):
-            role_dict['permissionBoundary'] = role['PermissionsBoundary']
 
         yaml_content['iam_roles'].append(role_dict)
 
     return yaml_content
+
 
 
 def build_full_yaml_structure(account_id, region, roles_data, policies_data):
@@ -310,6 +309,32 @@ def build_full_yaml_structure(account_id, region, roles_data, policies_data):
 
     return yaml_structure
 
+
+def append_to_yaml_file(full_yaml_structure, account_id):
+    """
+    Write the ordered YAML content to a file.
+    """
+    yaml_file_name = f"iamrole-policies-{account_id}.yaml"
+
+    # try:
+    #     with open(yaml_file_name, 'w') as yaml_file:
+    #         yaml.dump(full_yaml_structure, yaml_file, default_flow_style=False, sort_keys=False, indent=4)
+    #     logging.info(f"YAML file {yaml_file_name} created successfully.")
+    # except Exception as e:
+    #     logging.error(f"Error writing to YAML file: {e}")
+    try:
+        with open(yaml_file_name, 'w') as yaml_file:
+            yaml.dump(
+                full_yaml_structure, 
+                yaml_file, 
+                default_flow_style=False,  # Ensures the output is not compacted, and follows a block style
+                sort_keys=False,           # Keeps the keys in the same order as provided
+                indent=4                   # Ensures proper indentation for nested structures
+            )
+        logging.info(f"YAML file {yaml_file_name} created successfully.")
+    except Exception as e:
+        logging.error(f"Error writing to YAML file: {e}")    
+
 def get_account_id():
     """
     Get the AWS account ID of the caller.
@@ -323,77 +348,11 @@ def get_account_id():
         logging.error(f"Error fetching account ID: {error}")
         return None
 
-def split_yaml_content(full_yaml_structure, account_id, max_resources_per_file=450):
-    """
-    Split the YAML content into multiple files if resources exceed the specified limit.
-    The first file will have the original name, while subsequent files will have a suffix like Part1, Part2, etc.
-    """
-    iam_policies = full_yaml_structure.get('iam_policies', [])
-    roles = full_yaml_structure.get('roles', [])
-    
-    # Combine iam_policies and roles into a single list of resources
-    all_resources = iam_policies + roles
-    total_resources = len(all_resources)
-
-    # Split the combined resources into chunks of max_resources_per_file
-    chunks = [all_resources[i:i + max_resources_per_file] for i in range(0, total_resources, max_resources_per_file)]
-
-    # For the first chunk, keep the original file and stack_name without suffix
-    for file_count, chunk in enumerate(chunks, start=1):
-        # Separate policies and roles for each chunk
-        iam_policies_in_chunk = [resource for resource in chunk if 'policyName' in resource]
-        roles_in_chunk = [resource for resource in chunk if 'roleName' in resource]
-
-        if file_count == 1:
-            # First file: keep original names
-            chunked_yaml_structure = {
-                'account_id': full_yaml_structure['account_id'],
-                'region': full_yaml_structure['region'],
-                'stack_name': full_yaml_structure['stack_name'],  # Original stack_name
-                'iam_policies': iam_policies_in_chunk,
-                'roles': roles_in_chunk
-            }
-            # Write to the original YAML file
-            append_to_yaml_file(chunked_yaml_structure, account_id)
-        else:
-            # Subsequent files: add Part1, Part2, etc.
-            chunked_yaml_structure = {
-                'account_id': full_yaml_structure['account_id'],
-                'region': full_yaml_structure['region'],
-                'stack_name': f"{full_yaml_structure['stack_name']}-Part{file_count-1}",  # Add Part1, Part2, etc.
-                'iam_policies': iam_policies_in_chunk,
-                'roles': roles_in_chunk
-            }
-            # Write to a new file with PartX suffix
-            append_to_yaml_file(chunked_yaml_structure, account_id, file_suffix=f"-Part{file_count-1}")
-
-            
-def append_to_yaml_file(full_yaml_structure, account_id, file_suffix=""):
-    """
-    Write the ordered YAML content to a file. Adds a suffix if the file is split.
-    """
-    yaml_file_name = f"iamrole-policies-{account_id}{file_suffix}.yaml"
-
-    try:
-        with open(yaml_file_name, 'w') as yaml_file:
-            yaml.dump(
-                full_yaml_structure, 
-                yaml_file, 
-                default_flow_style=False,  # Ensures the output is not compacted, and follows a block style
-                sort_keys=False,           # Keeps the keys in the same order as provided
-                indent=4                   # Ensures proper indentation for nested structures
-            )
-        logging.info(f"YAML file {yaml_file_name} created successfully.")
-    except Exception as e:
-        logging.error(f"Error writing to YAML file: {e}")
-
-        
 def main():
     logging.info("Script started...")
 
     exclude_paths = ['/aws-reserved/', '/aws-service-role/', '/service-role/', '/cdk-hnb']
     exclude_role_prefixes = ['cdk-hnb659fds', 'StackSet', 'stackset', 'AWSControlTower']
-    exclude_roles = ['HubdetectiveStack-DetectiveControlsLambdaFunctionS-P4IYV4VCDBYD', 'RoleToExclude2']
     account_id = get_account_id()
     region = 'us-east-1'
 
@@ -402,36 +361,37 @@ def main():
         return
 
     # Step 1: List all roles in the account
-    roles = list_iam_roles(exclude_paths, exclude_role_prefixes, exclude_roles)
+    roles = list_iam_roles(exclude_paths, exclude_role_prefixes)
 
     # Step 2: List roles in CloudFormation stacks
-    cf_stack_roles = list_cf_stack_roles(account_id)
+    cf_stack_roles = list_cf_stack_roles()
+    cf_stack_role_names = set(cf_stack_roles)
 
-    # # Handle case where `cf_stack_roles` may not be in expected format
-    # if isinstance(cf_stack_roles, list) and all(isinstance(role, dict) and 'PhysicalID' in role for role in cf_stack_roles):
-    #     cf_stack_role_names = {role['PhysicalID'] for role in cf_stack_roles}
-    # else:
-    #     cf_stack_role_names = set(cf_stack_roles)  # Assuming it may just be a list of role names
+    # Handle case where `cf_stack_roles` may not be in expected format
+    if isinstance(cf_stack_roles, list) and all(isinstance(role, dict) and 'PhysicalID' in role for role in cf_stack_roles):
+        cf_stack_role_names = {role['PhysicalID'] for role in cf_stack_roles}
+    else:
+        cf_stack_role_names = set(cf_stack_roles)  # Assuming it may just be a list of role names
 
-    # logging.info(f"Roles provisioned by CloudFormation stacks: {cf_stack_role_names}")
-
-    # # Step 3: Exclude roles that are part of CloudFormation stacks
-    # filtered_roles = [role for role in roles if role['RoleName'] not in cf_stack_role_names]
-    # logging.info(f"Roles after filtering out CloudFormation provisioned roles: {len(filtered_roles)}")
+    logging.info(f"Roles provisioned by CloudFormation stacks: {cf_stack_role_names}")
 
     # Step 3: Exclude roles that are part of CloudFormation stacks
-    filtered_roles = filter_roles(roles, cf_stack_roles)
-
+    filtered_roles = [role for role in roles if role['RoleName'] not in cf_stack_role_names]
     logging.info(f"Roles after filtering out CloudFormation provisioned roles: {len(filtered_roles)}")
 
-    # Proceed with fetching details for filtered roles
-    roles_data = [get_iam_role_state(role['RoleName']) for role in filtered_roles if get_iam_role_state(role['RoleName'])]
-
-    # Step 4: Fetch role details for each filtered role
+    # Step 4: Fetch role details, including managed and inline policies, for each filtered role
     roles_data = []
+    iam_client = boto3.client('iam', region_name='us-east-1')
     for role in filtered_roles:
         role_state = get_iam_role_state(role['RoleName'])
         if role_state:
+            # Fetch managed policies attached to the role
+            attached_policies = iam_client.list_attached_role_policies(RoleName=role['RoleName'])['AttachedPolicies']
+            role_state['ManagedPolicies'] = [{'PolicyName': policy['PolicyName'], 'PolicyArn': policy['PolicyArn']} for policy in attached_policies]
+
+            # Fetch inline policies
+            role_state['InlinePolicies'] = get_inline_policies(role['RoleName'])
+
             roles_data.append(role_state)
 
     # Step 5: List IAM policies provisioned by CloudFormation stacks
@@ -439,22 +399,18 @@ def main():
 
     # Step 6: List all customer-managed policies excluding CloudFormation-managed ones
     customer_managed_policies = list_customer_managed_policies(cf_stack_policy_arns)
-
-    # Step 7: Include all policy details
     policies_data = []
     for policy in customer_managed_policies:
         policy_details = get_policy_details(policy['PolicyArn'])
         if policy_details:
-            policies_data.append(policy_details)
+            policies_data.append(policy_details)  # Store all details returned by get_policy_details
 
     # Step 8: Build full YAML structure
     full_yaml_structure = build_full_yaml_structure(account_id, region, roles_data, policies_data)
 
-    # Step 9: Split the data into multiple YAML files if there are more than 450 resources
-    if len(roles_data) + len(policies_data) > 450:
-        split_yaml_content(full_yaml_structure, account_id)
-    else:
-        append_to_yaml_file(full_yaml_structure, account_id)
+    # Step 9: Append the data to the YAML file
+    append_to_yaml_file(full_yaml_structure, account_id)
 
 if __name__ == "__main__":
     main()
+
