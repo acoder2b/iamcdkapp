@@ -3361,7 +3361,7 @@ roles:
                 AWS: arn:aws:iam::443253904861:root
             Action: sts:AssumeRole
             Condition: {}
-    permissionBoundary: arn:aws:iam::443253904861:policy/Boundary-Test1
+    permissionsBoundary: arn:aws:iam::443253904861:policy/Boundary-Test1
 -   roleName: testrolemodernademo
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -3389,7 +3389,7 @@ roles:
     tags:
     -   key: Test
         value: Test
-    permissionBoundary: arn:aws:iam::aws:policy/AlexaForBusinessFullAccess
+    permissionsBoundary: arn:aws:iam::aws:policy/AlexaForBusinessFullAccess
     managedPolicies:
     - arn:aws:iam::443253904861:policy/3-Tef-Environment-Admin
     - arn:aws:iam::aws:policy/AdministratorAccess

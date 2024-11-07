@@ -1805,7 +1805,7 @@ roles:
                 AWS: arn:aws:iam::482205423380:root
             Action: sts:AssumeRole
             Condition: {}
-    permissionBoundary: arn:aws:iam::aws:policy/AdministratorAccess
+    permissionsBoundary: arn:aws:iam::aws:policy/AdministratorAccess
 -   roleName: TurtleRoleManagement
     deletionPolicy: RETAIN
     sessionDuration: 3600
