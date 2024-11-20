@@ -14,6 +14,9 @@
   "Role4fda5c60": {
     "RoleName": "AVMContainersUserRole"
   },
+  "Role9513fa30": {
+    "RoleName": "AWSControlTowerExecution"
+  },
   "Rolecd792517": {
     "RoleName": "awslogs.prod.kelex.molecule.toppatterns"
   },
@@ -70,8 +73,5 @@
   },
   "Rolefbfe9d5c": {
     "RoleName": "IsengardRole-DO-NOT-DELETE"
-  },
-  "Rolea506ba37": {
-    "RoleName": "IsengardRoleForDependencyAssuranceIamAnalyzer"
   }
 }

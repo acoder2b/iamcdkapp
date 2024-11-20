@@ -11,6 +11,12 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Configuration variables
 AWS_REGION = 'us-east-1'
 RESOURCE_LIMIT_PER_FILE = 25
+EXCLUDE_ROLE_PATHS = ['/aws-reserved/', '/aws-service-role/', '/service-role/', '/cdk-hnb']
+EXCLUDE_ROLE_PREFIXES = ['cdk-hnb659fds', 'StackSet', 'stackset', 'AWSControlTower']
+EXCLUDE_POLICY_PATHS = ['/service-role/']
+STACK_NAME = 'iam-role-policies-pipeline-stack'
+OUTPUT_FILENAME_TEMPLATE = "iamrole-policies-{account_id}.yaml"
+
 
 
 def list_cf_stack_policies(account_id):
@@ -18,7 +24,7 @@ def list_cf_stack_policies(account_id):
     List IAM managed policies provisioned by CloudFormation stacks.
     Handles pagination for stack resources and fixes ARN construction.
     """
-    cf_client = boto3.client('cloudformation', region_name='us-east-1')
+    cf_client = boto3.client('cloudformation', region_name=AWS_REGION)
     paginator = cf_client.get_paginator('list_stacks')
     cf_policy_arns = []
 
@@ -59,7 +65,7 @@ def list_customer_managed_policies(exclude_policy_arns):
     """
     List all customer-managed IAM policies, excluding those provisioned by CloudFormation.
     """
-    iam_client = boto3.client('iam', region_name='us-east-1')
+    iam_client = boto3.client('iam', region_name=AWS_REGION)
     paginator = iam_client.get_paginator('list_policies')
     policies = []
 
@@ -123,7 +129,7 @@ def list_iam_roles(exclude_paths, exclude_role_prefixes, exclude_roles):
     List IAM roles in the account, excluding those with specified paths, prefixes,
     and specific role names in `exclude_roles`.
     """
-    iam_client = boto3.client('iam', region_name='us-east-1')
+    iam_client = boto3.client('iam', region_name=AWS_REGION)
     paginator = iam_client.get_paginator('list_roles')
     roles = []
 
@@ -173,7 +179,7 @@ def list_cf_stack_roles(account_id):
     """
     List IAM roles provisioned by CloudFormation stacks and log their stack names.
     """
-    cf_client = boto3.client('cloudformation', region_name='us-east-1')
+    cf_client = boto3.client('cloudformation', region_name=AWS_REGION)
     paginator = cf_client.get_paginator('describe_stacks')
     roles = []
 
@@ -328,7 +334,7 @@ def get_account_id():
     """
     Get the AWS account ID of the caller.
     """
-    sts_client = boto3.client('sts', region_name='us-east-1')
+    sts_client = boto3.client('sts', region_name=AWS_REGION)
     try:
         identity = sts_client.get_caller_identity()
         logging.info(f"Fetched account ID: {identity['Account']}")
@@ -405,11 +411,16 @@ def append_to_yaml_file(full_yaml_structure, account_id, file_suffix=""):
 def main():
     logging.info("Script started...")
 
-    exclude_paths = ['/aws-reserved/', '/aws-service-role/', '/service-role/', '/cdk-hnb']
-    exclude_role_prefixes = ['cdk-hnb659fds', 'StackSet', 'stackset', 'AWSControlTower']
+    # exclude_paths = ['/aws-reserved/', '/aws-service-role/', '/service-role/', '/cdk-hnb']
+    # exclude_role_prefixes = ['cdk-hnb659fds', 'StackSet', 'stackset', 'AWSControlTower']
+    # exclude_roles = ['HubdetectiveStack-DetectiveControlsLambdaFunctionS-P4IYV4VCDBYD', 'RoleToExclude2']
+    # account_id = get_account_id()
+
+    exclude_paths = EXCLUDE_ROLE_PATHS
+    exclude_role_prefixes = EXCLUDE_ROLE_PATHS
     exclude_roles = ['HubdetectiveStack-DetectiveControlsLambdaFunctionS-P4IYV4VCDBYD', 'RoleToExclude2']
     account_id = get_account_id()
-    region = 'us-east-1'
+    region = AWS_REGION
 
     if not account_id:
         logging.error("Failed to retrieve account ID.")
@@ -443,7 +454,7 @@ def main():
 
     # Step 4: Fetch role details for each filtered role
     roles_data = []
-    iam_client = boto3.client('iam', region_name='us-east-1')
+    iam_client = boto3.client('iam', region_name=AWS_REGION)
     for role in filtered_roles:
         role_state = get_iam_role_state(role['RoleName'])
         if role_state:

@@ -4,6 +4,34 @@ region: us-east-1
 stack_name: iam-role-policies-pipeline-stack-Part1
 iam_policies: []
 roles:
+-   roleName: IsengardRoleForDependencyAssuranceIamAnalyzer
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ''
+            Effect: Allow
+            Principal:
+                Service: depndency-insights-prod.aws.internal
+                AWS:
+                - arn:aws:iam::796293252539:root
+                - arn:aws:iam::089414261608:root
+                - arn:aws:iam::611447770337:root
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    sts:ExternalId: DependencyAssuranceIamAnalyzerTrustedServicev0y7hI9piuvk
+    inlinePolicies:
+        DependencyAssuranceIamAnalyzerTrustedServicePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Sid: DependencyAssuranceIAMAnalyzer
+                Effect: Allow
+                Action:
+                - iam:GetAccountAuthorizationDetails
+                Resource: '*'
 -   roleName: IsengardRoleForOptInComputeOptimizer
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -167,9 +195,9 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - ap-east-1.prod.rcc.aws.internal
-                - prod.rcc.aws.internal
                 - me-south-1.prod.rcc.aws.internal
+                - prod.rcc.aws.internal
+                - ap-east-1.prod.rcc.aws.internal
                 - af-south-1.prod.rcc.aws.internal
                 - eu-south-1.prod.rcc.aws.internal
             Action: sts:AssumeRole
@@ -297,6 +325,232 @@ roles:
                 - workspaces:ModifyWorkspaceState
                 - workspaces:StopWorkspaces
                 Resource: '*'
+-   roleName: StackSet-AWSControlTowerGuardHook-373-ExecutionRole-dfDV3mPSuPao
+    deletionPolicy: RETAIN
+    sessionDuration: 8400
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ExecutionRoleAssumeRolePolicyDocumentJ4xzc6hBez
+            Effect: Allow
+            Principal:
+                Service:
+                - resources.cloudformation.amazonaws.com
+                - hooks.cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    aws:SourceAccount: '118575936588'
+                StringLike:
+                    aws:SourceArn: arn:aws:cloudformation:eu-central-1:118575936588:type/hook/ControlTower-Guard-Hook/*
+    inlinePolicies:
+        HookTypePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action: '*'
+                Resource: '*'
+                Effect: Deny
+                Sid: ExecutionRoleDenyPolicyJ4xzc6hBez
+-   roleName: StackSet-AWSControlTowerGuardHook-373aab98--LogRole-ObzTQ545p6kJ
+    deletionPolicy: RETAIN
+    sessionDuration: 8400
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: LogRoleAssumeRolePolicyDocumentJ4xzc6hBez
+            Effect: Allow
+            Principal:
+                Service:
+                - hooks.cloudformation.amazonaws.com
+                - resources.cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    aws:SourceAccount: '118575936588'
+                StringLike:
+                    aws:SourceArn: arn:aws:cloudformation:eu-central-1:118575936588:type/hook/ControlTower-Guard-Hook/*
+    inlinePolicies:
+        HookTypePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - logs:DescribeLogGroups
+                - logs:DescribeLogStreams
+                Resource: '*'
+                Effect: Allow
+                Sid: LogsAllowPolicyJ4xzc6hBez
+            -   Action:
+                - cloudwatch:PutMetricData
+                Resource: '*'
+                Effect: Allow
+                Sid: CloudWatchAllowPolicyJ4xzc6hBez
+            -   Action:
+                - logs:CreateLogGroup
+                - logs:DeleteLogGroup
+                - logs:UpdateLogGroup
+                Resource: '*'
+                Effect: Deny
+                Sid: LogRoleDenyPolicyJ4xzc6hBez
+-   roleName: StackSet-AWSControlTowerGuardHook-624-ExecutionRole-LIOG6AzWGwwc
+    deletionPolicy: RETAIN
+    sessionDuration: 8400
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ExecutionRoleAssumeRolePolicyDocumentJ4xzc6hBez
+            Effect: Allow
+            Principal:
+                Service:
+                - hooks.cloudformation.amazonaws.com
+                - resources.cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    aws:SourceAccount: '118575936588'
+                StringLike:
+                    aws:SourceArn: arn:aws:cloudformation:us-east-2:118575936588:type/hook/ControlTower-Guard-Hook/*
+    inlinePolicies:
+        HookTypePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action: '*'
+                Resource: '*'
+                Effect: Deny
+                Sid: ExecutionRoleDenyPolicyJ4xzc6hBez
+-   roleName: StackSet-AWSControlTowerGuardHook-6240da8f--LogRole-MwxWsNYiDEkR
+    deletionPolicy: RETAIN
+    sessionDuration: 8400
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: LogRoleAssumeRolePolicyDocumentJ4xzc6hBez
+            Effect: Allow
+            Principal:
+                Service:
+                - hooks.cloudformation.amazonaws.com
+                - resources.cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    aws:SourceAccount: '118575936588'
+                StringLike:
+                    aws:SourceArn: arn:aws:cloudformation:us-east-2:118575936588:type/hook/ControlTower-Guard-Hook/*
+    inlinePolicies:
+        HookTypePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - logs:DescribeLogGroups
+                - logs:DescribeLogStreams
+                Resource: '*'
+                Effect: Allow
+                Sid: LogsAllowPolicyJ4xzc6hBez
+            -   Action:
+                - cloudwatch:PutMetricData
+                Resource: '*'
+                Effect: Allow
+                Sid: CloudWatchAllowPolicyJ4xzc6hBez
+            -   Action:
+                - logs:CreateLogGroup
+                - logs:DeleteLogGroup
+                - logs:UpdateLogGroup
+                Resource: '*'
+                Effect: Deny
+                Sid: LogRoleDenyPolicyJ4xzc6hBez
+-   roleName: StackSet-AWSControlTowerGuardHook-b12-ExecutionRole-Q99pArEG9wGL
+    deletionPolicy: RETAIN
+    sessionDuration: 8400
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: ExecutionRoleAssumeRolePolicyDocumentJ4xzc6hBez
+            Effect: Allow
+            Principal:
+                Service:
+                - hooks.cloudformation.amazonaws.com
+                - resources.cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    aws:SourceAccount: '118575936588'
+                StringLike:
+                    aws:SourceArn: arn:aws:cloudformation:us-west-2:118575936588:type/hook/ControlTower-Guard-Hook/*
+    inlinePolicies:
+        HookTypePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action: '*'
+                Resource: '*'
+                Effect: Deny
+                Sid: ExecutionRoleDenyPolicyJ4xzc6hBez
+-   roleName: StackSet-AWSControlTowerGuardHook-b123e1a2--LogRole-89HpGIFQ9Jhj
+    deletionPolicy: RETAIN
+    sessionDuration: 8400
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Sid: LogRoleAssumeRolePolicyDocumentJ4xzc6hBez
+            Effect: Allow
+            Principal:
+                Service:
+                - hooks.cloudformation.amazonaws.com
+                - resources.cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+                StringEquals:
+                    aws:SourceAccount: '118575936588'
+                StringLike:
+                    aws:SourceArn: arn:aws:cloudformation:us-west-2:118575936588:type/hook/ControlTower-Guard-Hook/*
+    inlinePolicies:
+        HookTypePolicy:
+            Version: '2012-10-17'
+            Statement:
+            -   Action:
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - logs:DescribeLogGroups
+                - logs:DescribeLogStreams
+                Resource: '*'
+                Effect: Allow
+                Sid: LogsAllowPolicyJ4xzc6hBez
+            -   Action:
+                - cloudwatch:PutMetricData
+                Resource: '*'
+                Effect: Allow
+                Sid: CloudWatchAllowPolicyJ4xzc6hBez
+            -   Action:
+                - logs:CreateLogGroup
+                - logs:DeleteLogGroup
+                - logs:UpdateLogGroup
+                Resource: '*'
+                Effect: Deny
+                Sid: LogRoleDenyPolicyJ4xzc6hBez
+-   roleName: stacksets-exec-07747c4a75e4555357cbac8c04dfd877
+    deletionPolicy: RETAIN
+    description: Role created by AWSCloudFormation StackSets
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Id: stacksets-exec-07747c4a75e4555357cbac8c04dfd877-assume-role-policy
+        Statement:
+        -   Sid: '1'
+            Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::909180469036:role/aws-service-role/stacksets.cloudformation.amazonaws.com/AWSServiceRoleForCloudFormationStackSetsOrgAdmin
+            Action: sts:AssumeRole
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AdministratorAccess
 -   roleName: telus-security-audit-prowler-ecstaskrole
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -392,8 +646,8 @@ roles:
             Effect: Allow
             Principal:
                 Service:
-                - in-amazon-1.prod.webui.turtle.aws.internal
                 - prod.webui.turtle.aws.internal
+                - in-amazon-1.prod.webui.turtle.aws.internal
             Action: sts:AssumeRole
             Condition:
                 StringEquals:

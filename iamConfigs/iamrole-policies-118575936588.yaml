@@ -177,9 +177,14 @@ roles:
                 - inspector2:ListFindingAggregations
                 - inspector2:ListFindings
                 - inspector2:UpdateConfiguration
+                - inspector2:GetConfiguration
                 - inspector2:Enable
                 - ecr:PutRegistryScanningConfiguration
                 - ecr:GetRegistryScanningConfiguration
+                - ecr:BatchGetImage
+                - ecr:GetDownloadUrlForLayer
+                - ecr:DescribeRepositories
+                - ecr:GetAuthorizationToken
                 Resource: '*'
             -   Effect: Allow
                 Action: iam:CreateServiceLinkedRole
@@ -187,6 +192,19 @@ roles:
                 Condition:
                     StringEquals:
                         iam:AWSServiceName: inspector2.amazonaws.com
+-   roleName: AWSControlTowerExecution
+    deletionPolicy: RETAIN
+    sessionDuration: 3600
+    iamPath: /
+    trustPolicy:
+        Version: '2012-10-17'
+        Statement:
+        -   Effect: Allow
+            Principal:
+                AWS: arn:aws:iam::909180469036:root
+            Action: sts:AssumeRole
+    managedPolicies:
+    - arn:aws:iam::aws:policy/AdministratorAccess
 -   roleName: awslogs.prod.kelex.molecule.toppatterns
     deletionPolicy: RETAIN
     sessionDuration: 3600
@@ -392,9 +410,9 @@ roles:
             Principal:
                 AWS:
                 - arn:aws:iam::637423399230:root
-                - arn:aws:iam::533267069473:root
                 - arn:aws:iam::333692317655:root
                 - arn:aws:iam::381492016180:root
+                - arn:aws:iam::533267069473:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -597,8 +615,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                AWS: arn:aws:iam::054693081941:root
                 Service: codeguru-profiler-publisher.aws.internal
+                AWS: arn:aws:iam::054693081941:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -650,8 +668,8 @@ roles:
         -   Sid: ''
             Effect: Allow
             Principal:
-                AWS: arn:aws:iam::950184135563:root
                 Service: crs.ec2.aws.internal
+                AWS: arn:aws:iam::950184135563:root
             Action: sts:AssumeRole
             Condition:
                 StringEquals:
@@ -1028,8 +1046,8 @@ roles:
         -   Effect: Allow
             Principal:
                 Service:
-                - lambda.amazonaws.com
                 - sns.amazonaws.com
+                - lambda.amazonaws.com
             Action: sts:AssumeRole
     tags:
     -   key: Application
@@ -1413,32 +1431,4 @@ roles:
             Statement:
             -   Effect: Allow
                 Action: '*'
-                Resource: '*'
--   roleName: IsengardRoleForDependencyAssuranceIamAnalyzer
-    deletionPolicy: RETAIN
-    sessionDuration: 3600
-    iamPath: /
-    trustPolicy:
-        Version: '2012-10-17'
-        Statement:
-        -   Sid: ''
-            Effect: Allow
-            Principal:
-                AWS:
-                - arn:aws:iam::796293252539:root
-                - arn:aws:iam::611447770337:root
-                - arn:aws:iam::089414261608:root
-                Service: depndency-insights-prod.aws.internal
-            Action: sts:AssumeRole
-            Condition:
-                StringEquals:
-                    sts:ExternalId: DependencyAssuranceIamAnalyzerTrustedServicev0y7hI9piuvk
-    inlinePolicies:
-        DependencyAssuranceIamAnalyzerTrustedServicePolicy:
-            Version: '2012-10-17'
-            Statement:
-            -   Sid: DependencyAssuranceIAMAnalyzer
-                Effect: Allow
-                Action:
-                - iam:GetAccountAuthorizationDetails
                 Resource: '*'
