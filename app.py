@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Directory containing YAML files
-config_directory = os.getenv('IAM_ROLE_CONFIG_DIRECTORY', 'iamConfigs')
+config_directory = os.getenv('IAM_ROLE_CONFIG_DIRECTORY', 'Configs')
 # deployment_account_id = os.getenv('ACCOUNT_ID') # AWS Account ID that we are deploying the IAM roles to
 
 # Function to load account ID and region from YAML file

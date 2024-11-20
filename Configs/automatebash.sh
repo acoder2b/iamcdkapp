@@ -30,8 +30,8 @@ MAX_RETRIES=5    # Maximum number of retries for drift detection status
 
 # Step 1: Check current working directory
 log "Step 1: Checking current working directory..."
-if [[ "$CURRENT_DIR" != *"iamConfigs"* ]]; then
-    log "Error: Script must be run from the iamConfigs directory!"
+if [[ "$CURRENT_DIR" != *"Configs"* ]]; then
+    log "Error: Script must be run from the Configs directory!"
     exit 1
 fi
 log "Current working directory is: $CURRENT_DIR"
@@ -90,7 +90,7 @@ echo "$STACK_TEMPLATE_FILES"
 
 # Step 7: Process each stack template and run resource-map script
 log "Step 5: Running resource-map script for each stack template..."
-cd "$CURRENT_DIR"  # Ensure we are back in the iamConfigs directory
+cd "$CURRENT_DIR"  # Ensure we are back in the Configs directory
 STACK_NAMES=()
 RESOURCE_MAP_FILES=()
 
